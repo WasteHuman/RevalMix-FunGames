@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Project Path="AppMetrica.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="AppMetrica.Editor.csproj" />
+  <Project Path="Assembly-CSharp-firstpass.csproj" />
+</Solution>
