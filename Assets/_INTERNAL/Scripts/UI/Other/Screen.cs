@@ -2,7 +2,7 @@
 
 namespace UI.Other
 {
-    public class Screen : MonoBehaviour
+    public abstract class Screen : MonoBehaviour
     {
         public bool IsActive => gameObject.activeSelf;
 

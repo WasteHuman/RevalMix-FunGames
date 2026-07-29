@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace UI.Animations.GameScreen
 {
-    [RequireComponent(typeof(RectTransform))]
-    public class ButtonAnimations : MonoBehaviour
+    [System.Serializable]
+    public class ButtonAnimations
     {
         [Header("Click Animations Setup")]
         [SerializeField] private float _clickAnimationDuration = 0.25f;
@@ -22,20 +22,12 @@ namespace UI.Animations.GameScreen
 
         private Sequence _clickSequence;
 
-        private void Awake()
+        public void Init(RectTransform target)
         {
-            _rectTransform = GetComponent<RectTransform>();
-        }
+            _rectTransform = target;
 
-        private void Start()
-        {
             if (_usingPulseAnimation)
                 PulseAnimation();
-        }
-
-        private void OnDestroy()
-        {
-            StopAnimations();
         }
 
         public void StopAnimations()

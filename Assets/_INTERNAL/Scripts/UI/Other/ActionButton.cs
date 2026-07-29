@@ -5,11 +5,13 @@ using UnityEngine.UI;
 
 namespace UI.Other
 {
-    [RequireComponent(typeof(ButtonAnimations))]
     [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(RectTransform))]
     public class ActionButton : MonoBehaviour
     {
-        private ButtonAnimations _animations;
+        [SerializeField] private ButtonAnimations _animations;
+        [SerializeField] private RectTransform _rectTransform;
+
         private Button _button;
 
         public bool Interactable
@@ -30,12 +32,18 @@ namespace UI.Other
         private void Awake()
         {
             _button = GetComponent<Button>();
-            _animations = GetComponent<ButtonAnimations>();
+            _rectTransform = GetComponent<RectTransform>();
+
+            _animations.Init(_rectTransform);
         }
 
         private void Start() => _button.onClick.AddListener(HandleButtonClick);
 
-        private void OnDestroy() => _button.onClick.RemoveListener(HandleButtonClick);
+        private void OnDestroy()
+        {
+            _animations.StopAnimations();
+            _button.onClick.RemoveListener(HandleButtonClick);
+        }
 
         private void HandleButtonClick()
         {
