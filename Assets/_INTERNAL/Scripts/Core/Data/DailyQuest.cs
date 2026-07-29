@@ -1,0 +1,16 @@
+﻿namespace Core.Data
+{
+    [System.Serializable]
+    public class DailyQuest
+    {
+        public string Id;
+        public string Description;
+        public string QuestTag;
+        public int TargetValue;
+        public int CurrentProgress;
+        public int RewardCoins;
+        public int RewardXP;
+        public bool IsCompleted;
+        public bool IsClaimed;
+    }
+}
