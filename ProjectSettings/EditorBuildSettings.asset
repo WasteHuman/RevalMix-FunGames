@@ -11,5 +11,17 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Main_Menu.unity
     guid: b727d1e0b2aa83346b70ab514bee85da
+  - enabled: 1
+    path: Assets/_Scenes/Leaderboard.unity
+    guid: d6516b5afe6601441b8b62b207ffbf52
+  - enabled: 1
+    path: Assets/_Scenes/Quests.unity
+    guid: c7758099789cfc94ab643f1e43ff0fb8
+  - enabled: 1
+    path: Assets/_Scenes/Profile.unity
+    guid: 07c9a8d0a1decf4478e937cf4bad8f98
+  - enabled: 1
+    path: Assets/_Scenes/Settings.unity
+    guid: ca6db7060e7e8224cbcdc9db36377672
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

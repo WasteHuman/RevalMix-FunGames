@@ -4,6 +4,10 @@
     {
         #region Main Scene Names
         public const string MAIN_MENU = "Main_Menu";
+        public const string LEADERBOARD = "Leaderboard";
+        public const string QUESTS = "Quests";
+        public const string PROFILE = "Profile";
+        public const string SETTINGS = "Settings";
         public const string WHEEL_OF_LUCK = "WheelOfLuck";
         #endregion
 
