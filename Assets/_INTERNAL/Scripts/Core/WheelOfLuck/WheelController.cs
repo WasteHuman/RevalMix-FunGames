@@ -67,7 +67,7 @@ namespace Core.WheelOfLuck
         {
             if (!_isMultipliersWheel)
             {
-                AnalyticsService.Instance.ReportGameStart(SceneNames.WHEEL_OF_LUCK);
+                AnalyticsService.Instance.ReportGameStart(GameConstants.WHEEL_OF_LUCK);
 
                 LoadState();
                 UpdateCooldownLabel();
@@ -416,7 +416,7 @@ namespace Core.WheelOfLuck
                     EconomyController.Instance.AddCoins(coins);
                     Debug.Log($"[Wheel] Given coins: {coins}");
 
-                    AnalyticsService.Instance.ReportGameWin(SceneNames.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
                     break;
 
                 case WheelReward.RewardType.FreeSpin:
@@ -425,12 +425,12 @@ namespace Core.WheelOfLuck
                     SaveState();
                     Debug.Log($"[Wheel] Given free spins: {spins}");
 
-                    AnalyticsService.Instance.ReportGameWin(SceneNames.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
                     break;
 
                 case WheelReward.RewardType.Nothing:
                     Debug.Log("[Wheel] Nothing to give");
-                    AnalyticsService.Instance.ReportGameLoss(SceneNames.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameLoss(GameConstants.WHEEL_OF_LUCK);
                     ClaimWithoutAd();
                     break;
                 case WheelReward.RewardType.Multiplier:

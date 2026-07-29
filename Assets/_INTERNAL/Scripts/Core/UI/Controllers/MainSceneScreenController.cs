@@ -13,6 +13,11 @@ namespace Core.UI.Controllers
             _welcomeScreenView.OnPlayerReady += HandlePlayerReady;
         }
 
+        private void OnDestroy()
+        {
+            _welcomeScreenView.OnPlayerReady -= HandlePlayerReady;
+        }
+
         private void HandlePlayerReady()
         {
             _welcomeScreenView.Close();

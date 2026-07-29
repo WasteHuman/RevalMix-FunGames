@@ -24,6 +24,6 @@ namespace UI.Other
             _actionButton.OnButtonClick -= HandleClick;
         }
 
-        private void HandleClick() => SceneManager.LoadSceneAsync(SceneNames.MAIN_MENU);
+        private void HandleClick() => SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
     }
 }

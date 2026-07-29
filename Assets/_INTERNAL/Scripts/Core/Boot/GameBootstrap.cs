@@ -109,12 +109,14 @@ namespace Core.Boot
 
         private IEnumerator LoadMainSceneCoroutine(UILoadingView loadingScreenView)
         {
+            Debug.Log($"[Game Bootstrap] Loading coroutine started");
+
             loadingScreenView.ResetProgress();
 
             float loadingDuration = 5f;
             float elapsedTime = 0f;
 
-            SceneManager.LoadSceneAsync(SceneNames.MAIN_MENU);
+            SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
 
             while (elapsedTime < loadingDuration)
             {
@@ -129,6 +131,8 @@ namespace Core.Boot
             loadingScreenView.ResetProgress();
             _analyticsService.ReportGameStart();
             _adsController.PreloadRewardedAd();
+
+            Debug.Log($"[Game Bootstrap] Loading coroutine finished");
         }
     }
 

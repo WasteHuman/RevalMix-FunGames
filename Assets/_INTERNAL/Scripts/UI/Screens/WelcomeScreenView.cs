@@ -8,14 +8,22 @@ namespace UI.Screens
 {
     public class WelcomeScreenView : Screen
     {
+        [Header("Text Setup")]
         [SerializeField] private TMP_InputField _nameInputField;
+        [SerializeField] private TextMeshProUGUI _nameLabel;
+
+        [Space(5), Header("Action Buttons Setup")]
         [SerializeField] private ActionButton _saveButton;
+        [SerializeField] private ActionButton _choosePlayerPhotoButton;
+
+        private bool _isNameFieldEmpty = true;
 
         public event Action OnPlayerReady;
 
         private void Awake()
         {
             _saveButton.OnButtonClick += HandleSaveButtonClick;
+            _saveButton.OnButtonClick += HandleChoosePhotoButtonClick;
 
             _nameInputField.onEndEdit.AddListener(HandleNameInput);
         }
@@ -23,15 +31,35 @@ namespace UI.Screens
         private void OnDestroy()
         {
             _saveButton.OnButtonClick -= HandleSaveButtonClick;
+            _saveButton.OnButtonClick -= HandleChoosePhotoButtonClick;
 
             _nameInputField.onEndEdit.RemoveListener(HandleNameInput);
         }
 
-        private void HandleSaveButtonClick() => OnPlayerReady?.Invoke();
+        private void HandleSaveButtonClick()
+        {
+            if (_isNameFieldEmpty)
+            {
+                Debug.LogWarning($"[Welcome Screen] Name is null!");
+                return;
+            }
+
+            OnPlayerReady?.Invoke();
+        }
+
+        private void HandleChoosePhotoButtonClick()
+        {
+            // TODO: Выбор фото на аватарку
+        }
 
         private void HandleNameInput(string raw)
         {
+            if (string.IsNullOrEmpty(raw))
+                return;
 
+            _isNameFieldEmpty = false;
+            _nameLabel.text = raw;
+            // TODO: Глобальный сервис, отвечающий за игрока сохраняет имя
         }
     }
 }
