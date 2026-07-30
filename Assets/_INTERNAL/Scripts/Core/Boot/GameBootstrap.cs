@@ -1,4 +1,5 @@
-﻿using Core.Services.AdsService;
+﻿using Core.Services;
+using Core.Services.AdsService;
 using Core.Services.Analytics;
 using Core.Services.Audio;
 using Io.AppMetrica;
@@ -15,8 +16,8 @@ namespace Core.Boot
         private static GameBootstrap _instance;
 
         private AnalyticsService _analyticsService;
-        private AdsController _adsController;
-        private AudioController _audioController;
+        private AdsService _adsService;
+        private AudioService _audioService;
 
         private Coroutine _loadingCoroutine;
 
@@ -27,9 +28,9 @@ namespace Core.Boot
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-#if UNITY_EDITOR
-            PlayerPrefs.DeleteAll();
-#endif
+//#if UNITY_EDITOR
+//            PlayerPrefs.DeleteAll();
+//#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
             await InitializeExternalSDK();
@@ -41,18 +42,18 @@ namespace Core.Boot
             CheckFirstLaunch();
 
             var analyticsServicePrefab = Resources.Load<AnalyticsService>("Prefabs/Services/[ANALYTICS_SERVICE]");
-            var adsControllerPrefab = Resources.Load<AdsController>("Prefabs/Services/[ADS_CONTROLLER]");
-            var audioControllerPrefab = Resources.Load<AudioController>("Prefabs/Services/[AUDIO_CONTROLLER]");
+            var adsControllerPrefab = Resources.Load<AdsService>("Prefabs/Services/[ADS_CONTROLLER]");
+            var audioControllerPrefab = Resources.Load<AudioService>("Prefabs/Services/[AUDIO_CONTROLLER]");
 
             if(analyticsServicePrefab == null || adsControllerPrefab == null || adsControllerPrefab == null)
             {
-                Debug.LogError($"[Game Bootstrap] Analytics Service/Ads Controller/Audio Controller prefab is null!");
+                Debug.LogError($"[Game Bootstrap] Analytics Service/Ads Service/Audio Service prefab is null!");
                 return;
             }
 
             _instance._analyticsService = Object.Instantiate(analyticsServicePrefab);
-            _instance._adsController = Object.Instantiate(adsControllerPrefab);
-            _instance._audioController = Object.Instantiate(audioControllerPrefab);
+            _instance._adsService = Object.Instantiate(adsControllerPrefab);
+            _instance._audioService = Object.Instantiate(audioControllerPrefab);
 
             try
             {
@@ -71,6 +72,7 @@ namespace Core.Boot
         private static void Run()
         {
             _instance.LoadMainScene();
+            GameServices.InitializeAll();
         }
 
         private static bool IsFirstLaunch()
@@ -130,11 +132,23 @@ namespace Core.Boot
             _loadingCoroutine = null;
             loadingScreenView.ResetProgress();
             _analyticsService.ReportGameStart();
-            _adsController.PreloadRewardedAd();
 
             Debug.Log($"[Game Bootstrap] Loading coroutine finished");
         }
     }
 
-    internal class MonoBehaviourHelper : MonoBehaviour { }
+    public class MonoBehaviourHelper : MonoBehaviour 
+    {
+        private void Awake() => DontDestroyOnLoad(gameObject);
+
+        private void Start() => InvokeRepeating(nameof(UpdatePlayTime), 1f, 1f);
+
+        private void UpdatePlayTime()
+        {
+            if (GameServices.SaveService.PlayerData != null)
+                GameServices.SaveService.PlayerData.PlayTimeSeconds++;
+        }
+
+        private void OnApplicationQuit() => GameServices.SaveAll();
+    }
 }

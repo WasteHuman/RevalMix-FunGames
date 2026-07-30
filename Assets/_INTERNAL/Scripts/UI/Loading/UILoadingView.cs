@@ -16,7 +16,11 @@ namespace UI.Loading
             _fillTween?.Kill();
         }
 
-        public void ResetProgress() => _progressBarFill.fillAmount = 0f;
+        public void ResetProgress()
+        {
+            _progressBarFill.fillAmount = 0f;
+            _fillTween.Kill();
+        }
 
         public void SetLoadingProgress(float progress)
         {

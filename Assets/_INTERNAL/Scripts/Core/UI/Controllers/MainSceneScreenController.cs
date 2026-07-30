@@ -1,4 +1,5 @@
-﻿using UI.Screens;
+﻿using Core.Services;
+using UI.Screens;
 using UnityEngine;
 
 namespace Core.UI.Controllers
@@ -11,6 +12,12 @@ namespace Core.UI.Controllers
         private void Awake()
         {
             _welcomeScreenView.OnPlayerReady += HandlePlayerReady;
+        }
+
+        private void Start()
+        {
+            if (GameServices.SaveService.HasProfile())
+                HandlePlayerReady();
         }
 
         private void OnDestroy()

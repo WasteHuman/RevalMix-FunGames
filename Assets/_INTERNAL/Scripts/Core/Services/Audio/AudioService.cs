@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace Core.Services.Audio
 {
-    public class AudioController : MonoBehaviour
+    public class AudioService : MonoBehaviour
     {
-        public static AudioController Instance { get; private set; }
+        public static AudioService Instance { get; private set; }
 
         [SerializeField] private AudioClip _music;
         [SerializeField] private List<AudioClip> _sounds;

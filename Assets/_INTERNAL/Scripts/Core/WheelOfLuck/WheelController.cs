@@ -377,21 +377,21 @@ namespace Core.WheelOfLuck
                 return;
             }
 
-            if (AdsController.Instance == null)
+            if (AdsService.Instance == null)
             {
-                Debug.LogWarning("[Wheel] AdsController not found, give without ad");
+                Debug.LogWarning("[Wheel] AdsService not found, give without ad");
                 ClaimWithoutAd();
                 return;
             }
 
-            if (!AdsController.Instance.IsRewardedAdLoaded())
+            if (!AdsService.Instance.IsRewardedAdLoaded())
             {
                 Debug.LogWarning("[Wheel] Rewarded ad not availvable, give without ad");
                 ClaimWithoutAd();
                 return;
             }
 
-            AdsController.Instance.ShowRewardedAd(() =>
+            AdsService.Instance.ShowRewardedAd(() =>
             {
                 ApplyReward(_pendingReward, bonusMultiplier: 2);
                 _pendingReward = null;

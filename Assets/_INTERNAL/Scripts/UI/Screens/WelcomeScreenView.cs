@@ -3,6 +3,7 @@ using Screen = UI.Other.Screen;
 using UnityEngine;
 using UI.Other;
 using System;
+using Core.Services;
 
 namespace UI.Screens
 {
@@ -43,7 +44,7 @@ namespace UI.Screens
                 Debug.LogWarning($"[Welcome Screen] Name is null!");
                 return;
             }
-
+            GameServices.SaveService.SetProfileCreated(true);
             OnPlayerReady?.Invoke();
         }
 
@@ -59,7 +60,7 @@ namespace UI.Screens
 
             _isNameFieldEmpty = false;
             _nameLabel.text = raw;
-            // TODO: Глобальный сервис, отвечающий за игрока сохраняет имя
+            GameServices.SaveService.PlayerData.Name = raw;
         }
     }
 }
