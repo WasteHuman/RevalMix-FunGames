@@ -14,13 +14,17 @@ namespace Core.Data
         public DateTime LastEnergyUpdate;
 
         public int Level;
+        public int Rank;
         public float XP;
+        public float RequiredXP;
         public int TotalWins;
         public int TotalGames;
         public int PlayTimeSeconds;
 
         public List<string> CompletedQuests;
         public Dictionary<string, int> DailyQuestProgress;
+
+        public event Action<float, float> OnXPChanged;
 
         public PlayerData()
         {
@@ -32,28 +36,36 @@ namespace Core.Data
             LastEnergyUpdate = DateTime.Now;
 
             Level = 1;
+            Rank = 1;
             XP = 0f;
+            RequiredXP = 100f;
 
             TotalWins = 0;
             TotalGames = 0;
             PlayTimeSeconds = 0;
         }
 
+        public void RequestActualProgressState() => OnXPChanged?.Invoke(XP, RequiredXP);
+
         public void AddXP(int amount)
         {
             XP += amount;
-            int requiredXP = Level * 100;
-            while (XP >= requiredXP)
+            RequiredXP = Level * 100;
+
+            while (XP >= RequiredXP)
             {
                 Level++;
-                XP -= requiredXP;
-                requiredXP = Level * 100;
+                XP -= RequiredXP;
+                RequiredXP = Level * 100;
             }
+
+            OnXPChanged?.Invoke(XP, RequiredXP);
         }
 
         public float GetWinRate()
         {
-            if (TotalGames == 0) return 0f;
+            if (TotalGames == 0) 
+                return 0f;
             return (float)TotalWins / TotalGames * 100f;
         }
     }

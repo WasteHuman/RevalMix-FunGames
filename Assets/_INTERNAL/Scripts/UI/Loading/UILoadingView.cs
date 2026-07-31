@@ -18,15 +18,25 @@ namespace UI.Loading
 
         public void ResetProgress()
         {
-            _progressBarFill.fillAmount = 0f;
-            _fillTween.Kill();
+            _fillTween?.Kill();
+            _fillTween = null;
+
+            if (_progressBarFill)
+                _progressBarFill.fillAmount = 0f;
         }
 
         public void SetLoadingProgress(float progress)
         {
             _fillTween?.Kill();
 
-            _fillTween = _progressBarFill.DOFillAmount(progress, _progressAnimDuration);
+            _fillTween = DOTween.To(
+                () => _progressBarFill ? _progressBarFill.fillAmount : 0f,
+                x => { if (_progressBarFill) _progressBarFill.fillAmount = x; },
+                progress,
+                _progressAnimDuration
+            ).SetTarget(_progressBarFill);
+
+            _fillTween.OnKill(() => _fillTween = null);
         }
     }
 }

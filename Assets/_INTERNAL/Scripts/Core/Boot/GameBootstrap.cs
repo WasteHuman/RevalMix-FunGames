@@ -28,9 +28,9 @@ namespace Core.Boot
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-//#if UNITY_EDITOR
-//            PlayerPrefs.DeleteAll();
-//#endif
+#if UNITY_EDITOR
+            PlayerPrefs.DeleteAll();
+#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
             await InitializeExternalSDK();
@@ -141,13 +141,7 @@ namespace Core.Boot
     {
         private void Awake() => DontDestroyOnLoad(gameObject);
 
-        private void Start() => InvokeRepeating(nameof(UpdatePlayTime), 1f, 1f);
-
-        private void UpdatePlayTime()
-        {
-            if (GameServices.SaveService.PlayerData != null)
-                GameServices.SaveService.PlayerData.PlayTimeSeconds++;
-        }
+        
 
         private void OnApplicationQuit() => GameServices.SaveAll();
     }

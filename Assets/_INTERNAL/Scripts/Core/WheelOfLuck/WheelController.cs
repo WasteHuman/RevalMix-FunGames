@@ -1,4 +1,5 @@
 ﻿using Core.Gameplay;
+using Core.Services;
 using Core.Services.AdsService;
 using Core.Services.Analytics;
 using DG.Tweening;
@@ -33,10 +34,6 @@ namespace Core.WheelOfLuck
 
         [Space(5), Header("Buttons")]
         [SerializeField] private ActionButton _startSpinButton;
-        [SerializeField] private ActionButton _watchAndCollectButton;
-
-        [Space(5), Header("Other")]
-        [SerializeField] private bool _isMultipliersWheel = false;
 
         [Space(5), Header("Debug")]
         [SerializeField] private bool _isDebug = false;
@@ -61,40 +58,31 @@ namespace Core.WheelOfLuck
         public event Action<WheelReward> OnSpinStarted;
         public event Action<WheelReward> OnSpinFinished;
         public event Action OnStateChanged;
-        public event Action<float> OnMultiplierDropped;
 
         private void Awake()
         {
-            if (!_isMultipliersWheel)
+            AnalyticsService.Instance.ReportGameStart(GameConstants.WHEEL_OF_LUCK);
+
+            LoadState();
+            UpdateCooldownLabel();
+            StartCooldownUpdater();
+            UpdatePulseState();
+
+            if (!IsAvailable())
             {
-                AnalyticsService.Instance.ReportGameStart(GameConstants.WHEEL_OF_LUCK);
-
-                LoadState();
-                UpdateCooldownLabel();
-                StartCooldownUpdater();
-                UpdatePulseState();
-
-                if (!IsAvailable())
-                {
-                    _startSpinButton.Interactable = false;
-                    _startSpinButton.Animations.StopPulseAnimation();
-                }
-
-                return;
+                _startSpinButton.Interactable = false;
+                _startSpinButton.Animations.StopPulseAnimation();
             }
         }
 
         private void Start()
         {
-            if (_startSpinButton == null || _watchAndCollectButton == null)
+            if (_startSpinButton == null)
                 return;
 
             _prepareAndStartSpinAction = () => PrepareAndStartSpin();
 
             _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
-            _watchAndCollectButton.OnButtonClick += ClaimWithAd;
-
-            _watchAndCollectButton.gameObject.SetActive(false);
         }
 
         private void OnValidate()
@@ -114,11 +102,10 @@ namespace Core.WheelOfLuck
             _spinTween?.Kill();
             _pulseTween?.Kill();
 
-            if (_startSpinButton == null || _watchAndCollectButton == null)
+            if (_startSpinButton == null)
                 return;
 
             _startSpinButton.OnButtonClick -= _prepareAndStartSpinAction;
-            _watchAndCollectButton.OnButtonClick -= ClaimWithAd;
 
             StopCooldownUpdater();
         }
@@ -177,9 +164,6 @@ namespace Core.WheelOfLuck
 
         private void LoadState()
         {
-            if (_isMultipliersWheel)
-                return;
-
             _freeSpins = PlayerPrefs.GetInt(PREF_FREE_SPINS, _initialFreeSpins);
             long ticks = Convert.ToInt64(PlayerPrefs.GetString(PREF_NEXT_AVAILABLE_TICKS, "0"));
             _nextAvailableUtc = ticks == 0 ? DateTime.MinValue : new DateTime(ticks, DateTimeKind.Utc);
@@ -189,9 +173,6 @@ namespace Core.WheelOfLuck
 
         private void SaveState()
         {
-            if (_isMultipliersWheel)
-                return;
-
             PlayerPrefs.SetInt(PREF_FREE_SPINS, _freeSpins);
             PlayerPrefs.SetString(PREF_NEXT_AVAILABLE_TICKS, _nextAvailableUtc == DateTime.MinValue ? "0" : _nextAvailableUtc.Ticks.ToString());
             PlayerPrefs.Save();
@@ -206,9 +187,6 @@ namespace Core.WheelOfLuck
 
         public bool CanSpin()
         {
-            if (_isMultipliersWheel)
-                return true;
-
             if (!_isSpinning && _freeSpins > 0 && IsAvailable() && _rewardViews != null && _rewardViews.Count > 0)
                 return true;
 
@@ -320,12 +298,9 @@ namespace Core.WheelOfLuck
 
                     UpdateCooldownLabel();
 
-                    if (_startSpinButton != null || _watchAndCollectButton != null)
+                    if (_startSpinButton != null)
                     {
                         UpdatePulseState();
-
-                        if (_pendingReward.Type != WheelReward.RewardType.Nothing)
-                            _watchAndCollectButton.gameObject.SetActive(true);
 
                         _startSpinButton.Interactable = false;
                         _startSpinButton.Animations.StopPulseAnimation();
@@ -397,7 +372,6 @@ namespace Core.WheelOfLuck
                 _pendingReward = null;
                 OnStateChanged?.Invoke();
                 UpdateCooldownLabel();
-                _watchAndCollectButton.gameObject.SetActive(false);
                 UpdatePulseState();
             });
 
@@ -413,7 +387,8 @@ namespace Core.WheelOfLuck
             {
                 case WheelReward.RewardType.Coins:
                     int coins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
-                    EconomyController.Instance.AddCoins(coins);
+                    GameServices.EconomyService.AddCoins(coins);
+                    ClaimWithoutAd();
                     Debug.Log($"[Wheel] Given coins: {coins}");
 
                     AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
@@ -423,6 +398,7 @@ namespace Core.WheelOfLuck
                     int spins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
                     _freeSpins += spins;
                     SaveState();
+                    ClaimWithoutAd();
                     Debug.Log($"[Wheel] Given free spins: {spins}");
 
                     AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
@@ -433,17 +409,25 @@ namespace Core.WheelOfLuck
                     AnalyticsService.Instance.ReportGameLoss(GameConstants.WHEEL_OF_LUCK);
                     ClaimWithoutAd();
                     break;
-                case WheelReward.RewardType.Multiplier:
-                    if (!_isMultipliersWheel)
-                        return;
-                    OnMultiplierDropped?.Invoke(_pendingReward.Amount);
-                    _pendingReward = null;
+
+                case WheelReward.RewardType.Energy:
+                    GameServices.SaveService.PlayerData.Energy += Mathf.RoundToInt(reward.Amount);
+                    ClaimWithoutAd();
+                    Debug.Log($"[Wheel] Given energy: {reward.Amount}");
+
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
+                    break;
+
+                case WheelReward.RewardType.XP:
+                    GameServices.SaveService.PlayerData.AddXP(Mathf.RoundToInt(reward.Amount));
+                    Debug.Log($"[Wheel] Given XP: {reward.Amount}");
+
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
                     break;
             }
 
-            if(_watchAndCollectButton != null && _startSpinButton != null)
+            if(_startSpinButton != null)
             {
-                _watchAndCollectButton.gameObject.SetActive(false);
                 _startSpinButton.Interactable = true;
                 UpdatePulseState();
             }

@@ -44,6 +44,7 @@ namespace UI.Screens
                 Debug.LogWarning($"[Welcome Screen] Name is null!");
                 return;
             }
+
             GameServices.SaveService.SetProfileCreated(true);
             OnPlayerReady?.Invoke();
         }

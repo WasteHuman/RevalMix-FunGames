@@ -23,5 +23,35 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/_Scenes/Settings.unity
     guid: ca6db7060e7e8224cbcdc9db36377672
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Crypto_Vibe.unity
+    guid: c8db9e552ab71cc44940f6200b69441c
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Cyber_Master.unity
+    guid: c2d97f65c08cb5a4dadd16c39586b1bd
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Diamond_Retro.unity
+    guid: fe94f36cf1e390e418f687e4a823849b
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Electric_Dice.unity
+    guid: c1b8b86a1e77eab4fb013c03ba69b952
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Infinite_Score.unity
+    guid: 5e20ae5065d6f6f4f8654c9b5537e846
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Neon_Wheel.unity
+    guid: cfb4210f565b43f4eb400c3ec1604078
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Plinko_Vibe.unity
+    guid: 0503b692c86603345b13014dfe1628e6
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Reels.unity
+    guid: 81c64e643c9327e47bf4dfa4873240d1
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Vault.unity
+    guid: 741a4ccc0f2a510439de51fdb4b1a9eb
+  - enabled: 1
+    path: Assets/_Scenes/Games/Game_Wheel_Of_Revolut.unity
+    guid: 42f91cd1b9045984e868cb25d68e2951
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

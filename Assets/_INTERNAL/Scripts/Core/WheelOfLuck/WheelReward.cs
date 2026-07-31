@@ -11,7 +11,9 @@ namespace Core.WheelOfLuck
             FreeSpin,
             Coins,
             Nothing,
-            Multiplier
+            Multiplier,
+            Energy,
+            XP
         }
 
         [Tooltip("Тип награды")]
