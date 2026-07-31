@@ -8,24 +8,24 @@ namespace Core.UI.Controllers
     {
         [SerializeField] private ActionButton _reelsButton;
         [SerializeField] private ActionButton _vaultButton;
-        [SerializeField] private ActionButton _neonWheelButton;
+        [SerializeField] private ActionButton _wheelOfRevolut;
 
         private void Awake()
         {
             _reelsButton.OnButtonClick += HandleReelsButtonClick;
             _vaultButton.OnButtonClick += HandleVaultButtonClick;
-            _neonWheelButton.OnButtonClick += HandleNeonWheelButtonClick;
+            _wheelOfRevolut.OnButtonClick += HandleNeonWheelButtonClick;
         }
 
         private void OnDestroy()
         {
             _reelsButton.OnButtonClick -= HandleReelsButtonClick;
             _vaultButton.OnButtonClick -= HandleVaultButtonClick;
-            _neonWheelButton.OnButtonClick -= HandleNeonWheelButtonClick;
+            _wheelOfRevolut.OnButtonClick -= HandleNeonWheelButtonClick;
         }
 
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
-        private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_NEON_WHEEL);
+        private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_WHEEL_OF_REVOLUT);
         private void HandleVaultButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_VAULT);
     }
 }

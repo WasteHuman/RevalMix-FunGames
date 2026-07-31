@@ -3247,7 +3247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Core.UI.Controllers.GameButtonsController
   _reelsButton: {fileID: 297473393}
   _vaultButton: {fileID: 803027704}
-  _neonWheelButton: {fileID: 1094153864}
+  _wheelOfRevolut: {fileID: 1568723483}
 --- !u!1 &770148684
 GameObject:
   m_ObjectHideFlags: 0

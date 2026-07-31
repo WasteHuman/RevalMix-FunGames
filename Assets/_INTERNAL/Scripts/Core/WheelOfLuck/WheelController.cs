@@ -1,5 +1,4 @@
-﻿using Core.Gameplay;
-using Core.Services;
+﻿using Core.Services;
 using Core.Services.AdsService;
 using Core.Services.Analytics;
 using DG.Tweening;
@@ -61,7 +60,7 @@ namespace Core.WheelOfLuck
 
         private void Awake()
         {
-            AnalyticsService.Instance.ReportGameStart(GameConstants.WHEEL_OF_LUCK);
+            AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_WHEEL_OF_REVOLUT);
 
             LoadState();
             UpdateCooldownLabel();
@@ -80,7 +79,7 @@ namespace Core.WheelOfLuck
             if (_startSpinButton == null)
                 return;
 
-            _prepareAndStartSpinAction = () => PrepareAndStartSpin();
+            _prepareAndStartSpinAction = () => PrepareAndStartSpin(ClaimWithoutAd);
 
             _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
         }
@@ -167,6 +166,9 @@ namespace Core.WheelOfLuck
             _freeSpins = PlayerPrefs.GetInt(PREF_FREE_SPINS, _initialFreeSpins);
             long ticks = Convert.ToInt64(PlayerPrefs.GetString(PREF_NEXT_AVAILABLE_TICKS, "0"));
             _nextAvailableUtc = ticks == 0 ? DateTime.MinValue : new DateTime(ticks, DateTimeKind.Utc);
+
+            if (_spinsCountText == null)
+                return;
 
             _spinsCountText.text = $"FREE SPINS: {_freeSpins}";
         }
@@ -344,40 +346,6 @@ namespace Core.WheelOfLuck
             _startSpinButton.Interactable = false;
         }
 
-        public void ClaimWithAd()
-        {
-            if (_pendingReward == null)
-            {
-                Debug.LogWarning("[Wheel] No pending reward for give");
-                return;
-            }
-
-            if (AdsService.Instance == null)
-            {
-                Debug.LogWarning("[Wheel] AdsService not found, give without ad");
-                ClaimWithoutAd();
-                return;
-            }
-
-            if (!AdsService.Instance.IsRewardedAdLoaded())
-            {
-                Debug.LogWarning("[Wheel] Rewarded ad not availvable, give without ad");
-                ClaimWithoutAd();
-                return;
-            }
-
-            AdsService.Instance.ShowRewardedAd(() =>
-            {
-                ApplyReward(_pendingReward, bonusMultiplier: 2);
-                _pendingReward = null;
-                OnStateChanged?.Invoke();
-                UpdateCooldownLabel();
-                UpdatePulseState();
-            });
-
-            _startSpinButton.Interactable = false;
-        }
-
         private void ApplyReward(WheelReward reward, int bonusMultiplier)
         {
             if (reward == null) 
@@ -386,43 +354,39 @@ namespace Core.WheelOfLuck
             switch (reward.Type)
             {
                 case WheelReward.RewardType.Coins:
-                    int coins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
+                    float coins = reward.Amount;
                     GameServices.EconomyService.AddCoins(coins);
-                    ClaimWithoutAd();
                     Debug.Log($"[Wheel] Given coins: {coins}");
 
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
 
                 case WheelReward.RewardType.FreeSpin:
                     int spins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
                     _freeSpins += spins;
                     SaveState();
-                    ClaimWithoutAd();
                     Debug.Log($"[Wheel] Given free spins: {spins}");
 
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
 
                 case WheelReward.RewardType.Nothing:
                     Debug.Log("[Wheel] Nothing to give");
-                    AnalyticsService.Instance.ReportGameLoss(GameConstants.WHEEL_OF_LUCK);
-                    ClaimWithoutAd();
+                    AnalyticsService.Instance.ReportGameLoss(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
 
                 case WheelReward.RewardType.Energy:
-                    GameServices.SaveService.PlayerData.Energy += Mathf.RoundToInt(reward.Amount);
-                    ClaimWithoutAd();
+                    GameServices.PlayerService.AddEnergy(Mathf.RoundToInt(reward.Amount));
                     Debug.Log($"[Wheel] Given energy: {reward.Amount}");
 
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
 
                 case WheelReward.RewardType.XP:
                     GameServices.SaveService.PlayerData.AddXP(Mathf.RoundToInt(reward.Amount));
                     Debug.Log($"[Wheel] Given XP: {reward.Amount}");
 
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.WHEEL_OF_LUCK);
+                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
             }
 

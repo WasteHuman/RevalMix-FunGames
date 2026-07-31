@@ -8,7 +8,6 @@
         public const string QUESTS = "Quests";
         public const string PROFILE = "Profile";
         public const string SETTINGS = "Settings";
-        public const string WHEEL_OF_LUCK = "WheelOfLuck";
         #endregion
 
         #region Game Scene Names
@@ -39,9 +38,22 @@
         #endregion
 
         #region Quest Tags
-        public const string TAG_ANY_WIN = "WIN_ANY";
-        public const string TAG_PLAY_SLOTS = "PLAY_SLOTS";
-        public const string TAG_PLAY_WHEEL = "PLAY_WHEEL";
+        public const string TAG_SPIN_10_REELS = "SPIN_10_REELS";
+        public const string TAG_WIN_3_GAMES = "WIN_3_GAMES";
+        public const string TAG_COLLECT_5_DIAMONDS = "COLLECT_5_DIAMONDS";
+        public const string TAG_TRIGGER_TURBO_BOOST = "TRIGGER_TURBO_BOOST";
+        public const string TAG_REACH_10X_MULTIPLIER = "REACH_10X_MULTIPLIER";
+        public const string TAG_CLAIM_FREE_ENERGY = "CLAIM_FREE_ENERGY";
+        public const string TAG_OPEN_THE_VAULT = "OPEN_THE_VAULT";
+        public const string TAG_HIT_21 = "HIT_21";
+        public const string TAG_LAUNCH_3_ROCKETS = "LAUNCH_3_ROCKETS";
+        public const string TAG_DROP_10_PLINKO_BALLS = "DROP_10_PLINKO_BALLS";
+        public const string TAG_SPIN_LUCKY_WHEEL = "SPIN_LUCKY_WHEEL";
+        public const string TAG_ROLL_DOUBLE_DICE = "ROLL_DOUBLE_DICE";
+        public const string TAG_EARN_2500_RCOINS = "EARN_2500_RCOINS";
+        public const string TAG_COMPLETE_5_COMBOS = "COMPLETE_5_COMBOS";
+        public const string TAG_UPGRADE_YOUR_LEVEL = "UPGRADE_YOUR_LEVEL";
+        public const string TAG_PLAY_EVERY_ARCADE = "PLAY_EVERY_ARCADE";
         #endregion
     }
 }

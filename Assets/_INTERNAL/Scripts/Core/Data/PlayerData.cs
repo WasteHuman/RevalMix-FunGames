@@ -17,6 +17,7 @@ namespace Core.Data
         public int Rank;
         public float XP;
         public float RequiredXP;
+        public float WithdrawalAmount;
         public int TotalWins;
         public int TotalGames;
         public int PlayTimeSeconds;
