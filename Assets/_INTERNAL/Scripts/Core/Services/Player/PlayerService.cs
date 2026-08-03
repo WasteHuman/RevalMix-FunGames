@@ -22,6 +22,11 @@ namespace Core.Services.Player
             add => _currentPlayerData.OnXPChanged += value;
             remove => _currentPlayerData.OnXPChanged -= value;
         }
+        public event Action<int> OnLevelChanged
+        {
+            add => _currentPlayerData.OnLevelChanged += value;
+            remove => _currentPlayerData.OnLevelChanged -= value;
+        }
 
         public void Init(PlayerData playerData) => _currentPlayerData = playerData;
         

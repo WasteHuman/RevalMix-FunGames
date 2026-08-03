@@ -41,6 +41,7 @@ namespace Core.Services
 
         public static void SaveAll()
         {
+            SaveService.PlayerData.Coins = EconomyService.GetCoinsBalance();
             SaveService?.SavePlayerData();
             SaveService?.SaveSettings();
         }

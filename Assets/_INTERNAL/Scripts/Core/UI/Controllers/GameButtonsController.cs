@@ -8,24 +8,32 @@ namespace Core.UI.Controllers
     {
         [SerializeField] private ActionButton _reelsButton;
         [SerializeField] private ActionButton _vaultButton;
-        [SerializeField] private ActionButton _wheelOfRevolut;
+        [SerializeField] private ActionButton _wheelOfRevolutButton;
+        [SerializeField] private ActionButton _diamondRetroButton;
+        [SerializeField] private ActionButton _neonWheelButton;
 
         private void Awake()
         {
             _reelsButton.OnButtonClick += HandleReelsButtonClick;
             _vaultButton.OnButtonClick += HandleVaultButtonClick;
-            _wheelOfRevolut.OnButtonClick += HandleNeonWheelButtonClick;
+            _wheelOfRevolutButton.OnButtonClick += HandleWheelOfRevolutButtonClick;
+            _diamondRetroButton.OnButtonClick += HandleDiamondRetroButtonClick;
+            _neonWheelButton.OnButtonClick += HandleNeonWheelButtonClick;
         }
 
         private void OnDestroy()
         {
             _reelsButton.OnButtonClick -= HandleReelsButtonClick;
             _vaultButton.OnButtonClick -= HandleVaultButtonClick;
-            _wheelOfRevolut.OnButtonClick -= HandleNeonWheelButtonClick;
+            _wheelOfRevolutButton.OnButtonClick -= HandleWheelOfRevolutButtonClick;
+            _diamondRetroButton.OnButtonClick -= HandleDiamondRetroButtonClick;
+            _neonWheelButton.OnButtonClick -= HandleNeonWheelButtonClick;
         }
 
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
-        private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_WHEEL_OF_REVOLUT);
+        private void HandleWheelOfRevolutButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_WHEEL_OF_REVOLUT);
         private void HandleVaultButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_VAULT);
+        private void HandleDiamondRetroButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_DIAMOND_RETRO);
+        private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_NEON_WHEEL);
     }
 }

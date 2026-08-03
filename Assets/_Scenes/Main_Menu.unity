@@ -3247,7 +3247,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Core.UI.Controllers.GameButtonsController
   _reelsButton: {fileID: 297473393}
   _vaultButton: {fileID: 803027704}
-  _wheelOfRevolut: {fileID: 1568723483}
+  _wheelOfRevolutButton: {fileID: 1568723483}
+  _diamondRetroButton: {fileID: 1233448986}
+  _neonWheelButton: {fileID: 1094153864}
 --- !u!1 &770148684
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,6 +3766,7 @@ MonoBehaviour:
   _progress: 0.348
   _fillRect: {fileID: 1796609793}
   _viewportRect: {fileID: 2029731628}
+  _animationDuration: 0.5
 --- !u!1 &821164451
 GameObject:
   m_ObjectHideFlags: 0
@@ -4519,7 +4522,7 @@ MonoBehaviour:
   _leaderboardScreenButton: {fileID: 1530921451}
   _questsScreenButton: {fileID: 994516817}
   _profileScreenButton: {fileID: 1880575052}
-  _settingsScreenButton: {fileID: 1880575052}
+  _settingsScreenButton: {fileID: 1416562678}
   _getFreeEnergyButton: {fileID: 971755580}
   _achievementsButton: {fileID: 1560537825}
 --- !u!1 &971755575

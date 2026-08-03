@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 namespace UI.Other
 {
@@ -10,7 +11,9 @@ namespace UI.Other
         [Space(5), Header("View Setup")]
         [SerializeField] private RectTransform _fillRect;
         [SerializeField] private RectTransform _viewportRect;
+        [SerializeField] private float _animationDuration = 0.5f;
 
+        private Tween _moveTween;
         private Vector2 _originalPosition;
 
         public float Progress => _progress;
@@ -27,10 +30,16 @@ namespace UI.Other
             _originalPosition = _fillRect.anchoredPosition;
         }
 
+        private void OnDestroy()
+        {
+            _moveTween?.Kill();
+        }
+
         public void ResetProgress()
         {
             _progress = 0f;
             _fillRect.anchoredPosition = new(_originalPosition.x, _originalPosition.y);
+            _moveTween?.Kill();
         }
 
         public void SetProgress(float progress)
@@ -38,10 +47,14 @@ namespace UI.Other
             if (_viewportRect == null || _fillRect == null)
                 return;
 
+            _moveTween?.Kill();
+
             float viewWidth = _viewportRect.rect.width;
 
             float targetX = -viewWidth * (1f - progress);
-            _fillRect.anchoredPosition = new(targetX, _fillRect.anchoredPosition.y);
+            Vector2 target = new(targetX, _fillRect.anchoredPosition.y);
+
+            _moveTween = _fillRect.DOAnchorPosX(target.x, _animationDuration).SetEase(Ease.InSine);
         }
     }
 }

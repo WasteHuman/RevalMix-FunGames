@@ -2,6 +2,7 @@
 using Core.Services.AdsService;
 using Core.Services.Analytics;
 using Core.Services.Audio;
+using Cysharp.Threading.Tasks;
 using Io.AppMetrica;
 using System.Collections;
 using System.Threading.Tasks;
@@ -22,22 +23,21 @@ namespace Core.Boot
         private Coroutine _loadingCoroutine;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        public static async Task AutoStart()
+        public static void AutoStart()
         {
             _instance = new();
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-#if UNITY_EDITOR
-            PlayerPrefs.DeleteAll();
-#endif
+//#if UNITY_EDITOR
+//            PlayerPrefs.DeleteAll();
+//#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
-            await InitializeExternalSDK();
-            Run();
+            RunAsync().Forget();
         }
         
-        private static async Task InitializeExternalSDK()
+        private static async UniTask InitializeExternalSDK()
         {
             CheckFirstLaunch();
 
@@ -45,7 +45,7 @@ namespace Core.Boot
             var adsControllerPrefab = Resources.Load<AdsService>("Prefabs/Services/[ADS_CONTROLLER]");
             var audioControllerPrefab = Resources.Load<AudioService>("Prefabs/Services/[AUDIO_CONTROLLER]");
 
-            if(analyticsServicePrefab == null || adsControllerPrefab == null || adsControllerPrefab == null)
+            if(analyticsServicePrefab == null || adsControllerPrefab == null || audioControllerPrefab == null)
             {
                 Debug.LogError($"[Game Bootstrap] Analytics Service/Ads Service/Audio Service prefab is null!");
                 return;
@@ -69,10 +69,19 @@ namespace Core.Boot
             }
         }
 
-        private static void Run()
+        private static async UniTaskVoid RunAsync()
         {
-            _instance.LoadMainScene();
-            GameServices.InitializeAll();
+            try
+            {
+                await InitializeExternalSDK();
+
+                _instance.LoadMainScene();
+                GameServices.InitializeAll();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[GlobalAction Bootstrap] Failed to run game: {ex.Message}");
+            }
         }
 
         private static bool IsFirstLaunch()

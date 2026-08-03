@@ -27,6 +27,7 @@ namespace Core.UI.Controllers
 
         private void HandlePlayerReady()
         {
+            Debug.Log($"[Main Scene Screen Controller] Player is ready.");
             _welcomeScreenView.Close();
             _mainMenuScreenView.Open();
         }

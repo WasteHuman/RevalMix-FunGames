@@ -26,6 +26,7 @@ namespace Core.Data
         public Dictionary<string, int> DailyQuestProgress;
 
         public event Action<float, float> OnXPChanged;
+        public event Action<int> OnLevelChanged;
 
         public PlayerData()
         {
@@ -58,6 +59,7 @@ namespace Core.Data
                 Level++;
                 XP -= RequiredXP;
                 RequiredXP = Level * 100;
+                OnLevelChanged?.Invoke(Level);
             }
 
             OnXPChanged?.Invoke(XP, RequiredXP);

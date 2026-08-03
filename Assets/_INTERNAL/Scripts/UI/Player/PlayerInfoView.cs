@@ -20,6 +20,7 @@ namespace UI.Player
         {
             GameServices.PlayerService.OnXPChanged += HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleCoinsBalanceChanged;
+            GameServices.PlayerService.OnLevelChanged += HandleChangedLevel;
         }
 
         private void Start()
@@ -40,6 +41,7 @@ namespace UI.Player
         {
             GameServices.PlayerService.OnXPChanged -= HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged -= HandleCoinsBalanceChanged;
+            GameServices.PlayerService.OnLevelChanged += HandleChangedLevel;
         }
 
         private void HandleChangedXP(float xp, float requiredXP)
@@ -47,7 +49,7 @@ namespace UI.Player
             if (_sliderBar == null || _xpLabel == null)
                 return;
 
-            string progress = $"{xp:N0}/{requiredXP:N0}";
+            string progress = $"{xp:N0}/{requiredXP:N0} XP";
             _sliderBar.SetProgress(Mathf.Clamp01(xp / requiredXP));
             _xpLabel.text = progress;
         }
@@ -59,5 +61,7 @@ namespace UI.Player
 
             _currentCoinsLabel.text = $"{amount:N0}";
         }
+
+        private void HandleChangedLevel(int level) => _levelLabel.text = $"{level}";
     }
 }

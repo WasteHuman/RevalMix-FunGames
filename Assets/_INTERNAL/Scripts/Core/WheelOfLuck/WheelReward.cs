@@ -13,7 +13,8 @@ namespace Core.WheelOfLuck
             Nothing,
             Multiplier,
             Energy,
-            XP
+            XP,
+            Sector
         }
 
         [Tooltip("Тип награды")]
