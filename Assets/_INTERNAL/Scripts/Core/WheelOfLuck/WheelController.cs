@@ -79,44 +79,37 @@ namespace Core.WheelOfLuck
             UpdateCooldownLabel();
             StartCooldownUpdater();
             UpdatePulseState();
-
-            if (!IsAvailable())
-            {
-                _startSpinButton.Interactable = false;
-                _startSpinButton.Animations.StopPulseAnimation();
-            }
         }
 
         private void Start()
         {
-            if(_sector_250 == null
-                || _sector_450 == null
-                || _sector_500 == null
-                || _sector_750 == null
-                || _sector_950 == null
-                || _sector_1000 == null
-                || _sector_2500 == null
-                || _sector_5000 == null)
+            if(_sector_250 != null
+                || _sector_450 != null
+                || _sector_500 != null
+                || _sector_750 != null
+                || _sector_950 != null
+                || _sector_1000 != null
+                || _sector_2500 != null
+                || _sector_5000 != null)
             {
-                Debug.LogError("[Wheel] Some sector buttons are not assigned!");
-                return;
+                _sector_250.OnButtonClick += Handle250SectorButtonClick;
+                _sector_450.OnButtonClick += Handle450SectorButtonClick;
+                _sector_500.OnButtonClick += Handle500SectorButtonClick;
+                _sector_750.OnButtonClick += Handle750SectorButtonClick;
+                _sector_950.OnButtonClick += Handle950SectorButtonClick;
+                _sector_1000.OnButtonClick += Handle1000SectorButtonClick;
+                _sector_2500.OnButtonClick += Handle2500SectorButtonClick;
+                _sector_5000.OnButtonClick += Handle5000SectorButtonClick;
             }
 
-            _sector_250.OnButtonClick += Handle250SectorButtonClick;
-            _sector_450.OnButtonClick += Handle450SectorButtonClick;
-            _sector_500.OnButtonClick += Handle500SectorButtonClick;
-            _sector_750.OnButtonClick += Handle750SectorButtonClick;
-            _sector_950.OnButtonClick += Handle950SectorButtonClick;
-            _sector_1000.OnButtonClick += Handle1000SectorButtonClick;
-            _sector_2500.OnButtonClick += Handle2500SectorButtonClick;
-            _sector_5000.OnButtonClick += Handle5000SectorButtonClick;
+            if (_startSpinButton != null && !IsAvailable())
+            {
+                _prepareAndStartSpinAction = () => PrepareAndStartSpin(ClaimWithoutAd);
+                _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
 
-            if (_startSpinButton == null)
-                return;
-
-            _prepareAndStartSpinAction = () => PrepareAndStartSpin(ClaimWithoutAd);
-
-            _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
+                _startSpinButton.Interactable = false;
+                _startSpinButton.Animations.StopPulseAnimation();
+            }
         }
 
         private void OnValidate()
@@ -136,32 +129,27 @@ namespace Core.WheelOfLuck
             _spinTween?.Kill();
             _pulseTween?.Kill();
 
-            if (_sector_250 == null
-                || _sector_450 == null
-                || _sector_500 == null
-                || _sector_750 == null
-                || _sector_950 == null
-                || _sector_1000 == null
-                || _sector_2500 == null
-                || _sector_5000 == null)
+            if (_sector_250 != null
+                || _sector_450 != null
+                || _sector_500 != null
+                || _sector_750 != null
+                || _sector_950 != null
+                || _sector_1000 != null
+                || _sector_2500 != null
+                || _sector_5000 != null)
             {
-                Debug.LogError("[Wheel] Some sector buttons are not assigned!");
-                return;
+                _sector_250.OnButtonClick -= Handle250SectorButtonClick;
+                _sector_450.OnButtonClick -= Handle450SectorButtonClick;
+                _sector_500.OnButtonClick -= Handle500SectorButtonClick;
+                _sector_750.OnButtonClick -= Handle750SectorButtonClick;
+                _sector_950.OnButtonClick -= Handle950SectorButtonClick;
+                _sector_1000.OnButtonClick -= Handle1000SectorButtonClick;
+                _sector_2500.OnButtonClick -= Handle2500SectorButtonClick;
+                _sector_5000.OnButtonClick -= Handle5000SectorButtonClick;
             }
 
-            _sector_250.OnButtonClick -= Handle250SectorButtonClick;
-            _sector_450.OnButtonClick -= Handle450SectorButtonClick;
-            _sector_500.OnButtonClick -= Handle500SectorButtonClick;
-            _sector_750.OnButtonClick -= Handle750SectorButtonClick;
-            _sector_950.OnButtonClick -= Handle950SectorButtonClick;
-            _sector_1000.OnButtonClick -= Handle1000SectorButtonClick;
-            _sector_2500.OnButtonClick -= Handle2500SectorButtonClick;
-            _sector_5000.OnButtonClick -= Handle5000SectorButtonClick;
-
-            if (_startSpinButton == null)
-                return;
-
-            _startSpinButton.OnButtonClick -= _prepareAndStartSpinAction;
+            if (_startSpinButton != null)
+                _startSpinButton.OnButtonClick -= _prepareAndStartSpinAction;
 
             StopCooldownUpdater();
         }
@@ -171,10 +159,13 @@ namespace Core.WheelOfLuck
         {
             _nextAvailableUtc = DateTime.MinValue;
             _freeSpins = _initialFreeSpins;
-            _spinsCountText.text = $"FREE SPINS:{_freeSpins}";
+            if(_spinsCountText != null)
+                _spinsCountText.text = $"FREE SPINS:{_freeSpins}";
+
             SaveState();
             UpdateCooldownLabel();
             UpdatePulseState();
+
             OnStateChanged?.Invoke();
             _startSpinButton.Interactable = true;
             Debug.Log("[Wheel] DEBUG: cooldown and free spins reset");
@@ -239,9 +230,6 @@ namespace Core.WheelOfLuck
 
         public bool IsAvailable()
         {
-            if (_isNeonWheel)
-                return true;
-
             return DateTime.UtcNow >= _nextAvailableUtc;
         }
 
@@ -322,8 +310,6 @@ namespace Core.WheelOfLuck
             }
 
             Debug.Log($"[Wheel] Spinning for reward index {targetIndex}, reward: {_pendingReward}");
-            Debug.Log($"[Wheel] RewardView reward: {targetRewardView.Reward}");
-            Debug.Log($"[Wheel] Are they the same? {_pendingReward == targetRewardView.Reward}");
 
             float currentAngle = _wheelTransform.eulerAngles.z;
 
@@ -351,8 +337,11 @@ namespace Core.WheelOfLuck
                     if(_spinsCountText != null)
                         _spinsCountText.text = $"FREE SPINS: {_freeSpins}";
 
-                    _nextAvailableUtc = DateTime.UtcNow.Add(COOLDOWN);
-                    SaveState();
+                    if (!_isNeonWheel)
+                    {
+                        _nextAvailableUtc = DateTime.UtcNow.Add(COOLDOWN);
+                        SaveState();
+                    }
 
                     _isSpinning = false;
 
@@ -455,6 +444,7 @@ namespace Core.WheelOfLuck
                 case WheelReward.RewardType.Sector:
                     if (_selectedSector == reward.Amount)
                     {
+                        GameServices.PlayerService.AddXP(20);
                         GameServices.EconomyService.AddCoins(reward.Amount + _selectedSector);
                         Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
 
