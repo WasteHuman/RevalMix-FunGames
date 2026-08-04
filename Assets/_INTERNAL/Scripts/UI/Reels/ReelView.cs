@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
-using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,153 +9,243 @@ namespace UI.Reels
 {
     public class ReelView : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private RectTransform _content;
-        [SerializeField] private Image _symbolTemplate;
+        [Header("UI элементы отображения (строго сверху вниз!)")]
+        [SerializeField] private RectTransform[] _symbolSlots; // 0 = Верх, 1 = Центр, 2 = Низ
+        [SerializeField] private Image[] _symbolImages;
 
-        [Header("Settings")]
-        [SerializeField] private float _symbolHeight = 100f;
-        [SerializeField] private int _visibleCount = 3;
-        [SerializeField] private Ease _spinEase = Ease.OutCubic;
-        [SerializeField] private float _bounceAmplitude = 0.18f; // в долях высоты символа, 0 = без отскока
-        [SerializeField] private float _bounceDuration = 0.12f;
+        [Space(5), Header("Настройки движения")]
+        [SerializeField] private float _spinSpeed = 1500f;
+        [SerializeField] private float _turboSpinSpeed = 2500f;
+        [Tooltip("Высота одной клетки = расстояние между центрами соседних символов (обычно высота барабана / 3)")]
+        [SerializeField] private float _symbolHeight = 150f;
 
-        private Vector3 _originalPosition;
-        private float _spinSpeed = 1f;
+        [Space(5), Header("Blur Image (с шейдером)")]
+        [Tooltip("Image с наложенным шейдером UI_TextureScroll_AAA и текстурой размытого спрайтщита")]
+        [SerializeField] private Image _blurReelImage;
 
-        private readonly List<Image> _pool = new();
+        private bool _isSpinning = false;
+        private bool _shouldStop = false;
+        private int[] _targetSymbols = new int[3];
+        private float _calculatedRowHeight = 150f;
+
+        private Material _blurMaterial;
         private List<Sprite> _sprites;
-        private int _center;
-        private bool _isSpinning;
-        private Sequence _spinSequence;
+        private Coroutine _spinCoroutine;
 
-        public int GetCenterSymbolIndex() => _center;
         public bool IsSpinning => _isSpinning;
+
+        private void Awake()
+        {
+            for (int i = 0; i < _symbolSlots.Length; i++)
+            {
+                if (_symbolSlots[i] == null) 
+                    continue;
+
+                _symbolSlots[i].anchorMin = new Vector2(0.5f, 0.5f);
+                _symbolSlots[i].anchorMax = new Vector2(0.5f, 0.5f);
+                _symbolSlots[i].pivot = new Vector2(0.5f, 0.5f);
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (_spinCoroutine != null)
+            {
+                StopCoroutine(_spinCoroutine);
+                _spinCoroutine = null;
+            }
+            _isSpinning = false;
+            _shouldStop = true;
+
+            if (_blurReelImage != null) _blurReelImage.enabled = false;
+            SetSlotsVisibility(true);
+        }
+
+        private void OnDestroy()
+        {
+            // Очищаем созданный материал, чтобы избежать утечек памяти
+            if (_blurMaterial != null)
+                Destroy(_blurMaterial);
+        }
 
         public void Init(List<Sprite> sprites)
         {
-            _originalPosition = _content.localPosition;
-
             _sprites = sprites;
-            ShowRestWindow();
+
+            if (_blurReelImage != null && _blurReelImage.material != null)
+            {
+                _blurMaterial = new Material(_blurReelImage.material);
+                _blurReelImage.material = _blurMaterial;
+            }
+
+            if (_blurReelImage != null)
+                _blurReelImage.enabled = false;
+
+            SetSlotsVisibility(true);
+            ApplyRestPositions();
+
+            for (int r = 0; r < _symbolImages.Length; r++)
+                SetRandomSprite(_symbolImages[r]);
         }
 
-        private void OnDisable() => StopSpin();
-
-        public async UniTask SpinAsync(float duration, int target, bool isTurbo = false)
+        public async UniTask SpinAsync(float duration, int[] targetSymbols, bool isTurbo, CancellationToken cts)
         {
-            if (_isSpinning || _sprites == null || _sprites.Count == 0)
+            if (_isSpinning) 
                 return;
 
+            _targetSymbols = targetSymbols;
+            StartSpinning(isTurbo);
+
+            // Крутимся минимум duration секунд (с учетом задержки контроллера)
+            await UniTask.Delay(System.TimeSpan.FromSeconds(duration), cancellationToken: cts);
+
+            StopSpinning();
+
+            // Ждем завершения анимации отскока
+            while (_isSpinning)
+                await UniTask.Yield(cts);
+        }
+
+        private void ApplyRestPositions()
+        {
+            for (int r = 0; r < _symbolSlots.Length; r++)
+            {
+                if (_symbolSlots[r] != null)
+                    _symbolSlots[r].anchoredPosition = new Vector2(0f, _symbolHeight - r * _symbolHeight);
+            }
+        }
+
+        private void StartSpinning(bool isTurbo)
+        {
             _isSpinning = true;
+            _shouldStop = false;
+            _spinCoroutine = StartCoroutine(SpinRoutine(isTurbo));
+        }
 
-            int half = _visibleCount / 2;
-            int filler = 20 + Random.Range(0, 6); // сколько символов "пройдёт" мимо
-            SetSpeed(isTurbo);
+        private void StopSpinning()
+        {
+            _shouldStop = true;
+        }
 
-            var column = new List<int>(filler + _visibleCount * 2);
-            for (int o = -half; o <= half; o++)
-                column.Add(Mod(_center - o));
-            for (int i = 0; i < filler; i++)
-                column.Add(Random.Range(0, _sprites.Count));
-            for (int o = -half; o <= half; o++)
-                column.Add(Mod(target - o));
+        private IEnumerator SpinRoutine(bool isTurbo)
+        {
+            if (_blurReelImage != null) 
+                _blurReelImage.enabled = true;
+            SetSlotsVisibility(false);
 
-            int shift = filler + _visibleCount;
-            float endY = -shift * _symbolHeight;
-
-            SetPoolSize(column.Count);
-            for (int j = 0; j < column.Count; j++)
-                Place(_pool[j], column[j], j - half);
-
-            _content.localPosition = _originalPosition;
-
-            _spinSequence = DOTween.Sequence();
-            _spinSequence.Append(
-                _content.DOLocalMoveY(endY, duration)
-                        .SetEase(isTurbo ? Ease.Linear : _spinEase));
-
-            if (!isTurbo && _bounceAmplitude > 0f)
+            if (_blurMaterial != null)
             {
-                _spinSequence.Append(
-                    _content.DOLocalMoveY(_originalPosition.y - shift * _symbolHeight, duration)
-                            .SetEase(Ease.OutSine));
-                _spinSequence.Append(
-                    _content.DOLocalMoveY(endY, _bounceDuration)
-                            .SetEase(Ease.InSine));
+                float speed = isTurbo ? _turboSpinSpeed : _spinSpeed;
+                // Деление на 1000 преобразует большую скорость в адекватный шаг UV координат для шейдера
+                _blurMaterial.SetFloat("_ScrollY", speed / 1000f);
             }
 
-            await _spinSequence.AsyncWaitForCompletion();
+            // Шейдер сам крутит текстуру через встроенную переменную времени Unity (_Time)
+            while (!_shouldStop)
+                yield return null;
 
-            _center = target;
-            ShowRestWindow();
-            _spinSequence = null;
+            // Останавливаем движение текстуры в шейдере
+            if (_blurMaterial != null)
+                _blurMaterial.SetFloat("_ScrollY", 0f);
+
+            if (_blurReelImage != null) 
+                _blurReelImage.enabled = false;
+            SetSlotsVisibility(true);
+
+            PrepareFinalPositionsBeforeBounce();
+
+            yield return AnimateBounceRoutine();
             _isSpinning = false;
+            _spinCoroutine = null;
         }
 
-        public void StopSpin()
+        private void SetSlotsVisibility(bool isVisible)
         {
-            if (_spinSequence != null && _spinSequence.IsActive())
+            for (int i = 0; i < _symbolImages.Length; i++)
+                if (_symbolImages[i] != null) _symbolImages[i].enabled = isVisible;
+        }
+
+        private void PrepareFinalPositionsBeforeBounce()
+        {
+            for (int r = 0; r < _symbolSlots.Length; r++)
             {
-                _spinSequence.Kill();
-                _spinSequence = null;
+                if (_symbolSlots[r] != null)
+                {
+                    // Стартовая позиция для отскока (сдвигаем всё на одну клетку вверх)
+                    _symbolSlots[r].anchoredPosition = new Vector2(0f, (_calculatedRowHeight * 2f) - (r * _calculatedRowHeight));
+
+                    if (r < _targetSymbols.Length && r < _symbolImages.Length)
+                        _symbolImages[r].sprite = GetSpriteForIndex(_targetSymbols[r]);
+                    else
+                        SetRandomSprite(_symbolImages[r]);
+                }
+            }
+        }
+
+        private IEnumerator AnimateBounceRoutine()
+        {
+            Vector2[] targetPositions = new Vector2[_symbolSlots.Length];
+            for (int r = 0; r < _symbolSlots.Length; r++)
+                targetPositions[r] = new Vector2(0f, _calculatedRowHeight - (r * _calculatedRowHeight));
+
+            // 1. Падение вниз
+            float dropTime = 0.12f;
+            float elapsedDrop = 0f;
+            Vector2[] startPositions = new Vector2[_symbolSlots.Length];
+            for (int i = 0; i < _symbolSlots.Length; i++) 
+                startPositions[i] = _symbolSlots[i].anchoredPosition;
+
+            while (elapsedDrop < dropTime)
+            {
+                elapsedDrop += Time.deltaTime;
+                float progress = elapsedDrop / dropTime;
+                for (int i = 0; i < _symbolSlots.Length; i++)
+                    _symbolSlots[i].anchoredPosition = Vector2.Lerp(startPositions[i], targetPositions[i], progress);
+
+                yield return null;
             }
 
-            _isSpinning = false;
+            // 2. Отскок (Bounce)
+            float bounceTime = 0.18f;
+            float elapsedBounce = 0f;
+            for (int i = 0; i < _symbolSlots.Length; i++) 
+                startPositions[i] = _symbolSlots[i].anchoredPosition;
 
-            if (_sprites != null && _sprites.Count > 0)
-                ShowRestWindow();
-        }
-
-        /// <summary>
-        /// Состояние покоя: ровно _visibleCount символов, контент на нуле.
-        /// </summary>
-        private void ShowRestWindow()
-        {
-            int half = _visibleCount / 2;
-
-            SetPoolSize(_visibleCount);
-            for (int i = 0; i < _visibleCount; i++)
+            while (elapsedBounce < bounceTime)
             {
-                int o = half - i; // +half (верх) .. -half (низ)
-                Place(_pool[i], Mod(_center - o), o);
+                elapsedBounce += Time.deltaTime;
+                float progress = elapsedBounce / bounceTime;
+                // Сила отскока (12% от высоты символа)
+                float bounceOffset = Mathf.Sin(progress * Mathf.PI) * (_calculatedRowHeight * 0.12f);
+
+                for (int i = 0; i < _symbolSlots.Length; i++)
+                    _symbolSlots[i].anchoredPosition = startPositions[i] - new Vector2(0f, bounceOffset);
+
+                yield return null;
             }
 
-            _content.localPosition = _originalPosition;
+            // Финальная привязка к целевым позициям
+            for (int i = 0; i < _symbolSlots.Length; i++) 
+                _symbolSlots[i].anchoredPosition = targetPositions[i];
         }
 
-        private void SetSpeed(bool isTurbo)
+        private void SetRandomSprite(Image img)
         {
-            _spinSpeed = isTurbo ? 2f : 1f;
-            if (_spinSequence != null && _spinSequence.IsActive())
-                _spinSequence.timeScale = _spinSpeed;
+            if (_sprites == null || _sprites.Count == 0) 
+                return;
+
+            int rand = UnityEngine.Random.Range(0, _sprites.Count);
+
+            if (img != null) img.sprite = 
+                    _sprites[rand];
         }
 
-        private void Place(Image img, int symbolIndex, float rowOffset)
+        private Sprite GetSpriteForIndex(int index)
         {
-            img.sprite = _sprites[symbolIndex];
-            img.enabled = img.sprite != null;
-            img.raycastTarget = false;
-            img.rectTransform.localPosition = new Vector3(0f, rowOffset * _symbolHeight, 0f);
-        }
+            if (_sprites == null || index < 0 || index >= _sprites.Count) 
+                return null;
 
-        private void SetPoolSize(int n)
-        {
-            while (_pool.Count < n)
-            {
-                var img = Instantiate(_symbolTemplate, _content);
-                img.gameObject.SetActive(true);
-                _pool.Add(img);
-            }
-
-            for (int i = 0; i < _pool.Count; i++)
-                _pool[i].gameObject.SetActive(i < n);
-        }
-
-        private int Mod(int v)
-        {
-            int n = _sprites.Count;
-            return ((v % n) + n) % n;
+            return _sprites[index];
         }
     }
 }

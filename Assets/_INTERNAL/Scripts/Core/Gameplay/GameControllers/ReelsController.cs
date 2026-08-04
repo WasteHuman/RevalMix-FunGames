@@ -5,6 +5,7 @@ using Core.Services.Analytics;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UI.Other;
 using UI.Reels;
@@ -20,6 +21,7 @@ namespace Core.Gameplay.GameControllers
 
         [Space(5), Header("UI")]
         [SerializeField] private TMP_InputField _betInputField;
+        [SerializeField] private TextMeshProUGUI _autoSpinLabel;
         [SerializeField] private TextMeshProUGUI _currentBetLabel;
         [SerializeField] private TextMeshProUGUI _winAmountLabel;
         [SerializeField] private ActionButton _spinButton;
@@ -28,8 +30,13 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private ActionButton _turboButton;
         [SerializeField] private ActionButton _maxBetButton;
         [SerializeField] private ActionButton _infoButton;
+        [SerializeField] private ActionButton _autoButton;
         [SerializeField] private GameObject _winPanel;
         [SerializeField] private GameObject _infoPanel;
+
+        [Space(5), Header("Auto Spin View Setup")]
+        [SerializeField] private TMP_ColorGradient _activeColor;
+        [SerializeField] private TMP_ColorGradient _inactiveColor;
 
         [Space(5), Header("Data")]
         [SerializeField] private List<SymbolData> _symbolData = new();
@@ -39,6 +46,7 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private int _betStep = 10;
         [SerializeField] private float _baseSpinDuration = 1f;
         [SerializeField] private float _reelDelay = 0.2f;
+        [SerializeField] private float _autoSpinDelay = 1f;
         [SerializeField] private List<Sprite> _symbols = new();
 
         private float _maxBet;
@@ -46,6 +54,11 @@ namespace Core.Gameplay.GameControllers
         private bool _isSpinning;
         private bool _isTurboMode;
         private float _spinDuration;
+
+        // Автоспин
+        private bool _isAutoSpinEnabled = false;
+        private UniTask _autoSpinTask;
+        private CancellationTokenSource _autoSpinCts;
 
         public override void Enter()
         {
@@ -55,10 +68,10 @@ namespace Core.Gameplay.GameControllers
             _isTurboMode = false;
             _spinDuration = _baseSpinDuration;
 
-            for(int i = 0; i < _reels.Count; i++)
+            for (int i = 0; i < _reels.Count; i++)
                 _reels[i].Init(_symbols);
 
-            if(_infoPanel != null && _infoPanel.activeSelf)
+            if (_infoPanel != null && _infoPanel.activeSelf)
                 _infoPanel.SetActive(false);
         }
 
@@ -66,26 +79,25 @@ namespace Core.Gameplay.GameControllers
         {
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleChangedCoinsBalance;
 
-            if (_spinButton != null)
+            if (_spinButton != null) 
                 _spinButton.OnButtonClick += HandleSpinButtonClick;
-
-            if (_betPlusButton != null)
+            if (_betPlusButton != null) 
                 _betPlusButton.OnButtonClick += HandleBetUpButtonClick;
-
-            if (_betMinusButton != null)
+            if (_betMinusButton != null) 
                 _betMinusButton.OnButtonClick += HandleBetDownButtonClick;
-
-            if (_turboButton != null)
-                _turboButton.OnButtonClick += HandleTurboMoeButtonClick;
-
-            if (_betInputField != null)
+            if (_turboButton != null) 
+                _turboButton.OnButtonClick += HandleTurboModeButtonClick;
+            if (_betInputField != null) 
                 _betInputField.onEndEdit.AddListener(HandleBetChanged);
-
-            if(_maxBetButton != null)
+            if (_maxBetButton != null) 
                 _maxBetButton.OnButtonClick += HandleMaxBetButtonClick;
-
-            if(_infoButton != null)
+            if (_infoButton != null) 
                 _infoButton.OnButtonClick += HandleInfoButtonClick;
+            if(_autoButton != null)
+                _autoButton.OnButtonClick += HandleAutoButtonClick;
+
+            if (_autoSpinLabel != null)
+                _inactiveColor = _autoSpinLabel.colorGradientPreset;
 
             GameServices.EconomyService.RequestCoinsBalance();
             UpdateUI();
@@ -93,33 +105,28 @@ namespace Core.Gameplay.GameControllers
 
         public override void Exit()
         {
-            GameServices.EconomyService.OnCoinsBalanceChanged += HandleChangedCoinsBalance;
+            GameServices.EconomyService.OnCoinsBalanceChanged -= HandleChangedCoinsBalance;
 
-            if (_spinButton != null)
+            if (_spinButton != null) 
                 _spinButton.OnButtonClick -= HandleSpinButtonClick;
-
-            if (_betPlusButton != null)
+            if (_betPlusButton != null) 
                 _betPlusButton.OnButtonClick -= HandleBetUpButtonClick;
-
-            if (_betMinusButton != null)
+            if (_betMinusButton != null) 
                 _betMinusButton.OnButtonClick -= HandleBetDownButtonClick;
-
-            if (_turboButton != null)
-                _turboButton.OnButtonClick -= HandleTurboMoeButtonClick;
-
-            if (_betInputField != null)
+            if (_turboButton != null) 
+                _turboButton.OnButtonClick -= HandleTurboModeButtonClick;
+            if (_betInputField != null) 
                 _betInputField.onEndEdit.RemoveListener(HandleBetChanged);
-
-            if (_maxBetButton != null)
+            if (_maxBetButton != null) 
                 _maxBetButton.OnButtonClick -= HandleMaxBetButtonClick;
-
-            if (_infoButton != null)
+            if (_infoButton != null) 
                 _infoButton.OnButtonClick -= HandleInfoButtonClick;
+            if (_autoButton != null)
+                _autoButton.OnButtonClick -= HandleAutoButtonClick;
         }
 
         private void Update()
         {
-            // Turbo mode by R key
             if (Input.GetKeyDown(KeyCode.R))
             {
                 _isTurboMode = !_isTurboMode;
@@ -130,16 +137,14 @@ namespace Core.Gameplay.GameControllers
 
         private void UpdateUI()
         {
-            if (_betInputField != null)
+            if (_betInputField != null) 
                 _betInputField.text = $"{_currentBet}";
 
-            if (_spinButton != null)
+            if (_spinButton != null) 
                 _spinButton.Interactable = !_isSpinning && GameServices.EconomyService.GetCoinsBalance() >= _currentBet;
-
-            if (_betPlusButton != null)
+            if (_betPlusButton != null) 
                 _betPlusButton.Interactable = !_isSpinning && _currentBet < _maxBet;
-
-            if (_betMinusButton != null)
+            if (_betMinusButton != null) 
                 _betMinusButton.Interactable = !_isSpinning && _currentBet > _minBet;
 
             if (_turboButton != null)
@@ -151,59 +156,141 @@ namespace Core.Gameplay.GameControllers
 
         private async UniTask StartSpin()
         {
+            if (GameServices.EconomyService.GetCoinsBalance() < _currentBet)
+            {
+                Debug.LogWarning("[Reels] Not enough coins to spin");
+                if (_isAutoSpinEnabled)
+                    StopAutoSpin();
+                return;
+            }
+
             GameServices.EconomyService.SpendCoins(_currentBet);
 
             _isSpinning = true;
             SetInteractable(false);
 
-            // 1. Определяем результат заранее (RNG)
             int reelCount = _reels.Count;
-            int[] results = new int[reelCount];
-            for (int i = 0; i < reelCount; i++)
-                results[i] = UnityEngine.Random.Range(0, _symbolData.Count);
+            int[][] results = new int[reelCount][];
+            int[] middleRow = new int[reelCount]; // Центральные символы для проверки выигрыша
 
-            // 2. Запускаем вращение барабанов по очереди
+            // 1. Генерируем результаты (лента из 3 символов для каждого барабана)
+            for (int i = 0; i < reelCount; i++)
+            {
+                results[i] = new int[3];
+                int mid = UnityEngine.Random.Range(0, _symbolData.Count);
+
+                results[i][0] = (mid + 1) % _symbolData.Count; // Верхний
+                results[i][1] = mid;                           // Средний
+                results[i][2] = (mid - 1 + _symbolData.Count) % _symbolData.Count; // Нижний
+
+                middleRow[i] = mid;
+            }
+
+            // 2. Запускаем вращение с задержками
             List<UniTask> spinTasks = new();
+            var cts = new CancellationTokenSource();
+
             for (int i = 0; i < reelCount; i++)
             {
                 float delay = i * _reelDelay;
-                float duration = _spinDuration + (i * 0.2f); // Каждый следующий крутится чуть дольше
+                float duration = _spinDuration + (i * 0.2f);
 
-                // Задержка перед стартом конкретного барабана
-                if (delay > 0) 
+                if (delay > 0)
                     await UniTask.Delay(TimeSpan.FromSeconds(delay));
 
-                spinTasks.Add(_reels[i].SpinAsync(duration, results[i], _isTurboMode));
+                spinTasks.Add(_reels[i].SpinAsync(duration, results[i], _isTurboMode, cts.Token));
             }
 
-            // Ждем окончания всех вращений
             await UniTask.WhenAll(spinTasks);
 
-            // 3. Проверяем выигрыш
-            CheckWin(results);
+            // 3. Проверяем выигрыш по центральному ряду
+            CheckWin(middleRow);
 
             _isSpinning = false;
             SetInteractable(true);
         }
 
+        private async UniTask AutoSpinLoop()
+        {
+            Debug.Log("[Reels] Auto spin started");
+
+            try
+            {
+                while (_isAutoSpinEnabled)
+                {
+                    // Проверяем баланс
+                    if (GameServices.EconomyService.GetCoinsBalance() < _currentBet)
+                    {
+                        Debug.Log("[Reels] Auto spin stopped: not enough coins");
+                        StopAutoSpin();
+                        break;
+                    }
+
+                    // Делаем спин
+                    await StartSpin();
+
+                    // Если автоспин был остановлен во время спина (например, игрок нажал Stop)
+                    if (!_isAutoSpinEnabled)
+                        break;
+
+                    // Пауза между спинами
+                    await UniTask.Delay(TimeSpan.FromSeconds(_autoSpinDelay));
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Нормальное завершение при отмене
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Reels] Auto spin error: {ex}");
+                StopAutoSpin();
+            }
+            finally
+            {
+                Debug.Log("[Reels] Auto spin stopped");
+                _isAutoSpinEnabled = false;
+                UpdateUI();
+            }
+        }
+
+        private void StartAutoSpin()
+        {
+            if (_isAutoSpinEnabled)
+                return;
+
+            _isAutoSpinEnabled = true;
+            _autoSpinCts = new CancellationTokenSource();
+            _autoSpinTask = AutoSpinLoop().AttachExternalCancellation(_autoSpinCts.Token);
+            UpdateUI();
+        }
+
+        private void StopAutoSpin()
+        {
+            if (!_isAutoSpinEnabled)
+                return;
+
+            _isAutoSpinEnabled = false;
+            _autoSpinCts?.Cancel();
+            _autoSpinCts?.Dispose();
+            _autoSpinCts = null;
+            UpdateUI();
+        }
+
         private void CheckWin(int[] symbolIndices)
         {
-            // Логика подсчета одинаковых символов подряд слева направо
-            if (symbolIndices.Length == 0) 
-                return;
+            if (symbolIndices.Length == 0) return;
 
             int firstSymbol = symbolIndices[0];
             int matchCount = 1;
 
             for (int i = 1; i < symbolIndices.Length; i++)
             {
-                if (symbolIndices[i] == firstSymbol)
-                    matchCount++;
-                else
-                    break;
+                if (symbolIndices[i] == firstSymbol) matchCount++;
+                else break;
             }
 
-            bool isWin = matchCount >= 2; // Минимум 2 для выигрыша
+            bool isWin = matchCount >= 2;
 
             if (isWin)
             {
@@ -213,64 +300,53 @@ namespace Core.Gameplay.GameControllers
 
                 GameServices.EconomyService.AddCoins(totalWin);
                 GameServices.PlayerService.AddXP(20);
-                ShowResult(isWin, totalWin);
+                ShowResult(true, totalWin, symbolIndices);
                 Debug.Log($"WIN! {matchCount} symbols. Reward: {totalWin}");
             }
             else
             {
                 GameServices.PlayerService.AddXP(5);
                 Debug.Log("No win");
+                ShowResult(false, 0, symbolIndices);
             }
         }
 
         private int CountMatches(List<int> symbols)
         {
-            if (symbols.Count == 0) 
-                return 0;
-
-            // Найти наиболее частый символ
+            if (symbols.Count == 0) return 0;
             Dictionary<int, int> symbolCounts = new();
             foreach (var symbol in symbols)
             {
-                if (!symbolCounts.ContainsKey(symbol))
-                    symbolCounts[symbol] = 0;
+                if (!symbolCounts.ContainsKey(symbol)) symbolCounts[symbol] = 0;
                 symbolCounts[symbol]++;
             }
 
             int maxCount = 0;
-            foreach (var kvp in symbolCounts)
-            {
+            foreach (var kvp in symbolCounts) 
                 if (kvp.Value > maxCount)
                     maxCount = kvp.Value;
-            }
-
             return maxCount;
         }
 
-        private int GetMultiplier(int matchCount)
+        private int GetMultiplier(int matchCount) => matchCount switch
         {
-            return matchCount switch
-            {
-                2 => 2,
-                3 => 16,
-                4 => 20,
-                5 => 40,
-                _ => 2,
-            };
-        }
+            2 => 2,
+            3 => 16,
+            4 => 20,
+            5 => 40,
+            _ => 2,
+        };
 
-        private void ShowResult(bool isWin, int winAmount)
+        private void ShowResult(bool isWin, int winAmount, int[] middleRow)
         {
-            if (_winPanel != null)
+            if (_winPanel != null) 
                 _winPanel.SetActive(isWin);
-
-            if (_winAmountLabel != null)
+            if (_winAmountLabel != null) 
                 _winAmountLabel.text = isWin ? $"+{winAmount}" : "0";
 
-            Debug.Log($"[Reels] Result: Win={isWin}, Amount={winAmount}, Matches={CountMatches(new List<int>(_reels.ConvertAll(r => r.GetCenterSymbolIndex())))}");
+            Debug.Log($"[Reels] Result: Win={isWin}, Amount={winAmount}, Matches={CountMatches(new List<int>(middleRow))}");
 
-            // Скрыть панель победы через 3.5 секунды
-            if (isWin && _winPanel != null)
+            if (isWin && _winPanel != null) 
                 Invoke(nameof(HideWinPanel), 3.5f);
         }
 
@@ -278,6 +354,19 @@ namespace Core.Gameplay.GameControllers
         {
             if (_winPanel != null)
                 _winPanel.SetActive(false);
+        }
+
+        private void SetInteractable(bool interactable)
+        {
+            _spinButton.Interactable = interactable;
+            _betPlusButton.Interactable = interactable;
+            _betMinusButton.Interactable = interactable;
+        }
+
+        private void RefreshInput()
+        {
+            if (_betInputField != null)
+                _betInputField.SetTextWithoutNotify(Mathf.FloorToInt(_currentBet).ToString());
         }
 
         private void SetBet(int value)
@@ -291,22 +380,9 @@ namespace Core.Gameplay.GameControllers
             _currentBetLabel.text = _currentBet.ToString("N0");
         }
 
-        private void RefreshInput()
-        {
-            if (_betInputField != null)
-                _betInputField.SetTextWithoutNotify(Mathf.FloorToInt(_currentBet).ToString());
-        }
-
-        private void SetInteractable(bool interactable)
-        {
-            _spinButton.Interactable = interactable;
-            _betPlusButton.Interactable = interactable;
-            _betMinusButton.Interactable = interactable;
-        }
-
         private void HandleSpinButtonClick()
         {
-            if (_isSpinning) 
+            if (_isSpinning)
                 return;
 
             if (GameServices.EconomyService.GetCoinsBalance() < _currentBet)
@@ -320,7 +396,7 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleBetUpButtonClick()
         {
-            if (_isSpinning) 
+            if (_isSpinning)
                 return;
 
             if (_currentBet < _maxBet)
@@ -332,7 +408,7 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleBetDownButtonClick()
         {
-            if (_isSpinning) 
+            if (_isSpinning)
                 return;
 
             if (_currentBet > _minBet)
@@ -342,7 +418,7 @@ namespace Core.Gameplay.GameControllers
             }
         }
 
-        private void HandleTurboMoeButtonClick()
+        private void HandleTurboModeButtonClick()
         {
             _isTurboMode = !_isTurboMode;
             _spinDuration = _isTurboMode ? _baseSpinDuration / 2f : _baseSpinDuration;
@@ -365,10 +441,32 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleInfoButtonClick()
         {
-            if(_infoPanel.activeSelf)
+            if (_infoPanel.activeSelf)
                 _infoPanel.SetActive(false);
             else
                 _infoPanel.SetActive(true);
+        }
+
+        private void HandleAutoButtonClick()
+        {
+            if (_isSpinning)
+                return;
+
+            if (_isAutoSpinEnabled)
+            {
+                StopAutoSpin();
+                _autoSpinLabel.colorGradientPreset = _inactiveColor;
+            }
+            else
+            {
+                if (GameServices.EconomyService.GetCoinsBalance() < _currentBet)
+                {
+                    Debug.LogWarning("[Reels] Not enough coins for auto spin");
+                    return;
+                }
+                StartAutoSpin();
+                _autoSpinLabel.colorGradientPreset = _activeColor;
+            }
         }
 
         private void HandleChangedCoinsBalance(float coins) => _maxBet = Mathf.RoundToInt(coins * 0.9f);

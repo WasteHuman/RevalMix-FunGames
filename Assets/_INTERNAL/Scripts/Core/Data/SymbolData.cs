@@ -7,6 +7,7 @@ namespace Core.Data
     public struct SymbolData
     {
         public Sprite Sprite;
+        public SymbolType Type;
         public int BaseReward;
     }
 }
