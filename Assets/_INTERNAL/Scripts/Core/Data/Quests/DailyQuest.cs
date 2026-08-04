@@ -1,4 +1,4 @@
-﻿namespace Core.Data
+﻿namespace Core.Data.Quests
 {
     [System.Serializable]
     public class DailyQuest

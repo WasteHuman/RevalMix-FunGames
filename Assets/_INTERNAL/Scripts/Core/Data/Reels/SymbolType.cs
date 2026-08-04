@@ -1,4 +1,4 @@
-﻿namespace Core.Data
+﻿namespace Core.Data.Reels
 {
     public enum SymbolType
     {

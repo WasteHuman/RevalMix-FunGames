@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Core.Data.Quests;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
