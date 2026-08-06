@@ -133,9 +133,9 @@ Shader "LuckyLeprechaun/UI_TextureScroll_AAA"
                 col *= i.color;
 
                 // Загрузка UI-клиппинга (ScrollRect / Mask)
-                #ifdef UNITY_UI_CLIP_INRECT
-                col.a *= UnityGet2DClippedAlpha(i.worldPosition.xy, _ClipRect);
-                #endif
+                // #ifdef UNITY_UI_CLIP_INRECT
+                // col.a *= UnityGet2DClippedAlpha(i.worldPosition.xy, _ClipRect);
+                // #endif
 
                 return col;
             }

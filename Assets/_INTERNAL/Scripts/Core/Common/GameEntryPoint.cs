@@ -1,4 +1,7 @@
 ﻿using Core.Services;
+using Cysharp.Threading.Tasks;
+using System;
+using System.Threading;
 using UnityEngine;
 
 namespace Core.Common
@@ -7,11 +10,25 @@ namespace Core.Common
     {
         [SerializeField] protected GameController _controller;
 
+        private CancellationTokenSource _cancellationTokenSource;
+
         private void Start()
         {
-            InvokeRepeating(nameof(UpdatePlayTime), 1f, 1f);
+            _cancellationTokenSource = new();
+
             _controller.Enter();
             _controller.Initialize();
+
+            AsyncUpdatePlaytime(_cancellationTokenSource.Token).Forget();
+        }
+
+        private void OnDestroy()
+        {
+            _controller.Exit();
+
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
         }
 
         private void UpdatePlayTime()
@@ -20,9 +37,13 @@ namespace Core.Common
                 GameServices.SaveService.PlayerData.PlayTimeSeconds++;
         }
 
-        private void OnDestroy()
+        private async UniTask AsyncUpdatePlaytime(CancellationToken cancellationToken)
         {
-            _controller.Exit();
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: cancellationToken);
+                UpdatePlayTime();
+            }
         }
     }
 }

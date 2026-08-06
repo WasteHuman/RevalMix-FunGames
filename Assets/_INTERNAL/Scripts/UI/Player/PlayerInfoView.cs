@@ -2,6 +2,7 @@
 using TMPro;
 using UI.Other;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI.Player
 {
@@ -16,11 +17,15 @@ namespace UI.Player
         [Space(5), Header("Level Progress Bar Setup")]
         [SerializeField] private CustomSliderBar _sliderBar;
 
+        [Space(5), Header("Avatar Image Setup")]
+        [SerializeField] private RawImage _avatarImage;
+
         private void Awake()
         {
             GameServices.PlayerService.OnXPChanged += HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleCoinsBalanceChanged;
             GameServices.PlayerService.OnLevelChanged += HandleChangedLevel;
+            GameServices.AvatarService.OnAvatarSetted += HandleSettetAvatar;
         }
 
         private void Start()
@@ -35,13 +40,17 @@ namespace UI.Player
                 GameServices.PlayerService.RequestActualProgressState();
 
             GameServices.EconomyService.RequestCoinsBalance();
+
+            if (_avatarImage != null)
+                _avatarImage.texture = GameServices.PlayerService.PlayerAvatar;
         }
 
         private void OnDestroy()
         {
             GameServices.PlayerService.OnXPChanged -= HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged -= HandleCoinsBalanceChanged;
-            GameServices.PlayerService.OnLevelChanged += HandleChangedLevel;
+            GameServices.PlayerService.OnLevelChanged -= HandleChangedLevel;
+            GameServices.AvatarService.OnAvatarSetted -= HandleSettetAvatar;
         }
 
         private void HandleChangedXP(float xp, float requiredXP)
@@ -61,6 +70,8 @@ namespace UI.Player
 
             _currentCoinsLabel.text = $"{amount:N0}";
         }
+
+        private void HandleSettetAvatar(Texture2D avatar) => _avatarImage.texture = avatar;
 
         private void HandleChangedLevel(int level) => _levelLabel.text = $"{level}";
     }

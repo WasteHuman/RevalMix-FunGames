@@ -11,6 +11,7 @@ namespace Core.UI.Controllers
         [SerializeField] private ActionButton _wheelOfRevolutButton;
         [SerializeField] private ActionButton _diamondRetroButton;
         [SerializeField] private ActionButton _neonWheelButton;
+        [SerializeField] private ActionButton _cyberMasterButton;
 
         private void Awake()
         {
@@ -19,6 +20,7 @@ namespace Core.UI.Controllers
             _wheelOfRevolutButton.OnButtonClick += HandleWheelOfRevolutButtonClick;
             _diamondRetroButton.OnButtonClick += HandleDiamondRetroButtonClick;
             _neonWheelButton.OnButtonClick += HandleNeonWheelButtonClick;
+            _cyberMasterButton.OnButtonClick += HandleCyberMasterButtonClick;
         }
 
         private void OnDestroy()
@@ -28,6 +30,7 @@ namespace Core.UI.Controllers
             _wheelOfRevolutButton.OnButtonClick -= HandleWheelOfRevolutButtonClick;
             _diamondRetroButton.OnButtonClick -= HandleDiamondRetroButtonClick;
             _neonWheelButton.OnButtonClick -= HandleNeonWheelButtonClick;
+            _cyberMasterButton.OnButtonClick -= HandleCyberMasterButtonClick;
         }
 
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
@@ -35,5 +38,6 @@ namespace Core.UI.Controllers
         private void HandleVaultButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_VAULT);
         private void HandleDiamondRetroButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_DIAMOND_RETRO);
         private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_NEON_WHEEL);
+        private void HandleCyberMasterButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_CYBER_MASTER);
     }
 }

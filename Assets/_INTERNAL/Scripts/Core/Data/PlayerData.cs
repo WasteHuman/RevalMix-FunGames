@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 namespace Core.Data
 {
@@ -7,7 +9,8 @@ namespace Core.Data
     public class PlayerData
     {
         public string Name;
-        public int AvatarId;
+        public Texture2D CurrentAvatar;
+        public string AvatarPath => Path.Combine(Application.persistentDataPath, "avatar.png");
 
         public float Coins;
         public int Energy;

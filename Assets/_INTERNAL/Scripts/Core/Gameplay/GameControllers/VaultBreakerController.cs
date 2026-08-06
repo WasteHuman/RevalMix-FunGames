@@ -27,6 +27,7 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private float _maxClaimTime = 8f;
         [SerializeField] private int _baseReward = 500;
         [SerializeField] private float _pointsPerSecond = 100f;
+        [SerializeField] private float _bet = 250f;
 
         private float _currentScore;
         private float _elapsedTime;
@@ -158,10 +159,7 @@ namespace Core.Gameplay.GameControllers
             }
         }
 
-        private void EndAfterAlarm()
-        {
-            EndGame(false, 0);
-        }
+        private void EndAfterAlarm() => EndGame(false, 0);
 
         private void EndGame(bool isWin, float reward)
         {
@@ -225,6 +223,7 @@ namespace Core.Gameplay.GameControllers
 
             ResetGameState();
             StartGame().Forget();
+            GameServices.EconomyService.SpendCoins(_bet);
         }
 
         private void HandleClaimButtonClick()

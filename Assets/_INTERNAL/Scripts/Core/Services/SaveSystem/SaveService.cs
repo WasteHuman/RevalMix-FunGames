@@ -1,4 +1,5 @@
 ﻿using Core.Data;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
 using UnityEngine;
@@ -16,13 +17,13 @@ namespace Core.Services.SaveSystem
         public PlayerData PlayerData => _playerData;
         public SettingsData Settings => _settingsData;
 
-        public void Init()
+        public async UniTask Init()
         {
-            LoadPlayerData();
+            await LoadPlayerData();
             LoadSettings();
         }
 
-        private void LoadPlayerData()
+        private async UniTask LoadPlayerData()
         {
             if (PlayerPrefs.HasKey(KEY_PLAYER))
             {
@@ -35,23 +36,23 @@ namespace Core.Services.SaveSystem
                 catch (Exception e)
                 {
                     Debug.LogError($"[SaveService] Corrupted save data, creating new. Error: {e.Message}");
-                    CreateNewPlayerData();
+                    await CreateNewPlayerData();
                 }
             }
             else
             {
-                CreateNewPlayerData();
+                await CreateNewPlayerData();
             }
         }
 
-        private void CreateNewPlayerData()
+        private async UniTask CreateNewPlayerData()
         {
             _playerData = new PlayerData();
-            SavePlayerData();
+            await SavePlayerData();
             Debug.Log("[SaveService] New player data created.");
         }
 
-        public void SavePlayerData()
+        public async UniTask SavePlayerData()
         {
             if (_playerData == null) 
                 return;

@@ -4,6 +4,8 @@ using UnityEngine;
 using UI.Other;
 using System;
 using Core.Services;
+using UnityEngine.UI;
+using static NativeGallery;
 
 namespace UI.Screens
 {
@@ -17,6 +19,9 @@ namespace UI.Screens
         [SerializeField] private ActionButton _saveButton;
         [SerializeField] private ActionButton _choosePlayerPhotoButton;
 
+        [Space(5), Header("Avatar Setup")]
+        [SerializeField] private RawImage _avatarImage;
+
         private bool _isNameFieldEmpty = true;
 
         public event Action OnPlayerReady;
@@ -24,7 +29,8 @@ namespace UI.Screens
         private void Awake()
         {
             _saveButton.OnButtonClick += HandleSaveButtonClick;
-            _saveButton.OnButtonClick += HandleChoosePhotoButtonClick;
+            _choosePlayerPhotoButton.OnButtonClick += HandleChoosePhotoButtonClick;
+            GameServices.AvatarService.OnAvatarSetted += HandleSettedAvatar;
 
             _nameInputField.onEndEdit.AddListener(HandleNameInput);
         }
@@ -32,7 +38,8 @@ namespace UI.Screens
         private void OnDestroy()
         {
             _saveButton.OnButtonClick -= HandleSaveButtonClick;
-            _saveButton.OnButtonClick -= HandleChoosePhotoButtonClick;
+            _choosePlayerPhotoButton.OnButtonClick -= HandleChoosePhotoButtonClick;
+            GameServices.AvatarService.OnAvatarSetted -= HandleSettedAvatar;
 
             _nameInputField.onEndEdit.RemoveListener(HandleNameInput);
         }
@@ -51,7 +58,18 @@ namespace UI.Screens
 
         private void HandleChoosePhotoButtonClick()
         {
-            // TODO: Выбор фото на аватарку
+            if (IsMediaPickerBusy())
+            {
+                Debug.LogWarning("Media selection is already underway");
+                return;
+            }
+
+            GameServices.AvatarService.RequestPermission();
+        }
+
+        private void HandleSettedAvatar(Texture2D avatar)
+        {
+            _avatarImage.texture = avatar;
         }
 
         private void HandleNameInput(string raw)

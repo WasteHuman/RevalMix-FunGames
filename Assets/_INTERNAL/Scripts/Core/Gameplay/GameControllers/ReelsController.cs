@@ -1,4 +1,5 @@
 ﻿using Core.Common;
+using Core.Data;
 using Core.Data.Reels;
 using Core.Services;
 using Core.Services.Analytics;
@@ -279,15 +280,18 @@ namespace Core.Gameplay.GameControllers
 
         private void CheckWin(int[] symbolIndices)
         {
-            if (symbolIndices.Length == 0) return;
+            if (symbolIndices.Length == 0) 
+                return;
 
             int firstSymbol = symbolIndices[0];
             int matchCount = 1;
 
             for (int i = 1; i < symbolIndices.Length; i++)
             {
-                if (symbolIndices[i] == firstSymbol) matchCount++;
-                else break;
+                if (symbolIndices[i] == firstSymbol) 
+                    matchCount++;
+                else 
+                    break;
             }
 
             bool isWin = matchCount >= 2;
@@ -301,19 +305,38 @@ namespace Core.Gameplay.GameControllers
                 GameServices.EconomyService.AddCoins(totalWin);
                 GameServices.PlayerService.AddXP(20);
                 ShowResult(true, totalWin, symbolIndices);
+
+                GameResult result = new(
+                    isWin: true,
+                    rewardCoins: totalWin,
+                    rewardXP: 20,
+                    questTag: GameConstants.TAG_SPIN_10_REELS,
+                    gameId: GameConstants.GAME_REELS
+                );
+
                 Debug.Log($"WIN! {matchCount} symbols. Reward: {totalWin}");
+                GameServices.GameCompletionHandler.HandleGameResult(result);
             }
             else
             {
                 GameServices.PlayerService.AddXP(5);
                 Debug.Log("No win");
                 ShowResult(false, 0, symbolIndices);
+                GameResult result = new(
+                    isWin: false,
+                    rewardCoins: 0,
+                    rewardXP: 5,
+                    questTag: GameConstants.TAG_SPIN_10_REELS,
+                    gameId: GameConstants.GAME_REELS
+                );
+                GameServices.GameCompletionHandler.HandleGameResult(result);
             }
         }
 
         private int CountMatches(List<int> symbols)
         {
-            if (symbols.Count == 0) return 0;
+            if (symbols.Count == 0) 
+                return 0;
             Dictionary<int, int> symbolCounts = new();
             foreach (var symbol in symbols)
             {

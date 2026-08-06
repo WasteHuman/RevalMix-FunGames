@@ -29,9 +29,9 @@ namespace Core.Boot
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-//#if UNITY_EDITOR
-//            PlayerPrefs.DeleteAll();
-//#endif
+#if UNITY_EDITOR
+            PlayerPrefs.DeleteAll();
+#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
             RunAsync().Forget();
@@ -76,7 +76,7 @@ namespace Core.Boot
                 await InitializeExternalSDK();
 
                 _instance.LoadMainScene();
-                GameServices.InitializeAll();
+                await GameServices.InitializeAll();
             }
             catch (System.Exception ex)
             {
@@ -124,19 +124,40 @@ namespace Core.Boot
 
             loadingScreenView.ResetProgress();
 
-            float loadingDuration = 5f;
-            float elapsedTime = 0f;
+            float startTime = Time.deltaTime;
+            float minLoadingDuration = 2.5f;
+            float currentProgress = 0f;
 
-            SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
+            AsyncOperation operation = SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
+            operation.allowSceneActivation = false;
 
-            while (elapsedTime < loadingDuration)
+            while (!operation.isDone)
             {
-                elapsedTime += Time.deltaTime;
-                loadingScreenView.SetLoadingProgress(Mathf.Clamp01(elapsedTime / loadingDuration));
+                float rawProgress = Mathf.Clamp01(operation.progress / 0.9f);
+
+                while (currentProgress < rawProgress)
+                {
+                    currentProgress += Time.deltaTime * 1.5f;
+                    currentProgress = Mathf.Min(currentProgress, rawProgress);
+                    loadingScreenView.SetLoadingProgress(currentProgress);
+                    yield return null;
+                }
+
+                if(operation.progress >= 0.9f)
+                {
+                    float elapsedTime = Time.time - startTime;
+                    if (elapsedTime >= minLoadingDuration)
+                    {
+                        currentProgress = 1f;
+                        loadingScreenView.SetLoadingProgress(currentProgress);
+                        yield return new WaitForSeconds(0.25f);
+
+                        operation.allowSceneActivation = true;
+                    }
+                }
+
                 yield return null;
             }
-
-            loadingScreenView.SetLoadingProgress(1f);
 
             _loadingCoroutine = null;
             loadingScreenView.ResetProgress();
@@ -152,6 +173,6 @@ namespace Core.Boot
 
         
 
-        private void OnApplicationQuit() => GameServices.SaveAll();
+        private void OnApplicationQuit() => GameServices.SaveAll().Forget();
     }
 }

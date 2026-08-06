@@ -9,6 +9,7 @@ namespace Core.Services.Player
         private PlayerData _currentPlayerData;
 
         public string PlayerName => _currentPlayerData.Name;
+        public Texture2D PlayerAvatar => _currentPlayerData.CurrentAvatar;
         public float PlayerCoins => _currentPlayerData.Coins;
         public float PlayerXP => _currentPlayerData.XP;
         public int PlayerLevel => _currentPlayerData.Level;

@@ -3,6 +3,7 @@ using Core.Services.LeaderboardSystem;
 using Core.Services.Player;
 using Core.Services.Quests;
 using Core.Services.SaveSystem;
+using Cysharp.Threading.Tasks;
 
 namespace Core.Services
 {
@@ -15,35 +16,38 @@ namespace Core.Services
         public static EconomyService EconomyService { get; private set; }
         public static DailyQuestsService Quests { get; private set; }
         public static LeaderboardService Leaderboard { get; private set; }
+        public static AvatarService AvatarService { get; private set; }
 
-        public static void InitializeAll()
+        public static async UniTask InitializeAll()
         {
             SaveService = new();
-            SaveService.Init();
-
-            EconomyService = new();
-            EconomyService.Init(SaveService.PlayerData.Coins);
-
-            EnergyService = new(() => SaveService.SavePlayerData());
-            EnergyService.Init(SaveService.PlayerData);
+            await SaveService.Init();
 
             PlayerService = new();
             PlayerService.Init(SaveService.PlayerData);
 
+            EconomyService = new();
+            EconomyService.Init(PlayerService.GetData().Coins);
+
+            EnergyService = new(() => SaveService.SavePlayerData().Forget());
+            EnergyService.Init(PlayerService.GetData());
+
             Quests = new DailyQuestsService();
-            Quests.Init(SaveService.PlayerData);
+            Quests.Init(PlayerService.GetData());
 
             Leaderboard = new LeaderboardService();
-            Leaderboard.Init(SaveService.PlayerData);
+            Leaderboard.Init(PlayerService.GetData());
 
-            GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData());
+            AvatarService = new(PlayerService.GetData());
+
+            GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData().Forget());
         }
 
-        public static void SaveAll()
+        public static async UniTask SaveAll()
         {
             SaveService.PlayerData.Coins = EconomyService.GetCoinsBalance();
-            SaveService?.SavePlayerData();
-            SaveService?.SaveSettings();
+            await SaveService.SavePlayerData();
+            SaveService.SaveSettings();
         }
     }
 }

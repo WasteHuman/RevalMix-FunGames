@@ -1,4 +1,5 @@
-﻿using Core.Services;
+﻿using Core.Data;
+using Core.Services;
 using Core.Services.Analytics;
 using DG.Tweening;
 using System;
@@ -102,13 +103,16 @@ namespace Core.WheelOfLuck
                 _sector_5000.OnButtonClick += Handle5000SectorButtonClick;
             }
 
-            if (_startSpinButton != null && !IsAvailable())
+            if (_startSpinButton != null)
             {
                 _prepareAndStartSpinAction = () => PrepareAndStartSpin(ClaimWithoutAd);
                 _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
 
-                _startSpinButton.Interactable = false;
-                _startSpinButton.Animations.StopPulseAnimation();
+                if (!IsAvailable())
+                {
+                    _startSpinButton.Interactable = false;
+                    _startSpinButton.Animations.StopPulseAnimation();
+                }
             }
         }
 
@@ -448,11 +452,31 @@ namespace Core.WheelOfLuck
                         GameServices.EconomyService.AddCoins(reward.Amount + _selectedSector);
                         Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
 
+                        GameResult result = new(
+                            isWin: true,
+                            rewardCoins: reward.Amount,
+                            rewardXP: 20,
+                            questTag: string.Empty,
+                            gameId: GameConstants.GAME_NEON_WHEEL
+                        );
+
+                        GameServices.GameCompletionHandler.HandleGameResult(result);
+
                         _selectedSector = 0;
                         AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     }
                     else
                     {
+                        GameResult result = new(
+                            isWin: false,
+                            rewardCoins: 0,
+                            rewardXP: 0,
+                            questTag: string.Empty,
+                            gameId: GameConstants.GAME_NEON_WHEEL
+                        );
+
+                        GameServices.GameCompletionHandler.HandleGameResult(result);
+
                         Debug.LogWarning($"[Wheel] Sector mismatch. Expected: {_selectedSector}, but got: {reward.Amount}");
                         AnalyticsService.Instance.ReportGameLoss(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     }

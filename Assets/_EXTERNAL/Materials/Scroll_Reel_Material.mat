@@ -41,10 +41,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlurStrength: 0.02
-    - _ChromaticAberration: 0.01
+    - _BlurStrength: 0.05
+    - _ChromaticAberration: 0.03
     - _ColorMask: 15
-    - _CylinderBending: 0.3
+    - _CylinderBending: 1
     - _EnableExternalAlpha: 0
     - _ScrollY: 0
     - _Stencil: 0

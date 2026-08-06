@@ -28,6 +28,8 @@ namespace Core.UI.Controllers
         private void HandlePlayerReady()
         {
             Debug.Log($"[Main Scene Screen Controller] Player is ready.");
+            GameServices.AvatarService.LoadSavedAvatar();
+
             _welcomeScreenView.Close();
             _mainMenuScreenView.Open();
         }
