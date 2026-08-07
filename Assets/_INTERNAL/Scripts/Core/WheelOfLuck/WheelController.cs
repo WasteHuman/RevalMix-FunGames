@@ -422,6 +422,8 @@ namespace Core.WheelOfLuck
                     int spins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
                     _freeSpins += spins;
                     SaveState();
+                    _nextAvailableUtc = DateTime.UtcNow;
+                    UpdatePulseState();
                     Debug.Log($"[Wheel] Given free spins: {spins}");
 
                     AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
@@ -448,8 +450,6 @@ namespace Core.WheelOfLuck
                 case WheelReward.RewardType.Sector:
                     if (_selectedSector == reward.Amount)
                     {
-                        GameServices.PlayerService.AddXP(20);
-                        GameServices.EconomyService.AddCoins(reward.Amount + _selectedSector);
                         Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
 
                         GameResult result = new(
@@ -463,7 +463,6 @@ namespace Core.WheelOfLuck
                         GameServices.GameCompletionHandler.HandleGameResult(result);
 
                         _selectedSector = 0;
-                        AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     }
                     else
                     {
@@ -478,7 +477,6 @@ namespace Core.WheelOfLuck
                         GameServices.GameCompletionHandler.HandleGameResult(result);
 
                         Debug.LogWarning($"[Wheel] Sector mismatch. Expected: {_selectedSector}, but got: {reward.Amount}");
-                        AnalyticsService.Instance.ReportGameLoss(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     }
                     break;
             }

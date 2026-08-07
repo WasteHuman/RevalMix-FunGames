@@ -59,6 +59,7 @@ namespace Core.Services.SaveSystem
 
             try
             {
+                _playerData.CurrentAvatar = null; // Reset the current avatar before saving
                 string json = JsonConvert.SerializeObject(_playerData);
                 PlayerPrefs.SetString(KEY_PLAYER, json);
                 PlayerPrefs.Save();

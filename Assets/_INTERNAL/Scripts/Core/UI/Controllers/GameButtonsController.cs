@@ -12,6 +12,8 @@ namespace Core.UI.Controllers
         [SerializeField] private ActionButton _diamondRetroButton;
         [SerializeField] private ActionButton _neonWheelButton;
         [SerializeField] private ActionButton _cyberMasterButton;
+        [SerializeField] private ActionButton _electricDiceButton;
+        [SerializeField] private ActionButton _infiniteScoreButton;
 
         private void Awake()
         {
@@ -21,6 +23,8 @@ namespace Core.UI.Controllers
             _diamondRetroButton.OnButtonClick += HandleDiamondRetroButtonClick;
             _neonWheelButton.OnButtonClick += HandleNeonWheelButtonClick;
             _cyberMasterButton.OnButtonClick += HandleCyberMasterButtonClick;
+            _electricDiceButton.OnButtonClick += HandleElectricDiceButtonClick;
+            _infiniteScoreButton.OnButtonClick += HandleInfiniteScoreButtonClick;
         }
 
         private void OnDestroy()
@@ -31,6 +35,8 @@ namespace Core.UI.Controllers
             _diamondRetroButton.OnButtonClick -= HandleDiamondRetroButtonClick;
             _neonWheelButton.OnButtonClick -= HandleNeonWheelButtonClick;
             _cyberMasterButton.OnButtonClick -= HandleCyberMasterButtonClick;
+            _electricDiceButton.OnButtonClick -= HandleElectricDiceButtonClick;
+            _infiniteScoreButton.OnButtonClick -= HandleInfiniteScoreButtonClick;
         }
 
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
@@ -39,5 +45,7 @@ namespace Core.UI.Controllers
         private void HandleDiamondRetroButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_DIAMOND_RETRO);
         private void HandleNeonWheelButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_NEON_WHEEL);
         private void HandleCyberMasterButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_CYBER_MASTER);
+        private void HandleElectricDiceButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_ELECTRIC_DICE);
+        private void HandleInfiniteScoreButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_INFINITE_SCORE);
     }
 }

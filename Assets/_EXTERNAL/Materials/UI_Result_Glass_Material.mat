@@ -46,32 +46,32 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlurSize: 8
+    - _BlurSize: 16
     - _BorderWidth: 0.015
     - _ColorMask: 15
-    - _Distortion: 0.012
-    - _EdgeLensWidth: 0.06
-    - _EdgeRefraction: 0.015
+    - _Distortion: 0.0095
+    - _EdgeLensWidth: 0.125
+    - _EdgeRefraction: 0.005
     - _EnableExternalAlpha: 0
     - _FlipBgY: 0
     - _FlowSpeed: 0.75
-    - _GradientStrength: 0.08
-    - _HighlightIntensity: 0.7
-    - _HighlightWidth: 0.1
-    - _NoiseScale: 5
-    - _NoiseStrength: 0.03
+    - _GradientStrength: 0.25
+    - _HighlightIntensity: 2
+    - _HighlightWidth: 0.25
+    - _NoiseScale: 6
+    - _NoiseStrength: 0.09
     - _Opacity: 1
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _TintAmount: 0.25
+    - _TintAmount: 1
     - _UseBlur: 1
     - _ZWrite: 0
     m_Colors:
     - _BgTransform: {r: 1, g: 1, b: 0, a: 0}
-    - _BorderColor: {r: 1, g: 0.6, b: 0.25, a: 0.9019608}
+    - _BorderColor: {r: 1, g: 0.6, b: 0.24999997, a: 0.5019608}
     - _Color: {r: 0.55, g: 0.32, b: 0.22, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

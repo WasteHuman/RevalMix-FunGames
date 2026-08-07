@@ -6,7 +6,7 @@ namespace UI.Loading
 {
     public class UILoadingView : MonoBehaviour
     {
-        [SerializeField] private float _progressAnimDuration = 0.5f;
+        [SerializeField] private float _progressAnimDuration = 0.25f;
         [SerializeField] private Image _progressBarFill;
 
         private Tween _fillTween;

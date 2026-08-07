@@ -22,6 +22,7 @@ namespace UI.Player
         [Space(5), Header("Change Player Info Buttons")]
         [SerializeField] private ActionButton _changePhotoButton;
         [SerializeField] private ActionButton _changeNameButton;
+        [SerializeField] private PlayerInfoView _playerInfoView;
 
         [Space(5), Header("Change Player Name Setup")]
         [SerializeField] private TMP_InputField _inputField;
@@ -58,10 +59,15 @@ namespace UI.Player
 
             GameServices.PlayerService.SetName(raw);
             _inputField.gameObject.SetActive(false);
+            _playerInfoView.ToggleNameLabel(true);
         }
 
         private void HandleChangePhotoButtonClick() => GameServices.AvatarService.RequestPermission();
 
-        private void HandleChangeNameButtonClick() => _inputField.gameObject.SetActive(true);
+        private void HandleChangeNameButtonClick()
+        {
+            _playerInfoView.ToggleNameLabel(false);
+            _inputField.gameObject.SetActive(true);
+        }
     }
 }

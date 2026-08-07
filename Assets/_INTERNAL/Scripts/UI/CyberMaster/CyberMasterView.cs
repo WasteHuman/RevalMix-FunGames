@@ -18,7 +18,6 @@ namespace UI.CyberMaster
         [Space(5), Header("Buttons Setup")]
         [SerializeField] private ActionButton _hitButton;
         [SerializeField] private ActionButton _standButton;
-        [SerializeField] private ActionButton _restartButton;
 
         [Space(5), Header("Card Setup")]
         [SerializeField] private GameObject _cardPrefab;
@@ -36,19 +35,7 @@ namespace UI.CyberMaster
         [SerializeField] private bool _replacePreviousCard = false;
 
         [Space(5), Header("Result Panel")]
-        [SerializeField] private GameObject _resultPanel;
-        [SerializeField] private Image _resultPanelEffectImage;
-        [SerializeField] private Image _resultPanelCupImage;
-        [SerializeField] private TextMeshProUGUI _resultTitleText;
-        [SerializeField] private TextMeshProUGUI _resultScoreText;
-        [SerializeField] private TextMeshProUGUI _resultRewardText;
-        [SerializeField] private TMP_ColorGradient _blackjackGradient;
-        [SerializeField] private TMP_ColorGradient _winGradient;
-        [SerializeField] private TMP_ColorGradient _loseGradient;
-        [SerializeField] private Sprite _winEffect;
-        [SerializeField] private Sprite _loseEffect;
-        [SerializeField] private Sprite _winCupSprite;
-        [SerializeField] private Sprite _loseCupSprite;
+        [SerializeField] private ResultPanelView _resultPanelView;
 
         private bool _nextCardToLeft = true;
 
@@ -64,14 +51,8 @@ namespace UI.CyberMaster
             if (_standButton != null)
                 _standButton.OnButtonClick += HandleStandButtonClick;
 
-            if (_restartButton != null)
-            {
-                _restartButton.OnButtonClick += HandleRestartButtonClick;
-                _restartButton.gameObject.SetActive(false);
-            }
-
-            if (_resultPanel != null)
-                _resultPanel.SetActive(false);
+            if (_resultPanelView != null)
+                _resultPanelView.OnRestartGameButtonClick += HandleRestartButtonClick;
         }
 
         public void Init(int deckSize)
@@ -88,8 +69,8 @@ namespace UI.CyberMaster
             if(_standButton != null)
                 _standButton.OnButtonClick -= HandleStandButtonClick;
 
-            if(_restartButton != null)
-                _restartButton.OnButtonClick -= HandleRestartButtonClick;
+            if (_resultPanelView != null)
+                _resultPanelView.OnRestartGameButtonClick -= HandleRestartButtonClick;
 
             KillCardTweens(_leftSlot);
             KillCardTweens(_rightSlot);
@@ -197,63 +178,12 @@ namespace UI.CyberMaster
                 _standButton.Interactable = interactable;
         }
 
-        public void SetRestartButtonInteractable(bool interactable)
-        {
-            if (_restartButton != null)
-            {
-                _restartButton.gameObject.SetActive(interactable);
-                _restartButton.Interactable = interactable;
-            }
-        }
-
         public void ShowResult(bool isWin, float reward, int finalScore, bool isBlackjack)
         {
-            if (_resultPanel == null)
+            if (_resultPanelView == null)
                 return;
 
-            _resultPanel.SetActive(true);
-
-            if (_resultTitleText != null)
-            {
-                if (isBlackjack)
-                {
-                    _resultTitleText.text = "Blackjack!";
-                    _resultTitleText.colorGradientPreset = _blackjackGradient;
-                    _resultPanelEffectImage.sprite = _winEffect;
-                    _resultPanelCupImage.sprite = _winCupSprite;
-                }
-                else if (isWin)
-                {
-                    _resultTitleText.text = "Win!";
-                    _resultTitleText.colorGradientPreset = _winGradient;
-                    _resultPanelEffectImage.sprite = _winEffect;
-                    _resultPanelCupImage.sprite = _winCupSprite;
-                }
-                else
-                {
-                    _resultTitleText.text = "Lose!";
-                    _resultTitleText.colorGradientPreset = _loseGradient;
-                    _resultPanelEffectImage.sprite = _loseEffect;
-                    _resultPanelCupImage.sprite = _loseCupSprite;
-                }
-            }
-
-            if (_resultScoreText != null)
-                _resultScoreText.text = $"Final Score: {finalScore}";
-
-            if (_resultRewardText != null)
-            {
-                if (isWin)
-                    _resultRewardText.text = $"+{reward} Coins";
-                else
-                    _resultRewardText.text = "No reward";
-            }
-        }
-
-        public void HideResult()
-        {
-            if (_resultPanel != null)
-                _resultPanel.SetActive(false);
+            _resultPanelView.ShowResultPanel(isWin, isBlackjack, Mathf.RoundToInt(reward), finalScore);
         }
 
         private void SetCardFace(GameObject cardObj, bool showFace, CardData data)

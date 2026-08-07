@@ -84,7 +84,6 @@ namespace Core.Gameplay.GameControllers
                 _view.UpdateScore(_currentScore);
                 _view.UpdateBet(_currentBet);
                 _view.SetButtonsInteractable(false);
-                _view.HideResult();
             }
 
             // Раздаем 2 стартовые карты
@@ -174,9 +173,6 @@ namespace Core.Gameplay.GameControllers
                 gameId: GameConstants.GAME_CYBER_MASTER
             );
 
-            if(isWin)
-                GameServices.EconomyService.AddCoins(reward);
-
             // Отправляем результат в GameCompletionHandler
             GameServices.GameCompletionHandler.HandleGameResult(result);
 
@@ -193,7 +189,6 @@ namespace Core.Gameplay.GameControllers
                 yield break;
 
             _view.ShowResult(isWin, reward, _currentScore, isBlackjack);
-            _view.SetRestartButtonInteractable(true);
         }
 
         private void HandleHit()

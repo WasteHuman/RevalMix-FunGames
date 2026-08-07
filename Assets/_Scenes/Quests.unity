@@ -1230,10 +1230,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 139322198}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e2cc4a74bbe25a4abcd35850b797f5e, type: 3}
+  m_Script: {fileID: 11500000, guid: 60ba6104dd790b741ad7ccf3764dc410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.CustomSliderBar
-  _progress: 0.348
+  _progress: 0
   _fillRect: {fileID: 1687192812}
   _viewportRect: {fileID: 72856324}
   _animationDuration: 0.5
@@ -2823,6 +2823,7 @@ MonoBehaviour:
   _currentCoinsLabel: {fileID: 1056003796}
   _sliderBar: {fileID: 139322200}
   _avatarImage: {fileID: 755334278}
+  _changeAvatarSize: 1
 --- !u!1 &458842532
 GameObject:
   m_ObjectHideFlags: 0
@@ -5464,7 +5465,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 512}
+  m_SizeDelta: {x: 105, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &755334277
 CanvasRenderer:
@@ -13875,7 +13876,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -159.088, y: 0}
+  m_AnchoredPosition: {x: -244, y: 0}
   m_SizeDelta: {x: 244, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1687192813

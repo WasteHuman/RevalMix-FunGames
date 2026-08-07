@@ -3252,6 +3252,8 @@ MonoBehaviour:
   _diamondRetroButton: {fileID: 1233448986}
   _neonWheelButton: {fileID: 1094153864}
   _cyberMasterButton: {fileID: 452730794}
+  _electricDiceButton: {fileID: 1935468956}
+  _infiniteScoreButton: {fileID: 111565785}
 --- !u!1 &770148684
 GameObject:
   m_ObjectHideFlags: 0
@@ -3762,10 +3764,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 815508055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e2cc4a74bbe25a4abcd35850b797f5e, type: 3}
+  m_Script: {fileID: 11500000, guid: 60ba6104dd790b741ad7ccf3764dc410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.CustomSliderBar
-  _progress: 0.348
+  _progress: 0
   _fillRect: {fileID: 1796609793}
   _viewportRect: {fileID: 2029731628}
   _animationDuration: 0.5
@@ -3915,6 +3917,7 @@ MonoBehaviour:
   _currentCoinsLabel: {fileID: 1056003796}
   _sliderBar: {fileID: 815508057}
   _avatarImage: {fileID: 1838810843}
+  _changeAvatarSize: 1
 --- !u!1 &853788308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5548,7 +5551,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 512}
+  m_SizeDelta: {x: 270, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1156852484
 MonoBehaviour:
@@ -5708,7 +5711,6 @@ MonoBehaviour:
   _saveButton: {fileID: 1433233853}
   _choosePlayerPhotoButton: {fileID: 701325140}
   _avatarImage: {fileID: 1156852484}
-  _maxAvatarSize: 512
 --- !u!1 &1218653946
 GameObject:
   m_ObjectHideFlags: 0
@@ -8877,7 +8879,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 512}
+  m_SizeDelta: {x: 105, y: 105}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1838810842
 CanvasRenderer:

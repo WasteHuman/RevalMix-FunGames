@@ -10,7 +10,7 @@ Shader "UI/Glass"
         _BgTransform ("BG Transform (xy=scale, zw=offset)", Vector) = (1,1,0,0)
         [Toggle(_FLIP_BG_Y)] _FlipBgY ("Flip Background Y", Float) = 0
 
-        _BlurSize ("Blur Size (px)", Range(0,20)) = 6
+        _BlurSize ("Blur Size (px)", Range(0,100)) = 6
         _Distortion ("Liquid Distortion", Range(0,0.05)) = 0.012
         _FlowSpeed ("Flow Speed", Range(0,1)) = 0.15
         _EdgeRefraction ("Edge Lens Refraction", Range(0,0.05)) = 0.015
@@ -26,7 +26,7 @@ Shader "UI/Glass"
         _HighlightWidth ("Top Edge Width", Range(0.01,0.5)) = 0.12
 
         _NoiseStrength ("Frost Strength", Range(0,0.3)) = 0.02
-        _NoiseScale ("Noise Scale", Range(1,40)) = 8
+        _NoiseScale ("Noise Scale", Range(1,512)) = 8
 
         [HideInInspector] _StencilComp ("Stencil Comparison", Float) = 8
         [HideInInspector] _Stencil ("Stencil ID", Float) = 0
@@ -123,6 +123,7 @@ Shader "UI/Glass"
                 half shape = tex.a * IN.color.a;
 
                 float2 screenUV = IN.screenPos.xy / IN.screenPos.w;
+
                 float2 noiseUV = float2(screenUV.x * (_ScreenParams.x / _ScreenParams.y), screenUV.y);
 
                 // «Текучий» шум: два слоя, дрейфуют во времени

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UI.Other
 {
-    public class CustomSliderBar : MonoBehaviour
+    public class CustomProgressBar : MonoBehaviour
     {
         [Header("Progress Setup")]
         [SerializeField, Range(0f, 1f)] private float _progress;

@@ -49,17 +49,17 @@ Material:
     - _BlurSize: 8
     - _BorderWidth: 0.015
     - _ColorMask: 15
-    - _Distortion: 0.012
-    - _EdgeLensWidth: 0.06
+    - _Distortion: 0.015
+    - _EdgeLensWidth: 0.02
     - _EdgeRefraction: 0.015
     - _EnableExternalAlpha: 0
     - _FlipBgY: 0
-    - _FlowSpeed: 0.15
-    - _GradientStrength: 0.08
-    - _HighlightIntensity: 0.7
-    - _HighlightWidth: 0.1
-    - _NoiseScale: 5
-    - _NoiseStrength: 0.03
+    - _FlowSpeed: 0.015
+    - _GradientStrength: 0.25
+    - _HighlightIntensity: 2
+    - _HighlightWidth: 0.25
+    - _NoiseScale: 256
+    - _NoiseStrength: 0.01
     - _Opacity: 1
     - _Stencil: 0
     - _StencilComp: 8
@@ -71,7 +71,7 @@ Material:
     - _ZWrite: 0
     m_Colors:
     - _BgTransform: {r: 1, g: 1, b: 0, a: 0}
-    - _BorderColor: {r: 1, g: 0.6, b: 0.25, a: 0.9019608}
+    - _BorderColor: {r: 1, g: 0.6, b: 0.24999997, a: 0.5019608}
     - _Color: {r: 0.55, g: 0.32, b: 0.22, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

@@ -29,9 +29,9 @@ namespace Core.Boot
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-#if UNITY_EDITOR
-            PlayerPrefs.DeleteAll();
-#endif
+//#if UNITY_EDITOR
+//            PlayerPrefs.DeleteAll();
+//#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
             RunAsync().Forget();
@@ -124,8 +124,8 @@ namespace Core.Boot
 
             loadingScreenView.ResetProgress();
 
-            float startTime = Time.deltaTime;
-            float minLoadingDuration = 2.5f;
+            float startTime = Time.time;
+            float minLoadingDuration = 25f;
             float currentProgress = 0f;
 
             AsyncOperation operation = SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
@@ -150,7 +150,7 @@ namespace Core.Boot
                     {
                         currentProgress = 1f;
                         loadingScreenView.SetLoadingProgress(currentProgress);
-                        yield return new WaitForSeconds(0.25f);
+                        yield return new WaitForSeconds(0.35f);
 
                         operation.allowSceneActivation = true;
                     }

@@ -15,10 +15,11 @@ namespace UI.Player
         [SerializeField] private TextMeshProUGUI _currentCoinsLabel;
 
         [Space(5), Header("Level Progress Bar Setup")]
-        [SerializeField] private CustomSliderBar _sliderBar;
+        [SerializeField] private CustomProgressBar _sliderBar;
 
         [Space(5), Header("Avatar Image Setup")]
         [SerializeField] private RawImage _avatarImage;
+        [SerializeField] private bool _changeAvatarSize = true;
 
         private void Awake()
         {
@@ -31,7 +32,10 @@ namespace UI.Player
         private void Start()
         {
             if(_nameLabel != null)
+            {
+                _nameLabel.enableAutoSizing = true;
                 _nameLabel.text = GameServices.PlayerService.PlayerName;
+            }
 
             if(_levelLabel != null)
                 _levelLabel.text = GameServices.PlayerService.PlayerLevel.ToString();
@@ -42,7 +46,12 @@ namespace UI.Player
             GameServices.EconomyService.RequestCoinsBalance();
 
             if (_avatarImage != null)
+            {
+                if (_changeAvatarSize)
+                    _avatarImage.rectTransform.sizeDelta = new(105f, 105f);
+
                 _avatarImage.texture = GameServices.PlayerService.PlayerAvatar;
+            }
         }
 
         private void OnDestroy()
@@ -51,6 +60,14 @@ namespace UI.Player
             GameServices.EconomyService.OnCoinsBalanceChanged -= HandleCoinsBalanceChanged;
             GameServices.PlayerService.OnLevelChanged -= HandleChangedLevel;
             GameServices.AvatarService.OnAvatarSetted -= HandleSettetAvatar;
+        }
+
+        public void ToggleNameLabel(bool value)
+        {
+            if (value)
+                _nameLabel.text = GameServices.PlayerService.PlayerName;
+
+            _nameLabel.gameObject.SetActive(value);
         }
 
         private void HandleChangedXP(float xp, float requiredXP)

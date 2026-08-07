@@ -42,7 +42,7 @@ namespace UI.Other
         private void OnDestroy()
         {
             _animations.StopAnimations();
-            _button.onClick.RemoveListener(HandleButtonClick);
+            _button.onClick.RemoveAllListeners();
         }
 
         private void HandleButtonClick()

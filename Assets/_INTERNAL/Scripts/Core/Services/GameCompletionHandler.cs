@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using Core.Gameplay;
+using Core.Services.Analytics;
 using Core.Services.Player;
 using Core.Services.Quests;
 using System;
@@ -50,6 +51,11 @@ namespace Core.Services
 
             // 4. Триггерим сохранение
             _onGameDataChanged?.Invoke();
+
+            if(result.IsWin)
+                AnalyticsService.Instance.ReportGameWin(result.GameId);
+            else
+                AnalyticsService.Instance.ReportGameLoss(result.GameId);
 
             Debug.Log($"[GameCompletion] Result handled. Total games: {_player.PlayerTotalGames}, WithdrawalAmount: {_player.PlayerTotalWins}");
         }

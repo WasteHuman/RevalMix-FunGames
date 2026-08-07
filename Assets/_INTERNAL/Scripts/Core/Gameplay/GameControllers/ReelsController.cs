@@ -302,8 +302,6 @@ namespace Core.Gameplay.GameControllers
                 int multiplier = GetMultiplier(matchCount);
                 int totalWin = baseReward * multiplier + _currentBet;
 
-                GameServices.EconomyService.AddCoins(totalWin);
-                GameServices.PlayerService.AddXP(20);
                 ShowResult(true, totalWin, symbolIndices);
 
                 GameResult result = new(
@@ -319,7 +317,6 @@ namespace Core.Gameplay.GameControllers
             }
             else
             {
-                GameServices.PlayerService.AddXP(5);
                 Debug.Log("No win");
                 ShowResult(false, 0, symbolIndices);
                 GameResult result = new(
@@ -357,6 +354,7 @@ namespace Core.Gameplay.GameControllers
             3 => 16,
             4 => 20,
             5 => 40,
+            6 => 40,
             _ => 2,
         };
 
