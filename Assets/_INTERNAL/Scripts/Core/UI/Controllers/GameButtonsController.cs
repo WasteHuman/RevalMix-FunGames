@@ -14,6 +14,8 @@ namespace Core.UI.Controllers
         [SerializeField] private ActionButton _cyberMasterButton;
         [SerializeField] private ActionButton _electricDiceButton;
         [SerializeField] private ActionButton _infiniteScoreButton;
+        [SerializeField] private ActionButton _cryptoVibeButton;
+        [SerializeField] private ActionButton _plinkoVibeButton;
 
         private void Awake()
         {
@@ -25,7 +27,11 @@ namespace Core.UI.Controllers
             _cyberMasterButton.OnButtonClick += HandleCyberMasterButtonClick;
             _electricDiceButton.OnButtonClick += HandleElectricDiceButtonClick;
             _infiniteScoreButton.OnButtonClick += HandleInfiniteScoreButtonClick;
+            _cryptoVibeButton.OnButtonClick += HandleCryptoVibeButtonClick;
+            _plinkoVibeButton.OnButtonClick += HandlePlinkoVibeButtonClick;
         }
+
+        
 
         private void OnDestroy()
         {
@@ -37,6 +43,8 @@ namespace Core.UI.Controllers
             _cyberMasterButton.OnButtonClick -= HandleCyberMasterButtonClick;
             _electricDiceButton.OnButtonClick -= HandleElectricDiceButtonClick;
             _infiniteScoreButton.OnButtonClick -= HandleInfiniteScoreButtonClick;
+            _cryptoVibeButton.OnButtonClick -= HandleCryptoVibeButtonClick;
+            _plinkoVibeButton.OnButtonClick -= HandlePlinkoVibeButtonClick;
         }
 
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
@@ -47,5 +55,7 @@ namespace Core.UI.Controllers
         private void HandleCyberMasterButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_CYBER_MASTER);
         private void HandleElectricDiceButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_ELECTRIC_DICE);
         private void HandleInfiniteScoreButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_INFINITE_SCORE);
+        private void HandleCryptoVibeButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_CRYPTO_VIBE);
+        private void HandlePlinkoVibeButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_PLINKO_VIBE);
     }
 }

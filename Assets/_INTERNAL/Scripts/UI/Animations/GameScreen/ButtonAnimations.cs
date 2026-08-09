@@ -22,6 +22,8 @@ namespace UI.Animations.GameScreen
 
         private Sequence _clickSequence;
 
+        public bool Initialized => _rectTransform != null;
+
         public void Init(RectTransform target)
         {
             _rectTransform = target;

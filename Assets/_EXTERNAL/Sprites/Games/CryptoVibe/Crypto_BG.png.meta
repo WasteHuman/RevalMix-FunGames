@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: fe338f947f5fd044db2403cdbaf761d2
+guid: 3976fbaa8c75fc5488d3b2c0c249d558
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1029661276091759382
-    second: image 84_0
+      213: -7646908319697802607
+    second: Crypto_BG_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -98,7 +98,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: Android
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: 48
     textureCompression: 1
@@ -111,7 +111,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 4
     buildTarget: WebGL
-    maxTextureSize: 512
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: 48
     textureCompression: 1
@@ -139,23 +139,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: King_Card(Trefs)
+      name: Crypto_BG_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 512
-        height: 800
+        width: 1624
+        height: 1811
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 61bbc68a9771a4e00800000000000000
-      internalID: 1029661276091759382
+      spriteID: 19aee66f569b0e590800000000000000
+      internalID: -7646908319697802607
       vertices: []
       indices: 
       edges: []
@@ -164,7 +164,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0c82660a1e1d23d45877bb3fec3bf6fd
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -174,7 +174,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      King_Card(Trefs): 1029661276091759382
+      Crypto_BG_0: -7646908319697802607
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

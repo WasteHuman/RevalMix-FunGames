@@ -76,7 +76,7 @@ namespace Core.Gameplay.GameControllers
             _softAces = 0;
             _isGameActive = false;
 
-            _currentBet = 100;
+            _currentBet = 150;
 
             if (_view != null)
             {

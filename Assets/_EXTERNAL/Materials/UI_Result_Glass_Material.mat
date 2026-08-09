@@ -54,12 +54,12 @@ Material:
     - _EdgeRefraction: 0.005
     - _EnableExternalAlpha: 0
     - _FlipBgY: 0
-    - _FlowSpeed: 0.75
+    - _FlowSpeed: 0
     - _GradientStrength: 0.25
     - _HighlightIntensity: 2
     - _HighlightWidth: 0.25
     - _NoiseScale: 6
-    - _NoiseStrength: 0.09
+    - _NoiseStrength: 0
     - _Opacity: 1
     - _Stencil: 0
     - _StencilComp: 8

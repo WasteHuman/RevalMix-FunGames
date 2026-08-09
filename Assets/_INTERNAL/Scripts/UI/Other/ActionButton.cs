@@ -31,10 +31,14 @@ namespace UI.Other
 
         private void Awake()
         {
-            _button = GetComponent<Button>();
-            _rectTransform = GetComponent<RectTransform>();
+            if(_button == null)
+                _button = GetComponent<Button>();
 
-            _animations.Init(_rectTransform);
+            if(_rectTransform == null)
+                _rectTransform = GetComponent<RectTransform>();
+
+            if(!_animations.Initialized)
+                _animations.Init(_rectTransform);
         }
 
         private void Start() => _button.onClick.AddListener(HandleButtonClick);
@@ -43,6 +47,14 @@ namespace UI.Other
         {
             _animations.StopAnimations();
             _button.onClick.RemoveAllListeners();
+        }
+
+        public void ForceInit()
+        {
+            _button = GetComponent<Button>();
+            _rectTransform = GetComponent<RectTransform>();
+
+            _animations.Init(_rectTransform);
         }
 
         private void HandleButtonClick()

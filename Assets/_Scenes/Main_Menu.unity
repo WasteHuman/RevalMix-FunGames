@@ -3254,6 +3254,8 @@ MonoBehaviour:
   _cyberMasterButton: {fileID: 452730794}
   _electricDiceButton: {fileID: 1935468956}
   _infiniteScoreButton: {fileID: 111565785}
+  _cryptoVibeButton: {fileID: 2101895684}
+  _plinkoVibeButton: {fileID: 903500082}
 --- !u!1 &770148684
 GameObject:
   m_ObjectHideFlags: 0
