@@ -43,12 +43,14 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private List<SymbolData> _symbolData = new();
 
         [Space(5), Header("Settings")]
+        [SerializeField] private ReelsType _reelsType = ReelsType.Classic;
         [SerializeField] private int _minBet = 10;
         [SerializeField] private int _betStep = 10;
         [SerializeField] private float _baseSpinDuration = 1f;
         [SerializeField] private float _reelDelay = 0.2f;
         [SerializeField] private float _autoSpinDelay = 1f;
         [SerializeField] private List<Sprite> _symbols = new();
+        [SerializeField] private int _diamondReelsMultiplier = 25;
 
         private float _maxBet;
         private int _currentBet;
@@ -68,6 +70,7 @@ namespace Core.Gameplay.GameControllers
             _currentBet = _minBet;
             _isTurboMode = false;
             _spinDuration = _baseSpinDuration;
+            _maxBet = Mathf.RoundToInt(GameServices.EconomyService.GetCoinsBalance() * 0.9f);
 
             for (int i = 0; i < _reels.Count; i++)
                 _reels[i].Init(_symbols);
@@ -100,7 +103,6 @@ namespace Core.Gameplay.GameControllers
             if (_autoSpinLabel != null)
                 _inactiveColor = _autoSpinLabel.colorGradientPreset;
 
-            GameServices.EconomyService.RequestCoinsBalance();
             UpdateUI();
         }
 
@@ -280,27 +282,16 @@ namespace Core.Gameplay.GameControllers
 
         private void CheckWin(int[] symbolIndices)
         {
-            if (symbolIndices.Length == 0) 
+            if (symbolIndices.Length == 0)
                 return;
 
-            int firstSymbol = symbolIndices[0];
-            int matchCount = 1;
+            int matchCount = CountSequentialMatches(symbolIndices);
 
-            for (int i = 1; i < symbolIndices.Length; i++)
-            {
-                if (symbolIndices[i] == firstSymbol) 
-                    matchCount++;
-                else 
-                    break;
-            }
-
-            bool isWin = matchCount >= 2;
+            bool isWin = IsWinningCombination(symbolIndices, matchCount);
 
             if (isWin)
             {
-                int baseReward = _symbolData[firstSymbol].BaseReward;
-                int multiplier = GetMultiplier(matchCount);
-                int totalWin = baseReward * multiplier + _currentBet;
+                int totalWin = CalculateWin(symbolIndices[0], matchCount);
 
                 ShowResult(true, totalWin, symbolIndices);
 
@@ -318,7 +309,9 @@ namespace Core.Gameplay.GameControllers
             else
             {
                 Debug.Log("No win");
+
                 ShowResult(false, 0, symbolIndices);
+
                 GameResult result = new(
                     isWin: false,
                     rewardCoins: 0,
@@ -326,18 +319,77 @@ namespace Core.Gameplay.GameControllers
                     questTag: GameConstants.TAG_SPIN_10_REELS,
                     gameId: GameConstants.GAME_REELS
                 );
+
                 GameServices.GameCompletionHandler.HandleGameResult(result);
             }
+        }
+
+        private int CalculateWin(int symbolIndex, int matchCount)
+        {
+            int baseReward = _symbolData[symbolIndex].BaseReward;
+            int multiplier = GetMultiplier(matchCount);
+
+            return _reelsType switch
+            {
+                ReelsType.Classic =>
+                    baseReward * multiplier + _currentBet,
+
+                ReelsType.Diamond =>
+                    baseReward * multiplier + _currentBet * _diamondReelsMultiplier,
+
+                _ => 0
+            };
+        }
+
+        private bool IsWinningCombination(int[] symbolIndices, int matchCount)
+        {
+            return _reelsType switch
+            {
+                ReelsType.Classic => matchCount >= 2,
+
+                ReelsType.Diamond =>
+                    matchCount == 3 &&
+                    IsDiamondSymbol(symbolIndices[0]),
+
+                _ => false
+            };
+        }
+
+        private int CountSequentialMatches(int[] symbolIndices)
+        {
+            if (symbolIndices.Length == 0)
+                return 0;
+
+            int firstSymbol = symbolIndices[0];
+            int matchCount = 1;
+
+            for (int i = 1; i < symbolIndices.Length; i++)
+            {
+                if (symbolIndices[i] != firstSymbol)
+                    break;
+
+                matchCount++;
+            }
+
+            return matchCount;
+        }
+
+        private bool IsDiamondSymbol(int symbolIndex)
+        {
+            return _symbolData[symbolIndex].Type == SymbolType.Diamond;
         }
 
         private int CountMatches(List<int> symbols)
         {
             if (symbols.Count == 0) 
                 return 0;
+
             Dictionary<int, int> symbolCounts = new();
             foreach (var symbol in symbols)
             {
-                if (!symbolCounts.ContainsKey(symbol)) symbolCounts[symbol] = 0;
+                if (!symbolCounts.ContainsKey(symbol))
+                    symbolCounts[symbol] = 0;
+
                 symbolCounts[symbol]++;
             }
 
@@ -354,7 +406,7 @@ namespace Core.Gameplay.GameControllers
             3 => 16,
             4 => 20,
             5 => 40,
-            6 => 40,
+            6 => 80,
             _ => 2,
         };
 

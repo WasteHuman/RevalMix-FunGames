@@ -332,7 +332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7490196}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -756,6 +756,7 @@ MonoBehaviour:
   _blackjackGradient: {fileID: 11400000, guid: a80e02be8e88f8348826319680da80d8, type: 2}
   _winGradient: {fileID: 11400000, guid: 9dba1a900a5008e4aa9aa37c7921cf03, type: 2}
   _loseGradient: {fileID: 11400000, guid: c044cd2c21d249043bfa6fe8281fc5fe, type: 2}
+  _drawGradient: {fileID: 0}
   _winEffect: {fileID: -8728070044247982632, guid: d6e9de8a9b33b0e4a8c89a375c9197e5, type: 3}
   _loseEffect: {fileID: 8928823715514350562, guid: 04bc84c16773de043b93fbb914409705, type: 3}
   _winCupSprite: {fileID: 5630289498933763738, guid: f7b6bb0c573ff234bb2e8c55bf368e8f, type: 3}
@@ -825,7 +826,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 2100000, guid: 17193c00c88c18b43a0f452a8c594e2b, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.9490196}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
