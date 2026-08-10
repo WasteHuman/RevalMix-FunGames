@@ -28,14 +28,21 @@ namespace Core.Gameplay.GameControllers.Plinko
 
         public void HighlightPeg(int row, int col)
         {
-            if (!_pegs.TryGetValue(row * 100 + col, out var sr)) 
+            if (!_pegs.TryGetValue(row * 100 + col, out Image sr)) 
                 return;
 
             sr.sprite = _pegGlow;
+            sr.color = Color.white;
 
+            // Анимация glow с pulse-эффектом для имитации свечения от удара
             DOTween.Sequence()
-                .AppendInterval(0.15f)
-                .AppendCallback(() => sr.sprite = _pegNormal);
+                .Append(sr.DOColor(new Color(1f, 1f, 1f, 0.6f), 0.08f).SetEase(Ease.OutQuad))
+                .AppendInterval(0.1f)
+                .AppendCallback(() =>
+                {
+                    sr.sprite = _pegNormal;
+                    sr.color = Color.white;
+                });
         }
     }
 }

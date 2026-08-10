@@ -92,12 +92,12 @@ namespace Core.Gameplay.GameControllers.Plinko
                 _audioSource.PlayOneShot(clip, Random.Range(0.8f, 1.2f));
             }
 
-            // 3. Частицы только на ~30% ударов — экономим перформанс на слабых девайсах
-            if (_hitVFXPrefab != null && Random.value < 0.3f)
+            // 3. Частицы только на ~40% ударов — экономим перформанс на слабых девайсах
+            if (_hitVFXPrefab != null && Random.value < 0.4f)
             {
                 var vfx = Instantiate(_hitVFXPrefab, hop.EndPoint, Quaternion.identity);
                 vfx.Play();
-                Destroy(vfx.gameObject, 1f);
+                Destroy(vfx.gameObject, 0.75f);
             }
         }
 

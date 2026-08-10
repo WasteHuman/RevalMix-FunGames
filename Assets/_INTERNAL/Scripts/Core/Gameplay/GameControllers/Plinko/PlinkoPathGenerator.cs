@@ -94,8 +94,20 @@ namespace Core.Gameplay.GameControllers.Plinko
                 return points.ToArray();
             }
 
-            var arcHeight = (from.y - to.y) * 0.35f;
-            var mid = (from + to) / 2f + new Vector3(0, arcHeight, 0);
+            // Физика-подобная дуга: мяч сначала летит по инерции, потом гравитация тянет вниз
+            var horizontalDist = Mathf.Abs(to.x - from.x);
+            var verticalDist = Mathf.Abs(from.y - to.y);
+
+            // Высота арки зависит от соотношения горизонтального и вертикального расстояния
+            // Чем больше горизонтальное смещение относительно вертикального, тем выше арка
+            var arcRatio = Mathf.Clamp01(horizontalDist / (verticalDist + 0.1f));
+            var arcHeight = verticalDist * 0.25f * arcRatio;
+
+            // Контрольная точка квадратичной кривой Безье
+            // Сдвигаем её немного в сторону направления движения для имитации инерции
+            var direction = (to.x > from.x) ? 1 : -1;
+            var midOffset = new Vector3(direction * horizontalDist * 0.15f, arcHeight, 0);
+            var mid = (from + to) / 2f + midOffset;
 
             for (int i = 1; i <= samples; i++)
             {

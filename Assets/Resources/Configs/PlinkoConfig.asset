@@ -19,9 +19,9 @@ MonoBehaviour:
   BucketSpacing: 0.525
   DropX: 0
   BallStartOffsetY: -1.15
-  SegmentDuration: 0.12
-  FinalFallDuration: 0.3
-  SimplifiedAnimation: 0
+  SegmentDuration: 0.1
+  FinalFallDuration: 0.4
+  SimplifiedAnimation: 1
   BiasToCenter: 0.25
   Buckets:
   - Multiplier: 6.17
