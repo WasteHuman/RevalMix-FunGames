@@ -16,13 +16,12 @@ MonoBehaviour:
   PegsInFirstRow: 3
   PegSpacing: 0.5
   RowSpacing: 0.5
-  BucketSpacing: 0.525
+  BucketSpacing: 0.65
+  BucketOffsetY: 0.35
   DropX: 0
-  BallStartOffsetY: -1.15
-  SegmentDuration: 0.1
+  DropY: 4
+  SimplifiedAnimation: 0
   FinalFallDuration: 0.4
-  SimplifiedAnimation: 1
-  BiasToCenter: 0.25
   Buckets:
   - Multiplier: 6.17
     Weight: 1

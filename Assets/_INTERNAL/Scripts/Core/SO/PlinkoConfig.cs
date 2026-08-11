@@ -6,28 +6,26 @@ namespace Core.SO
     public sealed class PlinkoConfig : ScriptableObject
     {
         [Header("Board")]
-        public int PegRows = 12;
-        public int PegsInFirstRow = 3;
+        public int PegRows = 12;          // количество рядов гвоздей
+        public int PegsInFirstRow = 3;   // вершина пирамиды: 3, 4, 5...
         public float PegSpacing = 0.8f;
         public float RowSpacing = 0.9f;
-        public float BucketSpacing = 1.25f;
+        public float BucketSpacing = 1.0f;
+        public float BucketOffsetY = 0.35f; // отступ корзин вниз от последнего ряда
 
         [Header("Drop")]
         public float DropX = 0f;
-        public float BallStartOffsetY = 1.2f;
+        public float DropY = 1.2f;
 
-        [Header("Timing")]
-        public float SegmentDuration = 0.18f;
-        public float FinalFallDuration = 0.4f;
-
-        [Header("Animation")]
+        [Header("Animations")]
         public bool SimplifiedAnimation = false;
-
-        [Header("Randomness")]
-        [Range(0f, 1f)] public float BiasToCenter = 0.55f; // шанс упасть "вниз-прямо"
+        public float FinalFallDuration = 0.3f;
 
         [Header("Buckets")]
-        public PlinkoBucket[] Buckets; // массив слотов снизу с множителями
+        public PlinkoBucket[] Buckets;
+
+        /// <summary>Гвоздей в ряду: вершина + row.</summary>
+        public int GetPegsInRow(int row) => PegsInFirstRow + row;
 
         private void OnValidate()
         {

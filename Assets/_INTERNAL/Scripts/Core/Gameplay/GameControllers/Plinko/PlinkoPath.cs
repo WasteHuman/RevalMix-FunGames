@@ -19,7 +19,5 @@ namespace Core.Gameplay.GameControllers.Plinko
             BucketIndex = bucketIndex;
             Seed = seed;
         }
-
-        public Vector3 StartPoint => Hops[0].Points[0];
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Core.SO;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Core.Gameplay.GameControllers.Plinko
@@ -20,33 +19,6 @@ namespace Core.Gameplay.GameControllers.Plinko
         public int GetPegCountInRow(int row) => _config.PegsInFirstRow + row;
 
         public int GetBucketCount() => _config.PegRows + 1;
-
-        public PlinkoPath GeneratePath(float dropX)
-        {
-            var hops = new List<PlinkoHop>();
-
-            var col = GetStartColumn();
-            var rights = 0;
-            var currentPos = new Vector3(dropX, GetTopY(), 0f);
-
-            for (int row = 0; row < _config.PegRows; row++)
-            {
-                var pegPos = GetPegPosition(row, col);
-                hops.Add(new PlinkoHop(BuildArc(currentPos, pegPos), row, col));
-
-                if (ChooseDirection() > 0) rights++;
-                col = 1 + rights;
-                currentPos = pegPos;
-            }
-
-            var bucketIndex = rights;
-            hops.Add(new PlinkoHop(BuildArc(currentPos, GetBucketPosition(bucketIndex)), -1, bucketIndex));
-
-            return new PlinkoPath(hops.ToArray(), bucketIndex, _seed);
-        }
-
-        /// <summary>Центральный колышек первого ряда.</summary>
-        public int GetStartColumn() => (_config.PegsInFirstRow - 1) / 2;
 
         /// <summary>
         /// Позиция колышка. Формула центрирования сама даёт шахматное смещение:
@@ -82,45 +54,6 @@ namespace Core.Gameplay.GameControllers.Plinko
             return new Vector3(x, y, 0f);
         }
 
-        private Vector3[] BuildArc(Vector3 from, Vector3 to, int samples = 4)
-        {
-            var points = new List<Vector3>();
-
-            // Вертикальное падение (старт) — без дуги
-            if (Mathf.Abs(to.x - from.x) < 0.001f)
-            {
-                for (int i = 1; i <= samples; i++)
-                    points.Add(Vector3.Lerp(from, to, (float)i / samples));
-                return points.ToArray();
-            }
-
-            // Физика-подобная дуга: мяч сначала летит по инерции, потом гравитация тянет вниз
-            var horizontalDist = Mathf.Abs(to.x - from.x);
-            var verticalDist = Mathf.Abs(from.y - to.y);
-
-            // Высота арки зависит от соотношения горизонтального и вертикального расстояния
-            // Чем больше горизонтальное смещение относительно вертикального, тем выше арка
-            var arcRatio = Mathf.Clamp01(horizontalDist / (verticalDist + 0.1f));
-            var arcHeight = verticalDist * 0.25f * arcRatio;
-
-            // Контрольная точка квадратичной кривой Безье
-            // Сдвигаем её немного в сторону направления движения для имитации инерции
-            var direction = (to.x > from.x) ? 1 : -1;
-            var midOffset = new Vector3(direction * horizontalDist * 0.15f, arcHeight, 0);
-            var mid = (from + to) / 2f + midOffset;
-
-            for (int i = 1; i <= samples; i++)
-            {
-                var t = (float)i / samples;
-                points.Add(Mathf.Pow(1 - t, 2) * from
-                         + 2 * (1 - t) * t * mid
-                         + Mathf.Pow(t, 2) * to);
-            }
-            return points.ToArray();
-        }
-
-        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.BallStartOffsetY;
-
-        private int ChooseDirection() => _rng.NextDouble() < 0.5 ? -1 : 1;
+        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.DropY;
     }
 }

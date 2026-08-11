@@ -3,7 +3,7 @@
 namespace Core.Gameplay.GameControllers.Plinko
 {
     [System.Serializable]
-    public struct PlinkoHop
+    public readonly struct PlinkoHop
     {
         public readonly Vector3[] Points;
         /// <summary>Ряд и колонка гвоздя, в который попадает мяч. -1 — финальный хоп в бакет.</summary>

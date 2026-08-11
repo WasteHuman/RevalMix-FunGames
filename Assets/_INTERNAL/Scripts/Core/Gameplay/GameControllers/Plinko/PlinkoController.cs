@@ -2,6 +2,8 @@
 using Core.Data;
 using Core.Services;
 using Core.SO;
+using System.Collections.Generic;
+using System.Linq;
 using UI.Other;
 using UI.Plinko;
 using UnityEngine;
@@ -12,12 +14,13 @@ namespace Core.Gameplay.GameControllers.Plinko
     {
         [Header("View Setup")]
         [SerializeField] private PlinkoView _view;
-        [SerializeField] private PlinkoBoardView _board;
+        [SerializeField] private PlinkoBallKillZone _ballKillZone;
 
         [Space(5), Header("Config")]
         [SerializeField] private PlinkoConfig _config;
-        [SerializeField] private RectTransform _ballPrefab;
-        [SerializeField] private RectTransform _boardContainer;
+        [SerializeField] private PlayerBallView _ballPrefab;
+        [SerializeField] private Transform _boardContainer;
+        [SerializeField] private Transform _bucketsRoot;
         [SerializeField] private ParticleSystem _hitVFXPrefab;
         [SerializeField] private AudioClip[] _hitSounds;
         [SerializeField] private AudioClip _jackpotSound;
@@ -27,8 +30,12 @@ namespace Core.Gameplay.GameControllers.Plinko
         [SerializeField] private int _minBet = 10;
         [SerializeField] private int _betStep = 10;
 
-        [Space(5), Header("Other Panels")]
+        [Space(5), Header("Other")]
         [SerializeField] private ResultPanelView _resultPanelView;
+        [SerializeField] private GameObject _gridBuilder;
+        [SerializeField] private List<BucketView> _buckets = new();
+
+        private PlayerBallView _playerBall;
 
         private int _maxBet;
         private int _currentBet;
@@ -36,6 +43,11 @@ namespace Core.Gameplay.GameControllers.Plinko
 
         public override void Enter()
         {
+#if !UNITY_EDITOR
+            Destroy(_gridBuilder);
+#endif
+            CacheBuckets();
+
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleCoinsBalanceChanged;
 
             _view.OnBetChanged += HandleBetChanged;
@@ -43,6 +55,12 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.OnBetUpClick += HandleBetUpClick;
             _view.OnBetDownClick += HandleBetDownClick;
             _view.OnDropButtonClick += HandleDropButtonClick;
+
+            _ballKillZone.OnBallDropToKillZone += HandleFinish;
+
+            if (_buckets.Count > 0)
+                foreach (var bucket in _buckets)
+                    bucket.OnBallEntered += HandleFinish;
         }
 
         public override void Initialize()
@@ -64,42 +82,23 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.OnBetDownClick -= HandleBetDownClick;
             _view.OnDropButtonClick -= HandleDropButtonClick;
 
+            _ballKillZone.OnBallDropToKillZone -= HandleFinish;
+
             _view.Dispose();
+
+            if (_buckets.Count > 0)
+                foreach (var bucket in _buckets)
+                    bucket.OnBallEntered -= HandleFinish;
         }
 
-        private void DropBall()
+        private void CacheBuckets()
         {
-            var generator = new PlinkoPathGenerator(_config, Time.frameCount);
-            var path = generator.GeneratePath(_config.DropX);
-
-            var ball = Instantiate(_ballPrefab, path.StartPoint, Quaternion.identity, _boardContainer);
-            ball.SetAsFirstSibling();
-            var animator = new BallAnimator(ball, _config);
-
-            animator.Animate(path, bucketIdx => HandleFinish(bucketIdx, ball), HandlePegHit);
+            List<BucketView> buckets = _bucketsRoot.GetComponentsInChildren<BucketView>().ToList();
+            _buckets.AddRange(buckets);
         }
 
-        private void HandlePegHit(PlinkoHop hop)
-        {
-            // 1. Glow-спрайт гвоздя (swap и возврат внутри PlinkoBoard)
-            if (_board != null)
-                _board.HighlightPeg(hop.PegRow, hop.PegCol);
-
-            // 2. Звук удара с pitch-вариацией (guard от пустого массива в Inspector)
-            if (_audioSource != null && _hitSounds != null && _hitSounds.Length > 0)
-            {
-                var clip = _hitSounds[Random.Range(0, _hitSounds.Length)];
-                _audioSource.PlayOneShot(clip, Random.Range(0.8f, 1.2f));
-            }
-
-            // 3. Частицы только на ~40% ударов — экономим перформанс на слабых девайсах
-            if (_hitVFXPrefab != null && Random.value < 0.4f)
-            {
-                var vfx = Instantiate(_hitVFXPrefab, hop.EndPoint, Quaternion.identity);
-                vfx.Play();
-                Destroy(vfx.gameObject, 0.75f);
-            }
-        }
+        private void DropBall() 
+            => _playerBall = Instantiate(_ballPrefab, new(_config.DropX, _config.DropY), Quaternion.identity, _boardContainer);
 
         private void HandleDropButtonClick()
         {
@@ -117,23 +116,15 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.ToggleButtonsInteractable(false);
         }
 
-        private void HandleFinish(int bucketIdx, Transform ball)
+        private void HandleFinish(float multiplier)
         {
-            var bucket = _config.Buckets[bucketIdx];
+            bool isWin = multiplier > 0f;
 
-            if (bucket.Multiplier == 6.17f && _jackpotSound != null)
-            {
-                _audioSource.PlayOneShot(_jackpotSound);
-                // TODO: confetti через общий PopupController
-            }
-
-            Destroy(ball.gameObject, 0.15f);
-
-            var rewardCoins = Mathf.RoundToInt(_currentBet * bucket.Multiplier);
+            var rewardCoins = Mathf.RoundToInt(_currentBet * multiplier);
             if (rewardCoins > 0)
                 GameServices.EconomyService.AddCoins(rewardCoins);
 
-            bool isWin = bucket.Multiplier > 0f;
+            Debug.Log($"[Plinko Controller] Is win: {isWin}, Multiplier: {multiplier}");
 
             if (isWin)
                 _resultPanelView.ShowResultPanel(isWin, false, rewardCoins);
@@ -143,7 +134,7 @@ namespace Core.Gameplay.GameControllers.Plinko
             var result = new GameResult(
                 isWin: isWin,
                 rewardCoins: rewardCoins,
-                rewardXP: 5 * (int)Mathf.Max(1, bucket.Multiplier),
+                rewardXP: 5 * (int)Mathf.Max(1, multiplier),
                 questTag: GameConstants.TAG_DROP_10_PLINKO_BALLS,
                 gameId: GameConstants.GAME_PLINKO_VIBE);
 
