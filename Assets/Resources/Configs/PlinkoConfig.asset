@@ -18,8 +18,7 @@ MonoBehaviour:
   RowSpacing: 0.5
   BucketSpacing: 0.65
   BucketOffsetY: 0.35
-  DropX: 0
-  DropY: -0.95
+  SpawnPoint: {x: 0, y: 8, z: 0}
   SimplifiedAnimation: 0
   FinalFallDuration: 0.4
   Buckets:

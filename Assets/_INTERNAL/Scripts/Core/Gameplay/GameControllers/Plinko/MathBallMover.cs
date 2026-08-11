@@ -20,8 +20,10 @@ namespace Core.Gameplay.GameControllers.Plinko
         private Coroutine _moveCoroutine;
         private int _currentHopIndex;
 
-        private List<PegView> _allPegs = new();
-        private List<BucketView> _allBuckets = new();
+        private readonly List<PegView> _allPegs = new();
+        private readonly List<BucketView> _allBuckets = new();
+
+        public void SetInitialPosition(Vector3 position) => transform.position = position;
 
         /// <summary>
         /// Запускает анимацию движения мяча по заданному пути.
@@ -169,7 +171,7 @@ namespace Core.Gameplay.GameControllers.Plinko
                 return Vector3.zero;
 
             float x = (col - (pegsInRow - 1) / 2f) * _config.PegSpacing;
-            float y = ((_config.PegRows - 1) * _config.RowSpacing + _config.SpawnPoint.position.y) - row * _config.RowSpacing;
+            float y = ((_config.PegRows - 1) * _config.RowSpacing + _config.SpawnPoint.y) - row * _config.RowSpacing;
 
             return new Vector3(x, y, 0f);
         }

@@ -75,7 +75,7 @@ namespace Core.Gameplay.GameControllers.Plinko
             int targetBucketIndex = SelectBucketByWeights();
 
             // 2. Начальная позиция мяча
-            Vector3 startPosition = _config.SpawnPoint.position;
+            Vector3 startPosition = _config.SpawnPoint;
 
             // 3. Генерируем последовательность отскоков (влево/вправо) для достижения целевого бакета
             // Для этого используем обратную логику: зная конечную позицию, определяем необходимые отскоки
@@ -218,6 +218,6 @@ namespace Core.Gameplay.GameControllers.Plinko
             return new Vector3(x, y, 0f);
         }
 
-        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.SpawnPoint.position.y;
+        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.SpawnPoint.y;
     }
 }

@@ -125,11 +125,11 @@ namespace Core.Gameplay.GameControllers.Plinko
             {
                 // Математический режим: генерируем путь и анимируем мяч
                 PlinkoPath path = _pathGenerator.GeneratePath();
-                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint.position, Quaternion.identity, _boardContainer);
-                _playerBall.InitForMathMovement(path, _config, _pegs, _buckets, _hitVFXPrefab, _hitSounds, _audioSource);
+                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint, Quaternion.identity, _boardContainer);
+                _playerBall.InitForMathMovement(path, _config, _pegs, _buckets, _config.SpawnPoint, _hitVFXPrefab, _hitSounds, _audioSource);
             }
             else
-                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint.position, Quaternion.identity, _boardContainer);
+                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint, Quaternion.identity, _boardContainer);
         }
 
         private void HandleDropButtonClick()

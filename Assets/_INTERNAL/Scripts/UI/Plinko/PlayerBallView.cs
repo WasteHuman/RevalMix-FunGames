@@ -17,6 +17,7 @@ namespace UI.Plinko
             PlinkoConfig config,
             List<PegView> allPegs,
             List<BucketView> allBuckets,
+            Vector3 initialPosition,
             ParticleSystem hitVFX = null,
             AudioClip[] hitSounds = null,
             AudioSource audioSource = null)
@@ -31,6 +32,8 @@ namespace UI.Plinko
             // Передаём эффекты и аудио
             if (hitVFX != null || hitSounds != null || audioSource != null)
                 _mathMover.SetEffects(hitVFX, hitSounds, audioSource);
+
+            _mathMover.SetInitialPosition(initialPosition);
 
             // Настраиваем и запускаем движение
             _mathMover.StartMove(path, config, allPegs, allBuckets);
