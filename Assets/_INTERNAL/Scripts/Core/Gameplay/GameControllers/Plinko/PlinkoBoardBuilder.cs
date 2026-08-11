@@ -2,6 +2,7 @@
 using Core.SO;
 using System.Collections.Generic;
 using UI.Plinko;
+using UnityEditor;
 using UnityEngine;
 
 namespace Core.Gameplay.GameControllers.Plinko
@@ -61,7 +62,9 @@ namespace Core.Gameplay.GameControllers.Plinko
                 _generatedBuckets.Add(bucket);
             }
 
-            _boardContainer.position = new(0f, -5.25f);
+            _boardContainer.position = new(0f, -0,9f);
+
+            EditorUtility.SetDirty(this);
             Debug.Log($"[Plinko Board Builder] Grid generated: Pegs: {_generatedPegs.Count}. Buckets: {_generatedBuckets.Count}");
         }
 
@@ -74,6 +77,8 @@ namespace Core.Gameplay.GameControllers.Plinko
             Clear(_pegsRoot, generatedPegs: _generatedPegs);
             Clear(_bucketsRoot, generatedBuckets: _generatedBuckets);
             _boardContainer.position = new(0f, 0f);
+
+            EditorUtility.SetDirty(this);
             Debug.Log($"[Plinko Board Builder] Grid cleared: Pegs: {_generatedPegs.Count}. Buckets: {_generatedBuckets.Count}");
         }
 

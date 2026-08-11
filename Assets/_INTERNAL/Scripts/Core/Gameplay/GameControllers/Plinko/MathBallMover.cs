@@ -9,8 +9,12 @@ namespace Core.Gameplay.GameControllers.Plinko
     public class MathBallMover : MonoBehaviour
     {
         [Header("Animation Settings")]
-        [SerializeField] private float _hopDuration = 0.15f;
-        [SerializeField] private float _finalFallDuration = 0.3f;
+        [SerializeField] private float _hopDuration = 0.12f;
+        [SerializeField] private float _finalFallDuration = 0.25f;
+        [SerializeField] private float _jumpHeight = 0.5f;
+        [SerializeField] private AnimationCurve _jumpCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // Кривая для плавности
+
+        [Space(5), Header("Effects")]
         [SerializeField] private ParticleSystem _hitVFXPrefab;
         [SerializeField] private AudioClip[] _hitSounds;
         [SerializeField] private AudioSource _audioSource;
@@ -96,10 +100,18 @@ namespace Core.Gameplay.GameControllers.Plinko
                 while (elapsed < segmentDuration)
                 {
                     elapsed += Time.deltaTime;
-                    float t = Mathf.Clamp01(elapsed / segmentDuration);
+                    float t = elapsed / segmentDuration;
 
-                    // Интерполяция позиции
-                    transform.position = Vector3.Lerp(startPoint, endPoint, t);
+                    // Применяем кривую анимации для более резкого старта и финиша
+                    float animatedT = _jumpCurve.Evaluate(t);
+
+                    // Интерполяция позиции с добавлением высоты прыжка
+                    Vector3 basePos = Vector3.Lerp(startPoint, endPoint, animatedT);
+
+                    // Добавляем дугу прыжка (парабола)
+                    float jumpOffset = Mathf.Sin(Mathf.PI * t) * _jumpHeight;
+
+                    transform.position = new Vector3(basePos.x, basePos.y + jumpOffset, basePos.z);
 
                     yield return null;
                 }
@@ -131,7 +143,6 @@ namespace Core.Gameplay.GameControllers.Plinko
 
             // Вычисляем ожидаемую позицию пега
             Vector3 expectedPos = GetExpectedPegPosition(pegRow, pegCol);
-            Debug.Log($"[MathBallMover] Looking for peg at row={pegRow}, col={pegCol}, expectedPos={expectedPos}");
 
             // Ищем пег с соответствующими координатами
             PegView targetPeg = null;
@@ -152,7 +163,7 @@ namespace Core.Gameplay.GameControllers.Plinko
                 }
             }
 
-            if (targetPeg != null && minDistance < 0.5f)
+            if (targetPeg != null && minDistance < 9.1f)
                 targetPeg.TriggerHit();
             else
                 Debug.LogWarning($"[MathBallMover] Peg not found! Closest distance={minDistance:F3}, threshold=0.5");

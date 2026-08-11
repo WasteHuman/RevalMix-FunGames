@@ -137,51 +137,90 @@ namespace Core.Gameplay.GameControllers.Plinko
 
         /// <summary>
         /// Генерирует последовательность отскоков (true=вправо, false=влево) для попадания в целевой бакет.
-        /// Использует упрощённую модель: каждый отскок вправо увеличивает итоговый индекс на 1,
-        /// каждый отскок влево уменьшает на 1 (или оставляет на месте у краёв).
+        /// Использует проверку достижимости, чтобы гарантировать, что мяч никогда не улетит в тупик у границы.
         /// </summary>
         private bool[] GenerateDirectionsToBucket(int targetBucketIndex)
         {
             bool[] directions = new bool[_config.PegRows];
-
-            // Начальная колонка (центр первого ряда)
             int startCol = Mathf.FloorToInt((_config.PegsInFirstRow - 1) / 2f);
+            int currentCol = startCol;
 
-            // Текущая колонка после всех отскоков (относительно центра)
-            // Каждый отскок вправо добавляет +1, влево -1
-            // Итоговый бакет = startCol + (кол-во правых отскоков) - (кол-во левых отскоков)
-            // Но с учётом границ пирамиды
+            // Целевая колонка после последнего ряда. 
+            // Математически финальный currentCol в GeneratePath всегда равен targetBucketIndex + startCol.
+            int targetFinalCol = targetBucketIndex + startCol;
 
-            // Упрощённый подход: вычисляем необходимое смещение
-            int requiredShift = targetBucketIndex - startCol;
-
-            // Количество отскоков вправо должно быть больше на requiredShift
-            int totalHops = _config.PegRows;
-            int rightsNeeded = (totalHops + requiredShift) / 2;
-            int leftsNeeded = totalHops - rightsNeeded;
-
-            // Заполняем массив направлений: сначала все влево, потом меняем часть на вправо
-            for (int i = 0; i < totalHops; i++)
+            for (int row = 0; row < _config.PegRows; row++)
             {
-                directions[i] = false; // по умолчанию влево
-            }
+                int pegsInCurrentRow = GetPegCountInRow(row);
+                int pegsInNextRow = GetPegCountInRow(row + 1);
+                int rowsRemaining = _config.PegRows - row;
 
-            // Меняем первые rightsNeeded на вправо
-            for (int i = 0; i < rightsNeeded && i < totalHops; i++)
-            {
-                directions[i] = true;
-            }
+                // Вычисляем nextCol для обоих вариантов, в точности повторяя логику GeneratePath
+                // Вправо (direction = true)
+                int targetPegColRight = Mathf.Min(pegsInCurrentRow - 1, currentCol);
+                int nextColRight = Mathf.Clamp(targetPegColRight + 1, 0, pegsInNextRow - 1);
 
-            // Перемешиваем направления для естественности
-            for (int i = directions.Length - 1; i > 0; i--)
-            {
-                int j = _rng.Next(i + 1);
-                bool temp = directions[i];
-                directions[i] = directions[j];
-                directions[j] = temp;
+                // Влево (direction = false)
+                int targetPegColLeft = Mathf.Max(0, currentCol - 1);
+                int nextColLeft = Mathf.Clamp(targetPegColLeft, 0, pegsInNextRow - 1);
+
+                // Проверяем достижимость targetFinalCol из nextColRight и nextColLeft
+                bool canReachRight = CanReach(nextColRight, targetFinalCol, rowsRemaining - 1, row + 1);
+                bool canReachLeft = CanReach(nextColLeft, targetFinalCol, rowsRemaining - 1, row + 1);
+
+                bool chooseRight;
+                if (canReachRight && canReachLeft)
+                {
+                    // Оба варианта возможны, используем коррекцию для более естественного и прямого пути
+                    int shiftNeeded = targetFinalCol - currentCol;
+                    float bias = (float)shiftNeeded / rowsRemaining;
+                    float probabilityRight = 0.5f + bias * 0.5f;
+                    probabilityRight = Mathf.Clamp01(probabilityRight);
+                    chooseRight = _rng.NextDouble() < probabilityRight;
+                }
+                else if (canReachRight)
+                {
+                    // Только правый путь ведет к цели (левый упирается в границу)
+                    chooseRight = true;
+                }
+                else if (canReachLeft)
+                {
+                    // Только левый путь ведет к цели (правый упирается в границу)
+                    chooseRight = false;
+                }
+                else
+                {
+                    // Fallback (теоретически недостижимо при валидных конфигурациях)
+                    chooseRight = _rng.NextDouble() < 0.5;
+                }
+
+                directions[row] = chooseRight;
+                currentCol = chooseRight ? nextColRight : nextColLeft;
             }
 
             return directions;
+        }
+
+        /// <summary>
+        /// Проверяет, возможно ли достичь targetCol из currentCol за rowsRemaining шагов,
+        /// учитывая физические границы пирамиды (левый край 0 и правый край pegsInRow - 1).
+        /// </summary>
+        private bool CanReach(int currentCol, int targetCol, int rowsRemaining, int currentRow)
+        {
+            if (rowsRemaining <= 0)
+            {
+                return currentCol == targetCol;
+            }
+
+            // Минимально возможная колонка через rowsRemaining шагов (с учетом левой границы)
+            int minPossible = Mathf.Max(0, currentCol - rowsRemaining);
+
+            // Максимально возможная колонка через rowsRemaining шагов (с учетом правой границы)
+            int targetRow = currentRow + rowsRemaining;
+            int pegsInTargetRow = GetPegCountInRow(targetRow);
+            int maxPossible = Mathf.Min(pegsInTargetRow - 1, currentCol + rowsRemaining);
+
+            return targetCol >= minPossible && targetCol <= maxPossible;
         }
 
         /// <summary>
