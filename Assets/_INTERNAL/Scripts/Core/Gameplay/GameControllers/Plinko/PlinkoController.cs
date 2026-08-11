@@ -21,6 +21,7 @@ namespace Core.Gameplay.GameControllers.Plinko
         [SerializeField] private PlayerBallView _ballPrefab;
         [SerializeField] private Transform _boardContainer;
         [SerializeField] private Transform _bucketsRoot;
+        [SerializeField] private Transform _pegsRoot;
         [SerializeField] private ParticleSystem _hitVFXPrefab;
         [SerializeField] private AudioClip[] _hitSounds;
         [SerializeField] private AudioClip _jackpotSound;
@@ -33,9 +34,17 @@ namespace Core.Gameplay.GameControllers.Plinko
         [Space(5), Header("Other")]
         [SerializeField] private ResultPanelView _resultPanelView;
         [SerializeField] private GameObject _gridBuilder;
-        [SerializeField] private List<BucketView> _buckets = new();
+
+        // Настройки для математического режима
+        [Space(5), Header("Math Mode Settings")]
+        [SerializeField] private bool _useMathMode = true; // Переключатель: физика vs математика
+        [SerializeField] private int _pathSeed = -1; // Сид для генерации пути (-1 = случайный)
+
+        private readonly List<BucketView> _buckets = new();
+        private readonly List<PegView> _pegs = new();
 
         private PlayerBallView _playerBall;
+        private PlinkoPathGenerator _pathGenerator;
 
         private int _maxBet;
         private int _currentBet;
@@ -47,6 +56,9 @@ namespace Core.Gameplay.GameControllers.Plinko
             Destroy(_gridBuilder);
 #endif
             CacheBuckets();
+            CachePegs();
+
+            _pathGenerator = new PlinkoPathGenerator(_config, _pathSeed);
 
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleCoinsBalanceChanged;
 
@@ -55,6 +67,8 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.OnBetUpClick += HandleBetUpClick;
             _view.OnBetDownClick += HandleBetDownClick;
             _view.OnDropButtonClick += HandleDropButtonClick;
+
+            _resultPanelView.OnRestartGameButtonClick += HandleRestartGameButtonClick;
 
             _ballKillZone.OnBallDropToKillZone += HandleFinish;
 
@@ -82,6 +96,8 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.OnBetDownClick -= HandleBetDownClick;
             _view.OnDropButtonClick -= HandleDropButtonClick;
 
+            _resultPanelView.OnRestartGameButtonClick -= HandleRestartGameButtonClick;
+
             _ballKillZone.OnBallDropToKillZone -= HandleFinish;
 
             _view.Dispose();
@@ -97,8 +113,24 @@ namespace Core.Gameplay.GameControllers.Plinko
             _buckets.AddRange(buckets);
         }
 
-        private void DropBall() 
-            => _playerBall = Instantiate(_ballPrefab, new(_config.DropX, _config.DropY), Quaternion.identity, _boardContainer);
+        private void CachePegs()
+        {
+            List<PegView> pegs = _pegsRoot.GetComponentsInChildren<PegView>().ToList();
+            _pegs.AddRange(pegs);
+        }
+
+        private void DropBall()
+        {
+            if (_useMathMode)
+            {
+                // Математический режим: генерируем путь и анимируем мяч
+                PlinkoPath path = _pathGenerator.GeneratePath();
+                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint.position, Quaternion.identity, _boardContainer);
+                _playerBall.InitForMathMovement(path, _config, _pegs, _buckets, _hitVFXPrefab, _hitSounds, _audioSource);
+            }
+            else
+                _playerBall = Instantiate(_ballPrefab, _config.SpawnPoint.position, Quaternion.identity, _boardContainer);
+        }
 
         private void HandleDropButtonClick()
         {
@@ -140,7 +172,6 @@ namespace Core.Gameplay.GameControllers.Plinko
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             _isPlaying = false;
-            _view.ToggleButtonsInteractable(true);
         }
 
         private void HandleBetDownClick()
@@ -179,5 +210,7 @@ namespace Core.Gameplay.GameControllers.Plinko
                 _view.UpdateUI(_currentBet.ToString("N0"));
             }
         }
+
+        private void HandleRestartGameButtonClick() => _view.ToggleButtonsInteractable(true);
     }
 }

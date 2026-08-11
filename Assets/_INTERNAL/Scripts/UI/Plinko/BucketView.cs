@@ -11,12 +11,6 @@ namespace UI.Plinko
 
         public Action<float> OnBallEntered;
 
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-            if(collision.gameObject.TryGetComponent<PlayerBallView>(out var playerBall))
-                HandleBallContact(playerBall);
-        }
-
         public void Init(float multiplier, Sprite sprite)
         {
             if (_spriteRenderer != null)
@@ -24,10 +18,6 @@ namespace UI.Plinko
             _multiplier = multiplier;
         }
 
-        private void HandleBallContact(PlayerBallView playerBall)
-        {
-            OnBallEntered?.Invoke(_multiplier);
-            Destroy(playerBall.gameObject);
-        }
+        public void InvokeBallEntered() => OnBallEntered?.Invoke(_multiplier);
     }
 }

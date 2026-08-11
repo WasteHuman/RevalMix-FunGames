@@ -14,8 +14,7 @@ namespace Core.SO
         public float BucketOffsetY = 0.35f; // отступ корзин вниз от последнего ряда
 
         [Header("Drop")]
-        public float DropX = 0f;
-        public float DropY = 1.2f;
+        public Transform SpawnPoint;
 
         [Header("Animations")]
         public bool SimplifiedAnimation = false;

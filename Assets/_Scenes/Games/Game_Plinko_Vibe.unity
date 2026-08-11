@@ -306,6 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 70464863}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -478,6 +479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 91253522}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -650,6 +652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 103463089}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -993,6 +996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 191861633}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -1165,6 +1169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 209482993}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -1474,6 +1479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 256060366}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -1599,6 +1605,37 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &268262061
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 268262062}
+  m_Layer: 0
+  m_Name: BallSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &268262062
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 268262061}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 8, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1719139291}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &282463262
 GameObject:
   m_ObjectHideFlags: 0
@@ -1864,6 +1901,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 372547234}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2036,6 +2074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 373836766}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2208,6 +2247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 393828359}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2380,6 +2420,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 410371243}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2630,6 +2671,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 489979656}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2802,6 +2844,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 490746694}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -2974,6 +3017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 518193732}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -3687,6 +3731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 620427516}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -4040,6 +4085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 688502733}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -4349,6 +4395,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 726782931}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -4902,6 +4949,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 894472236}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -5074,6 +5122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 899635012}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -5246,6 +5295,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 920766044}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -5559,6 +5609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 936832809}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -5976,10 +6027,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 490, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -6143,6 +6194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1001498962}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -6361,10 +6413,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 98, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -6528,6 +6580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1032361167}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -6700,6 +6753,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1052840546}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -6984,6 +7038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1081161753}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -7156,6 +7211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1087633803}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -7502,6 +7558,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1149468951}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -7674,6 +7731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1152182641}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -8064,6 +8122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1216409450}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -8311,6 +8370,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1224493770}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -8892,6 +8952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1288221869}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -9278,6 +9339,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1317555158}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -9908,6 +9970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1407490406}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -10080,6 +10143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1408858988}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -10345,10 +10409,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 882, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -10512,6 +10576,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1440172571}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -10837,6 +10902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1516538339}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -11012,12 +11078,16 @@ MonoBehaviour:
   _ballPrefab: {fileID: 2212744997711652567, guid: 3995dc815f55e8f448e1038f5ccf161d, type: 3}
   _boardContainer: {fileID: 1719139291}
   _bucketsRoot: {fileID: 1075070464}
+  _pegsRoot: {fileID: 851096025}
+  _spawnPoint: {fileID: 268262062}
   _hitVFXPrefab: {fileID: 0}
   _hitSounds: []
   _jackpotSound: {fileID: 0}
   _audioSource: {fileID: 0}
   _minBet: 250
   _betStep: 10
+  _useMathMode: 1
+  _pathSeed: -1
   _resultPanelView: {fileID: 2398563839496150489}
   _gridBuilder: {fileID: 1765155586}
   _buckets: []
@@ -11056,10 +11126,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -11274,6 +11344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1590758430}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -11446,6 +11517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1597937172}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -11694,6 +11766,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1617715766}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -11866,6 +11939,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1621837778}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -12175,6 +12249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1662286985}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -12487,6 +12562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1675768893}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -12659,6 +12735,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1689725224}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -12817,6 +12894,7 @@ Transform:
   - {fileID: 851096025}
   - {fileID: 1075070464}
   - {fileID: 2010679309}
+  - {fileID: 268262062}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1719139292
@@ -12883,6 +12961,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1754674302}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -13391,6 +13470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1838563260}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -13626,10 +13706,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 686, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:
@@ -13930,6 +14010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1898481133}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -14192,6 +14273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1927790851}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -14364,6 +14446,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1970566951}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -14572,6 +14655,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1975403860}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -14744,6 +14828,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 1994854555}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -15007,6 +15092,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 2018247618}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -15882,6 +15968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 2120635648}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}
@@ -16054,6 +16141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fbb0d2e0d2c5a4488a8f54d0b90ca95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Plinko.PegView
+  _glowDuration: 0.25
   _spriteRenderer: {fileID: 2127420670}
   _defaultSprite: {fileID: 21300000, guid: 75691959536bb854db72c69d84eb600c, type: 3}
   _hitSprite: {fileID: 21300000, guid: c5ae4c2f7baa0f54faa3db3f4979ff42, type: 3}

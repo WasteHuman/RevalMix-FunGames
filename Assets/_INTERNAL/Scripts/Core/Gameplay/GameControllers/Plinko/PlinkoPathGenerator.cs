@@ -21,6 +21,170 @@ namespace Core.Gameplay.GameControllers.Plinko
         public int GetBucketCount() => _config.PegRows + 1;
 
         /// <summary>
+        /// Выбирает индекс бакета на основе весов (weights) из конфига.
+        /// </summary>
+        private int SelectBucketByWeights()
+        {
+            if (_config.Buckets == null || _config.Buckets.Length == 0)
+            {
+                // Если весов нет, выбираем случайно равномерно
+                return _rng.Next(GetBucketCount());
+            }
+
+            // Считаем сумму весов
+            float totalWeight = 0f;
+            for (int i = 0; i < _config.Buckets.Length; i++)
+            {
+                totalWeight += _config.Buckets[i].Weight;
+            }
+
+            if (totalWeight <= 0f)
+            {
+                // Если все веса нулевые, выбираем случайно равномерно
+                return _rng.Next(GetBucketCount());
+            }
+
+            // Выбираем случайное число от 0 до totalWeight
+            float randomValue = (float)(_rng.NextDouble() * totalWeight);
+            float cumulativeWeight = 0f;
+
+            for (int i = 0; i < _config.Buckets.Length; i++)
+            {
+                cumulativeWeight += _config.Buckets[i].Weight;
+                if (randomValue < cumulativeWeight)
+                {
+                    return i;
+                }
+            }
+
+            // На всякий случай возвращаем последний бакет
+            return _config.Buckets.Length - 1;
+        }
+
+        /// <summary>
+        /// Генерирует случайный путь мяча через пирамиду пегов.
+        /// Сначала выбирается финальный бакет на основе весов,
+        /// затем строится обратный путь к нему через случайные отскоки.
+        /// Возвращает массив точек пути и индекс финального бакета.
+        /// </summary>
+        public PlinkoPath GeneratePath()
+        {
+            var hops = new System.Collections.Generic.List<PlinkoHop>();
+
+            // 1. Сначала выбираем финальный бакет на основе весов
+            int targetBucketIndex = SelectBucketByWeights();
+
+            // 2. Начальная позиция мяча
+            Vector3 startPosition = _config.SpawnPoint.position;
+
+            // 3. Генерируем последовательность отскоков (влево/вправо) для достижения целевого бакета
+            // Для этого используем обратную логику: зная конечную позицию, определяем необходимые отскоки
+            bool[] directions = GenerateDirectionsToBucket(targetBucketIndex);
+
+            // 4. Проходим через каждый ряд пегов, строя путь
+            Vector3 currentPosition = startPosition;
+            int currentCol = Mathf.FloorToInt((_config.PegsInFirstRow - 1) / 2f);
+
+            for (int row = 0; row < _config.PegRows; row++)
+            {
+                int pegsInRow = GetPegCountInRow(row);
+                int direction = directions[row] ? 1 : 0; // true = вправо, false = влево
+
+                int targetPegCol;
+
+                if (direction == 0)
+                {
+                    // Отскок влево
+                    targetPegCol = Mathf.Max(0, currentCol - 1);
+                    currentCol = targetPegCol;
+                }
+                else
+                {
+                    // Отскок вправо
+                    targetPegCol = Mathf.Min(pegsInRow - 1, currentCol);
+                    currentCol = targetPegCol + 1;
+                }
+
+                // Ограничиваем текущую колонку допустимым диапазоном для следующего ряда
+                currentCol = Mathf.Clamp(currentCol, 0, GetPegCountInRow(row + 1) - 1);
+
+                // Позиция пега, в который попадаем
+                Vector3 pegPosition = GetPegPosition(row, Mathf.Clamp(targetPegCol, 0, pegsInRow - 1));
+
+                // Точка перед ударом о пег (чуть выше)
+                Vector3 approachPoint = new Vector3(pegPosition.x, pegPosition.y + _config.RowSpacing * 0.5f, 0f);
+
+                // Точка после удара о пег (чуть ниже, со смещением влево или вправо)
+                float xOffset = (direction == 0) ? -_config.PegSpacing * 0.3f : _config.PegSpacing * 0.3f;
+                Vector3 bouncePoint = new Vector3(pegPosition.x + xOffset, pegPosition.y - _config.RowSpacing * 0.3f, 0f);
+
+                // Создаём хоп с точками пути
+                Vector3[] hopPoints = new Vector3[] { currentPosition, approachPoint, bouncePoint };
+                hops.Add(new PlinkoHop(hopPoints, row, Mathf.Clamp(targetPegCol, 0, pegsInRow - 1)));
+
+                currentPosition = bouncePoint;
+            }
+
+            // Финальный хоп в бакет
+            Vector3 bucketPosition = GetBucketPosition(targetBucketIndex);
+
+            // Добавляем финальный хоп от последней точки до бакета
+            Vector3[] finalHopPoints = new Vector3[] { currentPosition, bucketPosition };
+            hops.Add(new PlinkoHop(finalHopPoints, -1, -1));
+
+            return new PlinkoPath(hops.ToArray(), targetBucketIndex, _seed);
+        }
+
+        /// <summary>
+        /// Генерирует последовательность отскоков (true=вправо, false=влево) для попадания в целевой бакет.
+        /// Использует упрощённую модель: каждый отскок вправо увеличивает итоговый индекс на 1,
+        /// каждый отскок влево уменьшает на 1 (или оставляет на месте у краёв).
+        /// </summary>
+        private bool[] GenerateDirectionsToBucket(int targetBucketIndex)
+        {
+            bool[] directions = new bool[_config.PegRows];
+
+            // Начальная колонка (центр первого ряда)
+            int startCol = Mathf.FloorToInt((_config.PegsInFirstRow - 1) / 2f);
+
+            // Текущая колонка после всех отскоков (относительно центра)
+            // Каждый отскок вправо добавляет +1, влево -1
+            // Итоговый бакет = startCol + (кол-во правых отскоков) - (кол-во левых отскоков)
+            // Но с учётом границ пирамиды
+
+            // Упрощённый подход: вычисляем необходимое смещение
+            int requiredShift = targetBucketIndex - startCol;
+
+            // Количество отскоков вправо должно быть больше на requiredShift
+            int totalHops = _config.PegRows;
+            int rightsNeeded = (totalHops + requiredShift) / 2;
+            int leftsNeeded = totalHops - rightsNeeded;
+
+            // Заполняем массив направлений: сначала все влево, потом меняем часть на вправо
+            for (int i = 0; i < totalHops; i++)
+            {
+                directions[i] = false; // по умолчанию влево
+            }
+
+            // Меняем первые rightsNeeded на вправо
+            for (int i = 0; i < rightsNeeded && i < totalHops; i++)
+            {
+                directions[i] = true;
+            }
+
+            // Перемешиваем направления для естественности
+            for (int i = directions.Length - 1; i > 0; i--)
+            {
+                int j = _rng.Next(i + 1);
+                bool temp = directions[i];
+                directions[i] = directions[j];
+                directions[j] = temp;
+            }
+
+            return directions;
+        }
+
+        /// <summary>
         /// Позиция колышка. Формула центрирования сама даёт шахматное смещение:
         /// для нечётных рядов (pegsInRow - 1) / 2 даёт .5 → сдвиг на полшага.
         /// </summary>
@@ -54,6 +218,6 @@ namespace Core.Gameplay.GameControllers.Plinko
             return new Vector3(x, y, 0f);
         }
 
-        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.DropY;
+        private float GetTopY() => (_config.PegRows - 1) * _config.RowSpacing + _config.SpawnPoint.position.y;
     }
 }
