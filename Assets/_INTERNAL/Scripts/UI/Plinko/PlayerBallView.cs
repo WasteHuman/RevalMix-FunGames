@@ -9,6 +9,11 @@ namespace UI.Plinko
     {
         private MathBallMover _mathMover;
 
+        private void Awake()
+        {
+            Debug.Log($"[Player Ball View] Ball position: {transform.position}");
+        }
+
         /// <summary>
         /// Инициализирует мяч для движения по математическому пути.
         /// </summary>

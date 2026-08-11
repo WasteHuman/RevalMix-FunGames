@@ -18,9 +18,9 @@ MonoBehaviour:
   RowSpacing: 0.5
   BucketSpacing: 0.65
   BucketOffsetY: 0.35
-  SpawnPoint: {x: 0, y: 8, z: 0}
+  SpawnPoint: {x: 0, y: -1, z: 0}
   SimplifiedAnimation: 0
-  FinalFallDuration: 0.4
+  FinalFallDuration: 0.8
   Buckets:
   - Multiplier: 6.17
     Weight: 1
@@ -35,7 +35,7 @@ MonoBehaviour:
     Weight: 4
     Sprite: {fileID: 1034938770, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
   - Multiplier: 0
-    Weight: 5
+    Weight: 7
     Sprite: {fileID: -474962141, guid: 474fdc15089291c4c819c2ac61d5e01b, type: 3}
   - Multiplier: 2.06
     Weight: 4

@@ -15,6 +15,7 @@ namespace Core.SO
 
         [Header("Drop")]
         public Vector3 SpawnPoint;
+        public float SpawnYOffset = 0.5f;
 
         [Header("Animations")]
         public bool SimplifiedAnimation = false;
