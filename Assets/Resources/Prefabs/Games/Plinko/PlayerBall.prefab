@@ -117,7 +117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 194c418a8cddf2b4aafc8da237a4939d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Gameplay.GameControllers.Plinko.MathBallMover
-  _hopDuration: 0.2
+  _hopDuration: 0.3
   _finalFallDuration: 0.3
   _hitVFXPrefab: {fileID: 0}
   _hitSounds: []

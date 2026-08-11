@@ -109,8 +109,6 @@ namespace Core.Gameplay.GameControllers.Plinko
                 // Если это не финальный хоп и мы достигли точки удара о пег
                 if (!isFinalHop && hop.PegRow >= 0 && i == hop.Points.Length - 2)
                 {
-                    Debug.Log($"[MathBallMover] Triggering peg glow at row={hop.PegRow}, col={hop.PegCol}");
-
                     // Вызываем эффект на пеге
                     TriggerPegGlow(hop.PegRow, hop.PegCol);
 
