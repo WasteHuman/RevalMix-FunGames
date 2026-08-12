@@ -57,7 +57,7 @@ namespace Core.Services
             else
                 AnalyticsService.Instance.ReportGameLoss(result.GameId);
 
-            Debug.Log($"[GameCompletion] Result handled. Total games: {_player.PlayerTotalGames}, WithdrawalAmount: {_player.PlayerTotalWins}");
+            Debug.Log($"[GameCompletion] Result handled. Total games: {_player.PlayerTotalGames}, Total win games: {_player.PlayerTotalWins}");
         }
     }
 }

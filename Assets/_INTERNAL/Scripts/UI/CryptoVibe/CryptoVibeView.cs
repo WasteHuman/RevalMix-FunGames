@@ -1,7 +1,6 @@
-﻿using DG.Tweening;
+﻿using Core.Gameplay.GameControllers.CryptoVibe;
+using DG.Tweening;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UI.Other;
 using UnityEngine;
@@ -18,34 +17,44 @@ namespace UI.CryptoVibe
         [SerializeField] private ActionButton _startButton;
         [SerializeField] private ActionButton _ejectButton;
         [SerializeField] private ResultPanelView _resultPanelView;
+        [SerializeField] private RectTransform _grid;
 
         [Space(5), Header("Visuals")]
         [SerializeField] private RectTransform _graphContainer;
         [SerializeField] private RectTransform _rocketTransform;
         [SerializeField] private Image _rocketImage;
-
+        [SerializeField] private CryptoRocketMover _rocketMover;
+        [Header("Grid Reference")]
+        [Tooltip("Фоновая сетка для определения границ полёта ракеты")]
+        [SerializeField] private RectTransform _backgroundGrid;
         [SerializeField] private Sprite _rocketSprite;
         [SerializeField] private Sprite _crashedRocketSprite;
 
         [Space(5), Header("Fly Settings")]
-        [SerializeField] private List<RectTransform> _flyWaypoints = new();
-        [SerializeField] private List<RectTransform> _fallWaypoints = new();
-        [SerializeField, Min(0.1f)] private float _flightBaseDuration = 3f;
-        [SerializeField, Min(0.1f)] private float _fallDuration = 1f;
-        [SerializeField] private float _fallSpeed = 500f;
-        [SerializeField] private AnimationCurve _crashProgressCurve = AnimationCurve.Linear(0, 0, 1, 1);
+        [SerializeField, Min(0.1f)] private float _movementSpeed = 1f;
+        [SerializeField] private float _rotationAngleOffset = 0f;
+        [SerializeField] private Vector2 _fallTargetPosition = new Vector2(0f, -5f);
+        [SerializeField, Min(0.1f)] private float _ascentDeviation = 0.5f;
+        [SerializeField, Min(0.1f)] private float _descentDeviation = 1f;
+
+        [Space(5), Header("Effects")]
+        [SerializeField] private ParticleSystem _explosionVFXPrefab;
+        [SerializeField] private AudioClip _explosionSound;
+        [SerializeField] private AudioSource _audioSource;
 
         private Vector2 _originalRocketPosition;
 
-        private Tween _fallTween;
-        private Sequence _rocketSequence;
+        private CryptoPathGenerator _pathGenerator;
+        private CryptoPath _currentPath;
 
-        private float _crashProgress;
+        private float _crashMultiplier;
+        private bool _isInitialized;
 
         public event Action OnStartClicked;
         public event Action OnEjectClicked;
         public event Action OnRestartButtonClicked;
         public event Action<float> OnBetChanged;
+        public event Action<float> OnMultiplierUpdated;
 
         private void Start()
         {
@@ -63,6 +72,8 @@ namespace UI.CryptoVibe
 
             if (_rocketTransform != null)
                 _originalRocketPosition = _rocketTransform.anchoredPosition;
+
+            InitializeRocketSystem();
         }
 
         private void OnDestroy()
@@ -78,6 +89,43 @@ namespace UI.CryptoVibe
 
             if (_resultPanelView != null)
                 _resultPanelView.OnRestartGameButtonClick -= HandleRestartButtonClick;
+
+            _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _rotationAngleOffset);
+
+            if (_rocketMover != null)
+                _rocketMover.StopMove();
+
+            _currentPath = null;
+        }
+
+        private void InitializeRocketSystem()
+        {
+            if (_graphContainer == null || _rocketTransform == null)
+            {
+                Debug.LogError("[CryptoVibeView] Graph container or rocket transform is missing!");
+                return;
+            }
+
+            // Создаём генератор пути
+            _pathGenerator = new CryptoPathGenerator(
+                maxMultiplier: 35f,
+                gridContainer: _graphContainer,
+                fallTargetPosition: _fallTargetPosition,
+                ascentDeviation: _ascentDeviation,
+                descentDeviation: _descentDeviation
+            );
+
+            // Добавляем компонент движения на ракету
+            _rocketMover = _rocketTransform.gameObject.GetComponent<CryptoRocketMover>();
+            if (_rocketMover == null)
+                _rocketMover = _rocketTransform.gameObject.AddComponent<CryptoRocketMover>();
+
+            _rocketMover.Initialize(_rocketTransform);
+            _rocketMover.SetMovementSpeed(_movementSpeed);
+            _rocketMover.SetEffects(_explosionVFXPrefab, _explosionSound, _audioSource);
+            _rocketMover.SetRotationAngleOffset(_rotationAngleOffset);
+
+            _isInitialized = true;
         }
 
         // ------------------------------------------------------------------
@@ -88,8 +136,13 @@ namespace UI.CryptoVibe
         {
             if (_rocketTransform != null)
             {
-                _rocketTransform.anchoredPosition = _originalRocketPosition;
+                if (_rocketTransform is RectTransform rectTransform)
+                    rectTransform.anchoredPosition = _originalRocketPosition;
+
                 _rocketTransform.gameObject.SetActive(true);
+
+                // Сбрасываем вращение
+                _rocketTransform.rotation = Quaternion.identity;
             }
 
             if (_rocketImage != null)
@@ -100,8 +153,9 @@ namespace UI.CryptoVibe
 
             UpdateMultiplierText(1f);
             SetInteractable(false);
-            _rocketSequence?.Kill();
-            _fallTween?.Kill();
+
+            if (_rocketMover != null)
+                _rocketMover.StopMove();
         }
 
         // ------------------------------------------------------------------
@@ -110,168 +164,42 @@ namespace UI.CryptoVibe
 
         public void PlayFlyAnimation(float crashMultiplier, float growRate = 0.5f)
         {
-            _rocketSequence?.Kill();
+            if (!_isInitialized)
+            {
+                Debug.LogWarning("[CryptoVibeView] Rocket system not initialized!");
+                return;
+            }
+
             _ejectButton.Interactable = true;
+            _crashMultiplier = crashMultiplier;
 
-            float normalizedMultiplier = Mathf.InverseLerp(
-                1f,
-                10f,
-                crashMultiplier
-            );
+            _currentPath = _pathGenerator.GeneratePath(crashMultiplier, Vector2.zero);
 
-            _crashProgress = _crashProgressCurve.Evaluate(normalizedMultiplier);
+            if (_rocketTransform != null && _currentPath.AscentPoints != null && _currentPath.AscentPoints.Length > 0)
+                _rocketTransform.position = _currentPath.AscentPoints[0];
 
-            float duration = _flightBaseDuration * crashMultiplier * growRate;
+            float flightTime = (crashMultiplier - 1f) / growRate;
 
-            _rocketSequence = DOTween.Sequence();
-
-            _rocketSequence
-                .Append(
-                    _rocketTransform
-                        .DOPath(
-                            GetPath(_flyWaypoints),
-                            duration,
-                            PathType.CatmullRom
-                        )
-                        .SetEase(Ease.Linear)
-                );
+            // Запускаем движение ракеты с синхронизированной скоростью
+            _rocketMover.StartMove(_currentPath, flightTime);
         }
 
         public void Crash(Action onComplete)
         {
-            _rocketSequence?.Kill();
+            if (_rocketMover == null || _currentPath == null)
+            {
+                Debug.LogWarning("[CryptoVibeView] Cannot crash: rocket mover or path is null!");
+                onComplete?.Invoke();
+                return;
+            }
+
             _ejectButton.Interactable = false;
 
             if (_rocketImage != null)
                 _rocketImage.sprite = _crashedRocketSprite;
 
-            PlayFallAnimationTwoStep(_rocketTransform.anchoredPosition, onComplete);
-        }
-
-        private void PlayFallAnimationTwoStep(Vector3 currentPosition, Action onComplete)
-        {
-            int startIndex = GetStartIndexForFall(currentPosition);
-
-            if (startIndex < 0)
-            {
-                Vector3 fallback = GetFallbackTarget(currentPosition);
-
-                _fallTween = _rocketTransform
-                    .DOMove(fallback, 1f)
-                    .SetEase(Ease.InQuad)
-                    .OnComplete(() => onComplete?.Invoke());
-
-                return;
-            }
-
-            Vector3 connectionPoint = _fallWaypoints[startIndex].position;
-            connectionPoint.z = currentPosition.z;
-
-            var remainingPath = new List<Vector3>
-            {
-                connectionPoint
-            };
-
-            for (int i = startIndex + 1; i < _fallWaypoints.Count; i++)
-            {
-                Vector3 point = _fallWaypoints[i].position;
-
-                if (point.y > currentPosition.y + 0.001f)
-                    continue;
-
-                point.z = currentPosition.z;
-                AddPointIfNotTooClose(remainingPath, point);
-            }
-
-            _rocketSequence?.Kill();
-            _rocketSequence = DOTween.Sequence();
-
-            float connectionDistance = Vector3.Distance(currentPosition, connectionPoint);
-
-            if (connectionDistance > 0.01f)
-            {
-                float connectionDuration = connectionDistance / _fallSpeed;
-
-                _rocketSequence.Append(
-                    _rocketTransform
-                        .DOMove(connectionPoint, connectionDuration)
-                        .SetEase(Ease.Linear)
-                );
-            }
-
-            if (remainingPath.Count > 1)
-            {
-                Vector3[] path = remainingPath.ToArray();
-                float duration = GetApproximatePathLength(path) / _fallSpeed;
-
-                _rocketSequence.Append(
-                    _rocketTransform
-                        .DOPath(
-                            path,
-                            duration,
-                            PathType.CatmullRom
-                        )
-                        .SetEase(Ease.InQuad)
-                );
-            }
-
-            _rocketSequence.OnComplete(() => onComplete?.Invoke());
-        }
-
-        private Vector3 GetFallbackTarget(Vector3 currentPosition)
-        {
-            Vector3 target = currentPosition;
-
-            target.y -= 500f;
-
-            return target;
-        }
-
-        private void AddPointIfNotTooClose(List<Vector3> points, Vector3 point)
-        {
-            const float minSqrDistance = 0.0001f;
-
-            if ((points[^1] - point).sqrMagnitude > minSqrDistance)
-                points.Add(point);
-        }
-
-        private float GetApproximatePathLength(Vector3[] path)
-        {
-            float length = 0f;
-
-            for (int i = 1; i < path.Length; i++)
-                length += Vector3.Distance(path[i - 1], path[i]);
-
-            return length;
-        }
-
-        private int GetStartIndexForFall(Vector3 currentPosition)
-        {
-            if (_fallWaypoints == null || _fallWaypoints.Count == 0)
-                return -1;
-
-            int bestIndex = -1;
-            float bestY = float.NegativeInfinity;
-
-            for (int i = 0; i < _fallWaypoints.Count; i++)
-            {
-                Vector3 point = _fallWaypoints[i].position;
-
-                if (point.y <= currentPosition.y && point.y > bestY)
-                {
-                    bestY = point.y;
-                    bestIndex = i;
-                }
-            }
-
-            return bestIndex;
-        }
-
-        private Vector3[] GetPath(List<RectTransform> path)
-        {
-            return path
-                .Select(point => point.position)
-                .ToArray();
+            // Запускаем фазу падения
+            _rocketMover.StartDescent(onComplete);
         }
 
         // ------------------------------------------------------------------

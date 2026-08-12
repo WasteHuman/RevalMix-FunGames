@@ -18,19 +18,27 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private float _maxMultiplier = 35f;
         [SerializeField] private float _growthRate = 0.5f;
 
+        private GameState _state;
+
+        public enum GameState
+        {
+            Idle,
+            Flying,
+            Crashed,
+            CashedOut
+        }
+
         private CrashResultGenerator _resultGenerator;
 
         private float _currentBet;
         private float _currentMultiplier;
         private float _crashMultiplier;
 
-        private bool _isPlaying;
         private bool _hasCrashed;
 
         public override void Initialize()
         {
-            _resultGenerator =
-                new CrashResultGenerator(_maxMultiplier);
+            _resultGenerator = new CrashResultGenerator(_maxMultiplier);
 
             _view.OnStartClicked += HandleStartClick;
             _view.OnEjectClicked += HandleEjectClick;
@@ -47,6 +55,7 @@ namespace Core.Gameplay.GameControllers
             );
 
             _currentBet = _minBet;
+            _state = GameState.Idle;
 
             _view.UpdateBetText(_currentBet);
         }
@@ -61,8 +70,7 @@ namespace Core.Gameplay.GameControllers
 
         private async UniTask StartGame()
         {
-            _isPlaying = true;
-            _hasCrashed = false;
+            _state = GameState.Flying;
 
             _currentMultiplier = 1f;
 
@@ -74,7 +82,7 @@ namespace Core.Gameplay.GameControllers
 
             _view.PlayFlyAnimation(_crashMultiplier, _growthRate);
 
-            while (_isPlaying && !_hasCrashed)
+            while (_state == GameState.Flying && !_hasCrashed)
             {
                 _currentMultiplier += _growthRate * Time.deltaTime;
 
@@ -94,9 +102,18 @@ namespace Core.Gameplay.GameControllers
             }
         }
 
-        private void TriggerCrash() => _view.Crash(HandleCrashResult);
+        private void TriggerCrash()
+        {
+            if (_state != GameState.Flying)
+                return;
 
-        private void HandleCrashResult()
+            _state = GameState.Crashed;
+            _hasCrashed = true;
+
+            _view.Crash(OnCrashAnimationComplete);
+        }
+
+        private void OnCrashAnimationComplete()
         {
             _view.SetInteractable(false);
 
@@ -113,24 +130,24 @@ namespace Core.Gameplay.GameControllers
 
         private void EjectRocket()
         {
-            if (!_isPlaying || _hasCrashed)
+            if (_state != GameState.Flying || _hasCrashed)
                 return;
 
-            _isPlaying = false;
+            _state = GameState.CashedOut;
 
-            float reward =
-                _currentBet * _currentMultiplier;
+            float reward = _currentBet * _currentMultiplier;
 
-            string questTag =
-                _currentMultiplier >= 10f
-                    ? GameConstants.TAG_REACH_10X_MULTIPLIER
-                    : GameConstants.TAG_LAUNCH_3_ROCKETS;
+            string questTag = _currentMultiplier >= 10f
+                ? GameConstants.TAG_REACH_10X_MULTIPLIER
+                : GameConstants.TAG_LAUNCH_3_ROCKETS;
 
             EndGame(
                 isWin: true,
                 reward: Mathf.RoundToInt(reward),
                 questTag: questTag
             );
+
+            _view.ResetView();
         }
 
         // ------------------------------------------------------------------
@@ -142,7 +159,7 @@ namespace Core.Gameplay.GameControllers
             int reward,
             string questTag)
         {
-            _isPlaying = false;
+            _state = isWin ? GameState.CashedOut : GameState.Crashed;
 
             GameResult result = new(
                 isWin: isWin,
@@ -167,7 +184,7 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleStartClick()
         {
-            if (_isPlaying)
+            if (_state != GameState.Idle)
                 return;
 
             if (!GameServices.EconomyService
@@ -183,6 +200,7 @@ namespace Core.Gameplay.GameControllers
             GameServices.EconomyService
                 .SpendCoins(_currentBet);
 
+            _hasCrashed = false;
             StartGame().Forget();
         }
 
@@ -193,19 +211,14 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleBetChanged(float newBet)
         {
-            _currentBet =
-                Mathf.Clamp(
-                    newBet,
-                    _minBet,
-                    float.MaxValue
-                );
+            _currentBet = Mathf.Clamp(newBet, _minBet, float.MaxValue);
 
             _view.UpdateBetText(_currentBet);
         }
 
         private void HandleRestartButtonClick()
         {
-            _isPlaying = false;
+            _state = GameState.Idle;
             _hasCrashed = false;
 
             _view.ResetView();
