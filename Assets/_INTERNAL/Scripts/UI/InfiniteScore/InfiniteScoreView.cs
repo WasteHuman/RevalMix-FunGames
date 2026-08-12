@@ -15,8 +15,8 @@ namespace UI.InfiniteScore
         [Header("Teams Setup")]
         [SerializeField] private RectTransform _orangeTeamZone;
         [SerializeField] private RectTransform _redTeamZone;
-        [SerializeField] private GameObject _orangeTeamGlow;
-        [SerializeField] private GameObject _redTeamGlow;
+        [SerializeField] private Image _orangeTeamGlow;
+        [SerializeField] private Image _redTeamGlow;
 
         [Space(5), Header("Card Prefab")]
         [SerializeField] private RectTransform _cardPrefab;
@@ -35,6 +35,9 @@ namespace UI.InfiniteScore
 
         [Space(5), Header("Other")]
         [SerializeField] private float _showResultsDelay = 1.5f;
+
+        private Material _redTeamGlowMaterial;
+        private Material _orangeTeamGlowMaterial;
 
         public event Action OnOrangeBetClicked;
         public event Action OnRedBetClicked;
@@ -69,15 +72,21 @@ namespace UI.InfiniteScore
                 _resultPanelView.OnRestartGameButtonClick -= HandleRestartGameButtonClick;
                 _resultPanelView.OnPanelOpened -= HandleOpenedResultsPanel;
             }
+
+            _redTeamGlowMaterial.DOKill();
+            _orangeTeamGlowMaterial.DOKill();
+
+            Destroy(_redTeamGlowMaterial);
+            Destroy(_orangeTeamGlowMaterial);
         }
 
         public void Init()
         {
-            if (_orangeTeamGlow != null)
-                _orangeTeamGlow.SetActive(false);
+            _redTeamGlowMaterial = new(_redTeamGlow.material);
+            _orangeTeamGlowMaterial = new(_orangeTeamGlow.material);
 
-            if (_redTeamGlow != null) 
-                _redTeamGlow.SetActive(false);
+            _redTeamGlow.material = _redTeamGlowMaterial;
+            _orangeTeamGlow.material = _orangeTeamGlowMaterial;
 
             ClearZone(_orangeTeamZone);
             ClearZone(_redTeamZone);
@@ -88,14 +97,11 @@ namespace UI.InfiniteScore
 
         public async UniTask DealCardsAsync(List<CardData> orangeCards, List<CardData> redCards)
         {
+            _orangeTeamGlowMaterial.DORewind();
+            _redTeamGlowMaterial.DORewind();
+
             ClearZone(_orangeTeamZone);
             ClearZone(_redTeamZone);
-
-            if (_orangeTeamGlow != null) 
-                _orangeTeamGlow.SetActive(false);
-
-            if (_redTeamGlow != null)
-                _redTeamGlow.SetActive(false);
 
             int maxCards = Mathf.Max(orangeCards.Count, redCards.Count);
             int currentScoreOrange = 0;
@@ -151,21 +157,17 @@ namespace UI.InfiniteScore
         public void ShowWinner(int winningTeam) // 0 - Orange, 1 - Red, -1 - Tie
         {
             if (winningTeam == 0 && _orangeTeamGlow != null)
-            {
-                _orangeTeamGlow.SetActive(true);
-                PulseGlow(_orangeTeamGlow.transform);
-            }
+                PulseGlow(_orangeTeamGlowMaterial);
             else if (winningTeam == 1 && _redTeamGlow != null)
-            {
-                _redTeamGlow.SetActive(true);
-                PulseGlow(_redTeamGlow.transform);
-            }
+                PulseGlow(_redTeamGlowMaterial);
         }
 
-        private void PulseGlow(Transform glow)
+        private void PulseGlow(Material glow)
         {
-            glow.localScale = Vector3.one;
-            glow.DOScale(1.2f, 0.4f).SetEase(Ease.InOutFlash).SetLoops(-1, LoopType.Yoyo);
+            glow.DOKill();
+            glow.DOFloat(0.85f, "_BoxSize", 0.75f)
+                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
+            Debug.Log($"Team: {glow.name}");
         }
 
         private void ClearZone(RectTransform zone)
@@ -191,6 +193,7 @@ namespace UI.InfiniteScore
 
         public async UniTask ShowResultPanel(bool isWin, float reward, int score, bool isDraw = false)
         {
+            SetButtonsInteractable(false);
             await UniTask.Delay(TimeSpan.FromSeconds(_showResultsDelay), ignoreTimeScale: false);
             _resultPanelView.ShowResultPanel(isWin, false, Mathf.RoundToInt(reward), score, isDraw);
         }

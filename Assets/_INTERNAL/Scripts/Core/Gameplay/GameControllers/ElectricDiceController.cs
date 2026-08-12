@@ -161,16 +161,22 @@ namespace Core.Gameplay.GameControllers
             if (_isRolling)
                 return;
 
-            // Проверка на невалидные ставки (например, "Меньше 2" выиграть невозможно)
-            if (GetFavorableCombinations() <= 0)
+            if (!base.SpendEnergy())
             {
-                _view.ShowWarningMessage("An impossible outcome!", "It is impossible to win with the current conditions.");
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
                 return;
             }
 
             if (!GameServices.EconomyService.HasEnoughBalance(_bet))
             {
-                _view.ShowWarningMessage("Not enough coins!", "You don't have enough coins for this bet.");
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_bet}) for this bet.");
+                return;
+            }
+
+            // Проверка на невалидные ставки (например, "Меньше 2" выиграть невозможно)
+            if (GetFavorableCombinations() <= 0)
+            {
+                _view.ShowWarningMessage("An impossible outcome!", "It is impossible to win with the current conditions.");
                 return;
             }
 
@@ -191,7 +197,11 @@ namespace Core.Gameplay.GameControllers
             UpdateSpinButton();
         }
 
-        private void HandleSpinButtonClick() => HandleSpinClickAsync().Forget();
+        private void HandleSpinButtonClick()
+        {
+            HandleSpinClickAsync().Forget();
+            base.SpendEnergy();
+        }
 
         private void HandleBalanceChanged(float balance)
         {

@@ -11,6 +11,7 @@ namespace Core.Services.Player
 
         public int CurrentEnergy => _playerData.Energy;
         public int MaxEnergy => GameConstants.MAX_ENERGY;
+        public bool HasEnoughEnergy => _playerData.Energy > 0;
         public DateTime LastEnergyUpdate => _playerData.LastEnergyUpdate;
         public DateTime? LastFreeEnergyTime { get; private set; }
 

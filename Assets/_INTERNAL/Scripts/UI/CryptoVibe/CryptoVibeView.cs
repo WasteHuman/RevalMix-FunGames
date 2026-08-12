@@ -17,6 +17,7 @@ namespace UI.CryptoVibe
         [SerializeField] private ActionButton _startButton;
         [SerializeField] private ActionButton _ejectButton;
         [SerializeField] private ResultPanelView _resultPanelView;
+        [SerializeField] private WarningMessageView _warningMessageView;
         [SerializeField] private RectTransform _grid;
 
         [Space(5), Header("Visuals")]
@@ -195,8 +196,7 @@ namespace UI.CryptoVibe
 
             _ejectButton.Interactable = false;
 
-            if (_rocketImage != null)
-                _rocketImage.sprite = _crashedRocketSprite;
+            PlayCrashEffect();
 
             // Запускаем фазу падения
             _rocketMover.StartDescent(onComplete);
@@ -245,6 +245,8 @@ namespace UI.CryptoVibe
 
         public void PlayCrashEffect()
         {
+            // TODO: Добавить каких-нибудь эффектов
+
             if (_rocketImage != null)
                 _rocketImage.sprite = _crashedRocketSprite;
         }
@@ -252,11 +254,13 @@ namespace UI.CryptoVibe
         public void ShowResult(bool isWin, int reward)
         {
             if (_resultPanelView != null)
-                _resultPanelView.ShowResultPanel(
-                    isWin,
-                    false,
-                    reward
-                );
+                _resultPanelView.ShowResultPanel(isWin, false, reward);
+        }
+
+        public void ShowWarningMessage(string title, string message)
+        {
+            if (_warningMessageView != null)
+                _warningMessageView.Show(() => _warningMessageView.SetWarningMessage(title, message));
         }
 
         // ------------------------------------------------------------------

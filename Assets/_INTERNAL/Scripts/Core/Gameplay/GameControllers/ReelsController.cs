@@ -34,6 +34,7 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private ActionButton _autoButton;
         [SerializeField] private GameObject _winPanel;
         [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private WarningMessageView _warningMessageView;
 
         [Space(5), Header("Auto Spin View Setup")]
         [SerializeField] private TMP_ColorGradient _activeColor;
@@ -159,11 +160,21 @@ namespace Core.Gameplay.GameControllers
 
         private async UniTask StartSpin()
         {
-            if (GameServices.EconomyService.GetCoinsBalance() < _currentBet)
+            if (!base.SpendEnergy())
             {
-                Debug.LogWarning("[Reels] Not enough coins to spin");
+                _warningMessageView
+                    .Show(() => 
+                    _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game."));
                 if (_isAutoSpinEnabled)
                     StopAutoSpin();
+                return;
+            }
+
+            if (!GameServices.EconomyService.HasEnoughBalance(_currentBet))
+            {
+                _warningMessageView
+                    .Show(() =>
+                    _warningMessageView.SetWarningMessage("Not enough coins!", $"You don't have enough coins ({_currentBet}) for this bet."));
                 return;
             }
 

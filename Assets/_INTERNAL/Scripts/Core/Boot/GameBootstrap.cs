@@ -102,13 +102,14 @@ namespace Core.Boot
         private void LoadMainScene()
         {
             var loadingScreenViewPrefab = Resources.Load<UILoadingView>("Prefabs/UI/UILoadingView");
-            var loadingScreenView = Object.Instantiate(loadingScreenViewPrefab);
 
             if (loadingScreenViewPrefab == null)
             {
                 Debug.LogError($"[GlobalAction Bootstrap] Loading Screen View is null!");
                 return;
             }
+
+            var loadingScreenView = Object.Instantiate(loadingScreenViewPrefab);
 
             var monoBehaviourHelper = new GameObject("[MONOBEHAVIOUR_HELPER]").AddComponent<MonoBehaviourHelper>();
 
@@ -170,8 +171,6 @@ namespace Core.Boot
     public class MonoBehaviourHelper : MonoBehaviour 
     {
         private void Awake() => DontDestroyOnLoad(gameObject);
-
-        
 
         private void OnApplicationQuit() => GameServices.SaveAll().Forget();
     }

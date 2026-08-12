@@ -31,9 +31,9 @@
         #endregion
 
         #region Economy & Limits
-        public const float INITIAL_COINS = 100000f;
-        public const int INITIAL_ENERGY = 20;
-        public const int MAX_ENERGY = 20;
+        public const float INITIAL_COINS = 1000f;
+        public const int INITIAL_ENERGY = 25;
+        public const int MAX_ENERGY = 25;
         public const float ENERGY_REGEN_MINUTES = 60f;
         #endregion
 

@@ -36,14 +36,15 @@ namespace Core.Gameplay.GameControllers
         {
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_CYBER_MASTER);
 
+            _isGameActive = false;
+
             if (_view != null)
             {
                 _view.OnHitButtonClicked += HandleHit;
                 _view.OnStandButtonClicked += HandleStand;
                 _view.OnRestartButtonClicked += HandleRestart;
+                _view.OnStartButtonClicked += HandleStartButtonClick;
             }
-
-            ResetGame();
         }
 
         public override void Initialize()
@@ -53,7 +54,7 @@ namespace Core.Gameplay.GameControllers
                 _view.Init(_deckCards.Count);
                 _view.UpdateScore(_currentScore);
                 _view.UpdateBet(_currentBet);
-                _view.SetButtonsInteractable(true);
+                _view.SetButtonsInteractable(_isGameActive);
             }
         }
 
@@ -64,6 +65,7 @@ namespace Core.Gameplay.GameControllers
                 _view.OnHitButtonClicked -= HandleHit;
                 _view.OnStandButtonClicked -= HandleStand;
                 _view.OnRestartButtonClicked -= HandleRestart;
+                _view.OnStartButtonClicked -= HandleStartButtonClick;
             }
 
             _view.Dispose();
@@ -93,7 +95,7 @@ namespace Core.Gameplay.GameControllers
             _isGameActive = true;
 
             if (_view != null)
-                _view.SetButtonsInteractable(true);
+                _view.SetButtonsInteractable(_isGameActive);
 
             // Проверяем, не получили ли мы сразу 21
             CheckForBlackjack();
@@ -226,6 +228,23 @@ namespace Core.Gameplay.GameControllers
             }
 
             EndGame(isWin, reward, false);
+        }
+
+        private void HandleStartButtonClick()
+        {
+            if (!base.SpendEnergy())
+            {
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                return;
+            }
+
+            if (!GameServices.EconomyService.HasEnoughBalance(_currentBet))
+            {
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_currentBet}) for this bet.");
+                return;
+            }
+
+            ResetGame();
         }
 
         private void HandleRestart() => ResetGame();

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace UI.Animations.GameScreen
 {
-    [System.Serializable]
+    [Serializable]
     public class ButtonAnimations
     {
         [Header("Click Animations Setup")]

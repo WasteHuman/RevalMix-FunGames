@@ -1,4 +1,6 @@
-﻿using Core.Services;
+﻿using Core;
+using Core.Services;
+using DG.Tweening;
 using TMPro;
 using UI.Other;
 using UnityEngine;
@@ -21,12 +23,32 @@ namespace UI.Player
         [SerializeField] private RawImage _avatarImage;
         [SerializeField] private bool _changeAvatarSize = true;
 
+        [Space(5), Header("Energy View Setup")]
+        [SerializeField] private ActionButton _getFreeEnergyButton;
+        [SerializeField] private TextMeshProUGUI _energyLabel;
+        [SerializeField] private float _energyAnimationDuration = 1.5f;
+
+        [Space(5), Header("Cheats Setup")]
+        [SerializeField] private bool _isCheatActive = false;
+
+        private int _displayedEnergy;
+
         private void Awake()
         {
+            if(_getFreeEnergyButton != null)
+                _getFreeEnergyButton.OnButtonClick += HandleGetFreeEnergyButtonClick;
+
             GameServices.PlayerService.OnXPChanged += HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged += HandleCoinsBalanceChanged;
             GameServices.PlayerService.OnLevelChanged += HandleChangedLevel;
             GameServices.AvatarService.OnAvatarSetted += HandleSettetAvatar;
+
+            if(_energyLabel != null)
+            {
+                GameServices.EnergyService.OnEnergyChanged += HandleEnergyChanged;
+                _displayedEnergy = GameServices.EnergyService.CurrentEnergy;
+                _energyLabel.text = $"{_displayedEnergy}";
+            }
         }
 
         private void Start()
@@ -54,12 +76,38 @@ namespace UI.Player
             }
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                if (!_isCheatActive)
+                {
+                    _isCheatActive = true;
+                    Debug.LogWarning("Cheats Activated");
+                }
+                else
+                {
+                    _isCheatActive = false;
+                    Debug.LogWarning("Cheats Deactivated");
+                }
+            }
+
+            if (_isCheatActive && Input.GetKeyDown(KeyCode.R))
+                GameServices.EnergyService.AddEnergy(GameConstants.MAX_ENERGY);
+        }
+
         private void OnDestroy()
         {
+            if (_getFreeEnergyButton != null)
+                _getFreeEnergyButton.OnButtonClick -= HandleGetFreeEnergyButtonClick;
+
             GameServices.PlayerService.OnXPChanged -= HandleChangedXP;
             GameServices.EconomyService.OnCoinsBalanceChanged -= HandleCoinsBalanceChanged;
             GameServices.PlayerService.OnLevelChanged -= HandleChangedLevel;
             GameServices.AvatarService.OnAvatarSetted -= HandleSettetAvatar;
+
+            if (_energyLabel != null)
+                GameServices.EnergyService.OnEnergyChanged -= HandleEnergyChanged;
         }
 
         public void ToggleNameLabel(bool value)
@@ -91,5 +139,18 @@ namespace UI.Player
         private void HandleSettetAvatar(Texture2D avatar) => _avatarImage.texture = avatar;
 
         private void HandleChangedLevel(int level) => _levelLabel.text = $"{level}";
+
+        private void HandleEnergyChanged(int currentEnergy)
+        {
+            int oldValue = _displayedEnergy;
+            _displayedEnergy = currentEnergy;
+
+            DOVirtual.Int(oldValue, _displayedEnergy, _energyAnimationDuration, value =>
+            {
+                _energyLabel.text = $"{_displayedEnergy}";
+            }).SetEase(Ease.OutQuad);
+        }
+
+        private void HandleGetFreeEnergyButtonClick() => GameServices.EnergyService.TryGetFreeEnergy();
     }
 }

@@ -29,6 +29,9 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private float _pointsPerSecond = 100f;
         [SerializeField] private float _bet = 250f;
 
+        [Space(5), Header("Other Panels")]
+        [SerializeField] private WarningMessageView _warningMessageView;
+
         private float _currentScore;
         private float _elapsedTime;
         private float _claimThresholdTime;
@@ -221,9 +224,26 @@ namespace Core.Gameplay.GameControllers
             if (_isPlaying)
                 return;
 
+            if (!base.SpendEnergy())
+            {
+                _warningMessageView
+                    .Show(() =>
+                    _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game."));
+                return;
+            }
+
+            if (!GameServices.EconomyService.HasEnoughBalance(_bet))
+            {
+                _warningMessageView
+                    .Show(() =>
+                    _warningMessageView.SetWarningMessage("Not enough coins!", $"You don't have enough coins ({_bet}) for this bet."));
+                return;
+            }
+
             ResetGameState();
             StartGame().Forget();
             GameServices.EconomyService.SpendCoins(_bet);
+            
         }
 
         private void HandleClaimButtonClick()

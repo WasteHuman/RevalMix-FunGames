@@ -60,9 +60,15 @@ namespace Core.Gameplay.GameControllers
             if (_isDealing) 
                 return;
 
+            if (!base.SpendEnergy())
+            {
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                return;
+            }
+
             if (!GameServices.EconomyService.HasEnoughBalance(_bet))
             {
-                _view.ShowWarningMessage("Warning!", "Not enough coins!");
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_bet}) for this bet.");
                 return;
             }
 
@@ -95,7 +101,6 @@ namespace Core.Gameplay.GameControllers
             ResolveOutcome(team, winningTeam, winScore);
 
             _isDealing = false;
-            UpdateButtonsState();
         }
 
         private void ResolveOutcome(int betTeam, int winningTeam, int score)

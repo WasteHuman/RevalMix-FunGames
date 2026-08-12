@@ -28,6 +28,7 @@ namespace UI.Loading
         public void SetLoadingProgress(float progress)
         {
             _fillTween?.Kill();
+            Debug.Log($"[UI Loading View] Progress: {progress}");
 
             _fillTween = DOTween.To(
                 () => _progressBarFill ? _progressBarFill.fillAmount : 0f,

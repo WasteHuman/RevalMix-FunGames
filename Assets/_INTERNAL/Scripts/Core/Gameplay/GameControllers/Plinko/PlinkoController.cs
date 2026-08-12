@@ -137,15 +137,21 @@ namespace Core.Gameplay.GameControllers.Plinko
             if (_isPlaying)
                 return;
 
-            if (!GameServices.EconomyService.SpendCoins(_currentBet))
+            if (!base.SpendEnergy())
             {
-                Debug.LogWarning("[Plinko] Not enough coins!");
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                return;
+            }
+
+            if (!GameServices.EconomyService.HasEnoughBalance(_currentBet))
+            {
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_currentBet}) for this bet.");
                 return;
             }
 
             _isPlaying = true;
             DropBall();
-            _view.ToggleButtonsInteractable(false);
+            _view.ToggleButtonsInteractable(false);;
         }
 
         private void HandleFinish(float multiplier)

@@ -169,13 +169,9 @@ namespace Core.Gameplay.GameControllers
                 gameId: GameConstants.GAME_CRYPTO_VIBE
             );
 
-            GameServices.GameCompletionHandler
-                .HandleGameResult(result);
+            GameServices.GameCompletionHandler.HandleGameResult(result);
 
-            _view.ShowResult(
-                isWin,
-                reward
-            );
+            _view.ShowResult(isWin, reward);
         }
 
         // ------------------------------------------------------------------
@@ -187,18 +183,19 @@ namespace Core.Gameplay.GameControllers
             if (_state != GameState.Idle)
                 return;
 
-            if (!GameServices.EconomyService
-                .HasEnoughBalance(_currentBet))
+            if(!base.SpendEnergy())
             {
-                Debug.LogWarning(
-                    "[CryptoVibe] Not enough coins!"
-                );
-
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
                 return;
             }
 
-            GameServices.EconomyService
-                .SpendCoins(_currentBet);
+            if (!GameServices.EconomyService.HasEnoughBalance(_currentBet))
+            {
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_currentBet}) for this bet.");
+                return;
+            }
+
+            GameServices.EconomyService.SpendCoins(_currentBet);
 
             _hasCrashed = false;
             StartGame().Forget();

@@ -18,6 +18,7 @@ namespace UI.CyberMaster
         [Space(5), Header("Buttons Setup")]
         [SerializeField] private ActionButton _hitButton;
         [SerializeField] private ActionButton _standButton;
+        [SerializeField] private ActionButton _startButton;
 
         [Space(5), Header("Card Setup")]
         [SerializeField] private GameObject _cardPrefab;
@@ -36,12 +37,14 @@ namespace UI.CyberMaster
 
         [Space(5), Header("Result Panel")]
         [SerializeField] private ResultPanelView _resultPanelView;
+        [SerializeField] private WarningMessageView _warningPanelView;
 
         private bool _nextCardToLeft = true;
 
         public event Action OnHitButtonClicked;
         public event Action OnStandButtonClicked;
         public event Action OnRestartButtonClicked;
+        public event Action OnStartButtonClicked;
 
         private void InitButtons()
         {
@@ -50,6 +53,9 @@ namespace UI.CyberMaster
 
             if (_standButton != null)
                 _standButton.OnButtonClick += HandleStandButtonClick;
+
+            if(_startButton != null)
+                _startButton.OnButtonClick += HandleStartButtonClick;
 
             if (_resultPanelView != null)
                 _resultPanelView.OnRestartGameButtonClick += HandleRestartButtonClick;
@@ -68,6 +74,9 @@ namespace UI.CyberMaster
 
             if(_standButton != null)
                 _standButton.OnButtonClick -= HandleStandButtonClick;
+
+            if (_startButton != null)
+                _startButton.OnButtonClick -= HandleStartButtonClick;
 
             if (_resultPanelView != null)
                 _resultPanelView.OnRestartGameButtonClick -= HandleRestartButtonClick;
@@ -147,6 +156,12 @@ namespace UI.CyberMaster
             seq.OnComplete(() => rect.localPosition = targetLocal);
         }
 
+        public void ShowWarningMessage(string title, string message)
+        {
+            if (_warningPanelView != null)
+                _warningPanelView.Show(() => _warningPanelView.SetWarningMessage(title, message));
+        }
+
         public void UpdateScore(int score)
         {
             if (_scoreText != null)
@@ -169,13 +184,16 @@ namespace UI.CyberMaster
                 _betText.text = $"Bet: {bet}";
         }
 
-        public void SetButtonsInteractable(bool interactable)
+        public void SetButtonsInteractable(bool isGameActive)
         {
+            if (_startButton != null)
+                _startButton.gameObject.SetActive(!isGameActive);
+
             if (_hitButton != null)
-                _hitButton.Interactable = interactable;
+                _hitButton.gameObject.SetActive(isGameActive);
 
             if (_standButton != null)
-                _standButton.Interactable = interactable;
+                _standButton.gameObject.SetActive(isGameActive);
         }
 
         public void ShowResult(bool isWin, float reward, int finalScore, bool isBlackjack)
@@ -223,9 +241,8 @@ namespace UI.CyberMaster
         }
 
         private void HandleRestartButtonClick() => OnRestartButtonClicked?.Invoke();
-
         private void HandleStandButtonClick() => OnStandButtonClicked?.Invoke();
-
         private void HandleHitButtomClick() => OnHitButtonClicked?.Invoke();
+        private void HandleStartButtonClick() => OnStartButtonClicked?.Invoke();
     }
 }

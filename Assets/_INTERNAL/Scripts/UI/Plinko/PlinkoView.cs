@@ -16,6 +16,9 @@ namespace UI.Plinko
         [SerializeField] private ActionButton _betDownButton;
         [SerializeField] private ActionButton _dropBallButton;
 
+        [Space(5), Header("Other Panels")]
+        [SerializeField] private WarningMessageView _warningMessageView;
+
         public event Action OnBetUpClick;
         public event Action OnBetDownClick;
         public event Action<int> OnBetChanged;
@@ -50,6 +53,12 @@ namespace UI.Plinko
             _betDownButton.Interactable = value;
             _betUpButton.Interactable = value;
             _betInputField.interactable = value;
+        }
+
+        public void ShowWarningMessage(string title, string message)
+        {
+            if (_warningMessageView != null)
+                _warningMessageView.Show(() => _warningMessageView.SetWarningMessage(title, message));
         }
 
         public void RefreshInput(string currentBet) => _betInputField.SetTextWithoutNotify(currentBet);

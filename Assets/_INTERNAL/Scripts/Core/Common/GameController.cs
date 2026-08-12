@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Core.Services;
+using UnityEngine;
 
 namespace Core.Common
 {
@@ -7,5 +8,7 @@ namespace Core.Common
         public abstract void Enter();
         public abstract void Initialize();
         public abstract void Exit();
+
+        public virtual bool SpendEnergy() => GameServices.EnergyService.SpendEnergy(5);
     }
 }
