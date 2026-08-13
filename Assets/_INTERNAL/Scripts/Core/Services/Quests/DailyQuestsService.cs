@@ -156,36 +156,32 @@ namespace Core.Services.Quests
                 return;
 
             bool changed = false;
-            DailyQuest changedQuest;
 
             foreach (var quest in _currentQuests)
             {
-                if (quest.QuestTag == tag && !quest.IsCompleted && !quest.IsClaimed)
+                if (quest.QuestTag != tag || quest.IsCompleted || quest.IsClaimed)
+                    continue;
+
+                quest.CurrentProgress += amount;
+
+                if (quest.CurrentProgress >= quest.TargetProgress)
                 {
-                    if (quest.IsCompleted)
-                        continue;
+                    quest.CurrentProgress = quest.TargetProgress;
+                    quest.IsCompleted = true;
 
-                    quest.CurrentProgress += amount;
-                    changedQuest = quest;
-
-                    if (quest.CurrentProgress >= quest.TargetProgress)
+                    // Авто-клейм награды
+                    var reward = ClaimRewardInternal(quest.Id);
+                    if (reward.HasValue)
                     {
-                        quest.CurrentProgress = quest.TargetProgress;
-                        quest.IsCompleted = true;
-
-                        var reward = ClaimReward(quest.Id);
-                        if (reward.HasValue)
-                        {
-                            _economyService.AddCoins(reward.Value.coins);
-                            _playerService.AddXP(reward.Value.xp);
-                        }
-
-                        Debug.Log($"[DailyQuests] Quest completed: {quest.Description}");
+                        _economyService.AddCoins(reward.Value.coins);
+                        _playerService.AddXP(reward.Value.xp);
                     }
 
-                    changed = true;
-                    OnQuestUpdated?.Invoke(changedQuest);
+                    Debug.Log($"[DailyQuests] Quest completed & claimed: {quest.Description}");
                 }
+
+                changed = true;
+                OnQuestUpdated?.Invoke(quest);
             }
 
             if (changed)
@@ -196,31 +192,19 @@ namespace Core.Services.Quests
         /// Забрать награду за выполненный квест
         /// </summary>
         /// <returns>Награда (coins, XP) или null если нельзя забрать</returns>
-        public (int coins, int xp)? ClaimReward(string questId)
+        private(int coins, int xp)? ClaimRewardInternal(string questId)
         {
             if (_currentQuests == null || string.IsNullOrEmpty(questId))
                 return null;
 
-            var quest = _currentQuests.FirstOrDefault(quest => quest.Id == questId);
-            if(quest == null)
-            {
-                Debug.LogError($"[DailyQuest] Quest is null!");
+            var quest = _currentQuests.FirstOrDefault(q => q.Id == questId);
+            if (quest == null)
                 return null;
-            }
 
             if (!quest.IsCompleted || quest.IsClaimed)
-            {
-                Debug.LogWarning($"[DailyQuests] Cannot claim reward. Completed: {quest.IsCompleted}, Claimed: {quest.IsClaimed}");
                 return null;
-            }
 
             quest.IsClaimed = true;
-            SaveQuestsToData();
-
-            OnQuestUpdated?.Invoke(quest);
-            OnQuestsUpdated?.Invoke(_currentQuests);
-
-            Debug.Log($"[DailyQuests] Reward claimed: {quest.RewardCoins} coins, {quest.RewardXP} XP");
             return (quest.RewardCoins, quest.RewardXP);
         }
 
