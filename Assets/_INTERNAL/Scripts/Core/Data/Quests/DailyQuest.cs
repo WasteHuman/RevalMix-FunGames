@@ -1,11 +1,8 @@
-﻿using UnityEngine;
-
-namespace Core.Data.Quests
+﻿namespace Core.Data.Quests
 {
     [System.Serializable]
     public class DailyQuest
     {
-        public Sprite Sprite;
         public string Id;
         public string Description;
         public string QuestTag;

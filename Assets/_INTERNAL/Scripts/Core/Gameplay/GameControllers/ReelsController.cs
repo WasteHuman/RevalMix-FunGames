@@ -515,6 +515,7 @@ namespace Core.Gameplay.GameControllers
         {
             _isTurboMode = !_isTurboMode;
             _spinDuration = _isTurboMode ? _baseSpinDuration / 2f : _baseSpinDuration;
+            GameServices.Quests.ProgressQuest(GameConstants.TAG_TRIGGER_TURBO_BOOST);
             Debug.Log($"[Reels] Turbo mode: {_isTurboMode}, duration: {_spinDuration}");
         }
 

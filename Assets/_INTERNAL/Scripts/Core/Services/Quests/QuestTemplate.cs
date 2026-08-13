@@ -5,7 +5,6 @@ namespace Core.Services.Quests
     [System.Serializable]
     public class QuestTemplate
     {
-        public Sprite Sprite;
         public string Id;
         public string Description;
         public string Tag;
@@ -13,9 +12,8 @@ namespace Core.Services.Quests
         public int RewardCoins;
         public int RewardXP;
 
-        public QuestTemplate(Sprite sprite, string id, string description, string tag, int target, int coins, int xp)
+        public QuestTemplate(string id, string description, string tag, int target, int coins, int xp)
         {
-            Sprite = sprite;
             Id = id;
             Description = description;
             Tag = tag;

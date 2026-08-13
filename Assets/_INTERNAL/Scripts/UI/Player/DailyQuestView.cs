@@ -1,4 +1,5 @@
 ﻿using Core.Data.Quests;
+using Core.SO;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -15,17 +16,27 @@ namespace UI.Player
         [SerializeField] private Image _progressBar;
 
         private DailyQuest _data;
+        private QuestSpritesConfig _config;
 
         public DailyQuest Data => _data;
 
-        public void Init(DailyQuest data)
+        public void Init(DailyQuest data, QuestSpritesConfig spritesConfig)
         {
             _data = data;
+            _config = spritesConfig;
 
             if(_questImage != null)
-                _questImage.sprite = data.Sprite;
+            {
+                if(_config.GetSprite(_data.Id) == null)
+                {
+                    Debug.LogWarning($"[Quest View] Quest data ID: {_data.Id}/Config ID: {_config.GetSprite(_data.Id)}." +
+                        $" Sprite is null!");
+                    return;
+                }
+                _questImage.sprite = _config.GetSprite(_data.Id);
+            }
 
-            if(_descriptionLabel != null)
+            if (_descriptionLabel != null)
                 _descriptionLabel.text = data.Description;
 
             if(_rewardLabel != null)

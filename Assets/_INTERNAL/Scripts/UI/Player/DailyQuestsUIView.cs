@@ -1,8 +1,9 @@
-﻿using Core.Services.Quests;
+﻿using Core.Data.Quests;
+using Core.Services.Quests;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
 namespace UI.Player
@@ -19,20 +20,30 @@ namespace UI.Player
         {
             _dailyQuestsService = dailyQuestsService;
             _viewsHolder.Init(_dailyQuestsService);
+
+            _dailyQuestsService.OnQuestsUpdated += HandleUpdatedQuests;
         }
 
-        public void SetupViewsHolder() => _viewsHolder.SetupQuestViews();
+        public void SetupViewsHolder()
+        {
+            _viewsHolder.SetupQuestViews();
+            StartTimer();
+        }
 
         public void Dispose()
         {
+            _dailyQuestsService.OnQuestsUpdated -= HandleUpdatedQuests;
+
             _viewsHolder.Dispose();
+
             if (_timerCoroutine != null)
                 StopCoroutine(_timerCoroutine);
         }
 
         private void StartTimer()
         {
-            if (_timerCoroutine != null) StopCoroutine(_timerCoroutine);
+            if (_timerCoroutine != null) 
+                StopCoroutine(_timerCoroutine);
             _timerCoroutine = StartCoroutine(UpdateTimerRoutine());
         }
 
@@ -56,6 +67,12 @@ namespace UI.Player
             if (ts <= TimeSpan.Zero) 
                 return "00:00:00";
             return $"Refresh in: {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
+        }
+
+        private void HandleUpdatedQuests(List<DailyQuest> quests)
+        {
+            // Автообновление квестов
+            _viewsHolder.SetupQuestViews();
         }
     }
 }

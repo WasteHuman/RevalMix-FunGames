@@ -1,6 +1,6 @@
 ﻿using Core.Data.Quests;
 using Core.Services.Quests;
-using NUnit.Framework.Interfaces;
+using Core.SO;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,6 +9,10 @@ namespace UI.Player
 {
     public class DailyQuestViewsHolder : MonoBehaviour
     {
+        [Header("Config")]
+        [SerializeField] private QuestSpritesConfig _config;
+
+        [Space(5), Header("Views")]
         [SerializeField] private List<DailyQuestView> _views = new();
 
         private DailyQuestsService _dailyQuestsService;
@@ -26,13 +30,13 @@ namespace UI.Player
 
         public void SetupQuestViews()
         {
-            List<DailyQuest> quests = _dailyQuestsService.CurrentQuests.Values.ToList();
+            int count = Mathf.Min(_dailyQuestsService.CurrentQuests.Count, _views.Count);
 
-            for(int i = 0; i < quests.Count; i++)
+            for (int i = 0; i < count; i++)
             {
-                var questData = quests[i];
+                var questData = _dailyQuestsService.CurrentQuests[i];
                 var view = _views[i];
-                view.Init(questData);
+                view.Init(questData, _config);
             }
         }
 

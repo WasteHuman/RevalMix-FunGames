@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace Core.Services.Quests
@@ -16,13 +17,13 @@ namespace Core.Services.Quests
         private PlayerData _data;
         private EconomyService _economyService;
         private PlayerService _playerService;
-        private Dictionary<string, DailyQuest> _currentQuests;
+        private List<DailyQuest> _currentQuests;
         private DateTime _nextRefreshTimeUtc;
 
         private string SaveFilePath => Path.Combine(Application.persistentDataPath, "quests_data.sav");
 
-        public IReadOnlyDictionary<string, DailyQuest> CurrentQuests => _currentQuests;
-        public event Action<Dictionary<string, DailyQuest>> OnQuestsUpdated;
+        public IReadOnlyList<DailyQuest> CurrentQuests => _currentQuests.AsReadOnly();
+        public event Action<List<DailyQuest>> OnQuestsUpdated;
         public event Action<DailyQuest> OnQuestUpdated;
 
         // Шаблоны квестов для генерации
@@ -32,22 +33,22 @@ namespace Core.Services.Quests
         {
             QuestTemplates = new QuestTemplate[]
             {
-                new(config.PlayEveryArcadeSprite, "play_every_arcade", "Play Every Arcade", GameConstants.TAG_PLAY_EVERY_ARCADE, 1, 500, 200),
-                new(config.SpinReelsSprite, "spin_10_reels", "Spin 10 Reels", GameConstants.TAG_SPIN_10_REELS, 10, 100, 30),
-                new(config.CollectDiamondsSprite, "collect_5_diamonds", "Collect 5 Diamonds", GameConstants.TAG_COLLECT_5_DIAMONDS, 5, 100, 100),
-                new(config.TriggerTurboModeSprite, "trigger_turbo_mode", "Trigger Turbo Mode", GameConstants.TAG_TRIGGER_TURBO_BOOST, 1, 150, 50),
-                new(config.ReachMultiplierSprite, "reach_10x_multiplier", "Reach a x10 Multiplier", GameConstants.TAG_REACH_10X_MULTIPLIER, 1, 200, 50),
-                new(config.ClaimFreeEnergySprite, "claim_free_energy", "Claim Free Energy", GameConstants.TAG_CLAIM_FREE_ENERGY, 1, 120, 35),
-                new(config.OpenTheVaultSprite, "open_the_vault", "Open the Vault", GameConstants.TAG_OPEN_THE_VAULT, 1, 180, 45),
-                new(config.Hit21Sprite, "hit_21", "Hit 21 Exactly", GameConstants.TAG_HIT_21, 1, 500, 1000),
-                new(config.LaunchRocketsSprite, "launch_3_rockets", "Launch 3 Rockets", GameConstants.TAG_LAUNCH_3_ROCKETS, 3, 500, 150),
-                new(config.DropPlinkoBallsSprite, "drop_10_plinko_balls", "Drop 10 Plinko Balls", GameConstants.TAG_DROP_10_PLINKO_BALLS, 10, 200, 500),
-                new(config.SpinTheLuckyWheelSprite, "spin_lucky_wheel", "Spin the Lucky Wheel", GameConstants.TAG_SPIN_LUCKY_WHEEL, 1, 100, 25),
-                new(config.RollDoubleDiceSprite, "roll_double_dice", "Roll Double Dice", GameConstants.TAG_ROLL_DOUBLE_DICE, 1, 100, 75),
-                new(config.EarnRCoinsSprite, "earn_2500_coins", "Earn 2,500 R-Coins", GameConstants.TAG_EARN_2500_RCOINS, 2500, 150, 50),
-                new(config.CompleteCombosSprite, "complete_5_combos", "Complete 5 Combos", GameConstants.TAG_COMPLETE_5_COMBOS, 5, 175, 500),
-                new(config.UpgradeLevelSprite, "upgrade_level", "Upgrade Your Level", GameConstants.TAG_UPGRADE_YOUR_LEVEL, 1, 100, 25),
-                new(config.WinGamesSprite, "win_3_games", "Win 3 Games", GameConstants.TAG_WIN_3_GAMES, 3, 250, 250),
+                new("play_every_arcade", "Play Every Arcade", GameConstants.TAG_PLAY_EVERY_ARCADE, 10, 500, 200),
+                new("spin_10_reels", "Spin 10 Reels", GameConstants.TAG_SPIN_10_REELS, 10, 100, 30),
+                new("collect_5_diamonds", "Collect 5 Diamonds", GameConstants.TAG_COLLECT_5_DIAMONDS, 5, 100, 100),
+                new("trigger_turbo_mode", "Trigger Turbo Mode", GameConstants.TAG_TRIGGER_TURBO_BOOST, 1, 150, 50),
+                new("reach_10x_multiplier", "Reach a x10 Multiplier", GameConstants.TAG_REACH_10X_MULTIPLIER, 1, 200, 50),
+                new("claim_free_energy", "Claim Free Energy", GameConstants.TAG_CLAIM_FREE_ENERGY, 1, 120, 35),
+                new("open_the_vault", "Open the Vault", GameConstants.TAG_OPEN_THE_VAULT, 1, 180, 45),
+                new("hit_21", "Hit 21 Exactly", GameConstants.TAG_HIT_21, 1, 500, 1000),
+                new("launch_3_rockets", "Launch 3 Rockets", GameConstants.TAG_LAUNCH_3_ROCKETS, 3, 500, 150),
+                new("drop_10_plinko_balls", "Drop 10 Plinko Balls", GameConstants.TAG_DROP_10_PLINKO_BALLS, 10, 200, 500),
+                new("spin_lucky_wheel", "Spin the Lucky Wheel", GameConstants.TAG_SPIN_LUCKY_WHEEL, 1, 100, 25),
+                new("roll_double_dice", "Roll Double Dice", GameConstants.TAG_ROLL_DOUBLE_DICE, 1, 100, 75),
+                new("earn_2500_coins", "Earn 2,500 R-Coins", GameConstants.TAG_EARN_2500_RCOINS, 2500, 150, 50),
+                new("complete_5_combos", "Complete 5 Combos", GameConstants.TAG_COMPLETE_5_COMBOS, 5, 175, 500),
+                new("upgrade_level", "Upgrade Your Level", GameConstants.TAG_UPGRADE_YOUR_LEVEL, 1, 100, 25),
+                new("win_3_games", "Win 3 Games", GameConstants.TAG_WIN_3_GAMES, 3, 250, 250),
             };
 
 #if UNITY_EDITOR
@@ -99,7 +100,7 @@ namespace Core.Services.Quests
                 var template = shuffledTemplates[i];
                 var quest = new DailyQuest
                 {
-                    Id = $"quest_{DateTime.Now:yyyyMMdd}_{i}",
+                    Id = template.Id,
                     Description = template.Description,
                     QuestTag = template.Tag,
                     TargetProgress = template.TargetValue,
@@ -110,7 +111,7 @@ namespace Core.Services.Quests
                     IsClaimed = false
                 };
 
-                _currentQuests[quest.Id] = quest;
+                _currentQuests.Add(quest);
             }
 
             SaveQuestsToData();
@@ -119,11 +120,10 @@ namespace Core.Services.Quests
 
         public void ProgressQuests(IEnumerable<string> tags, int amount = 1)
         {
-            if (tags == null) return;
+            if (tags == null) 
+                return;
             foreach (var tag in tags)
-            {
                 ProgressQuest(tag, amount);
-            }
         }
 
         public TimeSpan GetTimeUntilRefresh()
@@ -137,9 +137,7 @@ namespace Core.Services.Quests
                 string lastDate = PlayerPrefs.GetString(GameConstants.KEY_LAST_DAILY_DATE, "");
 
                 if (todayUtc != lastDate)
-                {
-                    CheckDailyReset(); // Генерируем новые квесты
-                }
+                    CheckDailyReset();
 
                 // Пересчитываем время до следующей полночи
                 _nextRefreshTimeUtc = DateTime.UtcNow.Date.AddDays(1);
@@ -160,10 +158,13 @@ namespace Core.Services.Quests
             bool changed = false;
             DailyQuest changedQuest;
 
-            foreach (var quest in _currentQuests.Values)
+            foreach (var quest in _currentQuests)
             {
                 if (quest.QuestTag == tag && !quest.IsCompleted && !quest.IsClaimed)
                 {
+                    if (quest.IsCompleted)
+                        continue;
+
                     quest.CurrentProgress += amount;
                     changedQuest = quest;
 
@@ -200,7 +201,12 @@ namespace Core.Services.Quests
             if (_currentQuests == null || string.IsNullOrEmpty(questId))
                 return null;
 
-            var quest = _currentQuests[questId];
+            var quest = _currentQuests.FirstOrDefault(quest => quest.Id == questId);
+            if(quest == null)
+            {
+                Debug.LogError($"[DailyQuest] Quest is null!");
+                return null;
+            }
 
             if (!quest.IsCompleted || quest.IsClaimed)
             {
@@ -224,7 +230,11 @@ namespace Core.Services.Quests
         public void DeleteAllQuests()
         {
             if (File.Exists(SaveFilePath))
-                File.Exists(SaveFilePath);
+                File.Delete(SaveFilePath);
+
+            PlayerPrefs.DeleteKey(GameConstants.KEY_LAST_DAILY_DATE);
+
+            _currentQuests?.Clear();
         }
 
         /// <summary>
@@ -252,7 +262,7 @@ namespace Core.Services.Quests
                 try
                 {
                     string json = File.ReadAllText(SaveFilePath);
-                    _currentQuests = JsonConvert.DeserializeObject<Dictionary<string, DailyQuest>>(json);
+                    _currentQuests = JsonConvert.DeserializeObject<List<DailyQuest>>(json);
                     Debug.Log($"[DailyQuests] Loaded {_currentQuests?.Count ?? 0} quests from save.");
                 }
                 catch (Exception e)
