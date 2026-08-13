@@ -17,6 +17,8 @@ namespace Core.Gameplay.GameControllers
 {
     public class ReelsController : GameController
     {
+        private string KEY_IS_ARCADE_ALREADY_PLAYED = "Reels_Arcade";
+
         [Header("Reels")]
         [SerializeField] private List<ReelView> _reels = new();
 
@@ -67,6 +69,9 @@ namespace Core.Gameplay.GameControllers
         public override void Enter()
         {
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_REELS);
+
+            if (_reelsType == ReelsType.Diamond)
+                KEY_IS_ARCADE_ALREADY_PLAYED = "Reels_Diamond_Arcade";
 
             _currentBet = _minBet;
             _isTurboMode = false;
@@ -299,6 +304,7 @@ namespace Core.Gameplay.GameControllers
             int matchCount = CountSequentialMatches(symbolIndices);
 
             bool isWin = IsWinningCombination(symbolIndices, matchCount);
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_IS_ARCADE_ALREADY_PLAYED);
 
             if (isWin)
             {
@@ -311,7 +317,8 @@ namespace Core.Gameplay.GameControllers
                     rewardCoins: totalWin,
                     rewardXP: 20,
                     questTag: GameConstants.TAG_SPIN_10_REELS,
-                    gameId: GameConstants.GAME_REELS
+                    gameId: GameConstants.GAME_REELS,
+                    arcadePlayed: isAlreadyPlayed
                 );
 
                 Debug.Log($"WIN! {matchCount} symbols. Reward: {totalWin}");
@@ -328,10 +335,12 @@ namespace Core.Gameplay.GameControllers
                     rewardCoins: 0,
                     rewardXP: 5,
                     questTag: GameConstants.TAG_SPIN_10_REELS,
-                    gameId: GameConstants.GAME_REELS
+                    gameId: GameConstants.GAME_REELS,
+                    arcadePlayed: isAlreadyPlayed
                 );
 
                 GameServices.GameCompletionHandler.HandleGameResult(result);
+                PlayerPrefs.SetInt(KEY_IS_ARCADE_ALREADY_PLAYED, 1);
             }
         }
 

@@ -49,6 +49,16 @@ namespace Core.Services
             if (!string.IsNullOrEmpty(result.QuestTag))
                 _quests.ProgressQuest(result.QuestTag, 1);
 
+            if (result.IsWin)
+            {
+                _quests.ProgressQuest(GameConstants.TAG_WIN_3_GAMES, 1);
+                _quests.ProgressQuest(GameConstants.TAG_EARN_2500_RCOINS, Mathf.RoundToInt(result.RewardCoins));
+                _quests.ProgressQuest(GameConstants.TAG_COMPLETE_5_COMBOS);
+            }
+
+            if (!result.ArcadePlayed)
+                _quests.ProgressQuest(GameConstants.TAG_PLAY_EVERY_ARCADE);
+
             // 4. Триггерим сохранение
             _onGameDataChanged?.Invoke();
 

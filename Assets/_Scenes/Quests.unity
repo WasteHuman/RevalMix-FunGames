@@ -463,6 +463,7 @@ GameObject:
   - component: {fileID: 47228090}
   - component: {fileID: 47228089}
   - component: {fileID: 47228088}
+  - component: {fileID: 47228091}
   m_Layer: 5
   m_Name: Quest (15)
   m_TagString: Untagged
@@ -548,6 +549,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47228086}
   m_CullTransparentMesh: 1
+--- !u!114 &47228091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 47228086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 53441728}
+  _descriptionLabel: {fileID: 491309631}
+  _rewardLabel: {fileID: 1872641279}
+  _progressBar: {fileID: 1366720103}
 --- !u!1 &53441725
 GameObject:
   m_ObjectHideFlags: 0
@@ -1300,6 +1317,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 166319831}
+  - component: {fileID: 166319832}
   m_Layer: 5
   m_Name: CenterContainer
   m_TagString: Untagged
@@ -1329,6 +1347,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: -400}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &166319832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 166319830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2329ae4ff04aa0a42a33c815e83101eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestsUIView
+  _viewsHolder: {fileID: 713051350}
+  _refreshTimerLabel: {fileID: 166887514}
 --- !u!1 &166876427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,6 +1640,7 @@ GameObject:
   - component: {fileID: 184770755}
   - component: {fileID: 184770754}
   - component: {fileID: 184770753}
+  - component: {fileID: 184770756}
   m_Layer: 5
   m_Name: Quest (8)
   m_TagString: Untagged
@@ -1693,6 +1726,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 184770751}
   m_CullTransparentMesh: 1
+--- !u!114 &184770756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 184770751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1263398404}
+  _descriptionLabel: {fileID: 1299260895}
+  _rewardLabel: {fileID: 2013149340}
+  _progressBar: {fileID: 1259329781}
 --- !u!1 &203259127
 GameObject:
   m_ObjectHideFlags: 0
@@ -1777,8 +1826,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2088,8 +2137,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2153,6 +2202,7 @@ GameObject:
   - component: {fileID: 258712251}
   - component: {fileID: 258712250}
   - component: {fileID: 258712249}
+  - component: {fileID: 258712252}
   m_Layer: 5
   m_Name: Quest (6)
   m_TagString: Untagged
@@ -2238,6 +2288,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 258712247}
   m_CullTransparentMesh: 1
+--- !u!114 &258712252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 258712247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1002116234}
+  _descriptionLabel: {fileID: 819529575}
+  _rewardLabel: {fileID: 1162466311}
+  _progressBar: {fileID: 1935616794}
 --- !u!1 &290903683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2322,8 +2388,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2510,6 +2576,7 @@ MonoBehaviour:
   _getFreeEnergyButton: {fileID: 1283426186}
   _energyLabel: {fileID: 1602052243}
   _energyAnimationDuration: 0.5
+  _isCheatActive: 0
 --- !u!1 &325413891
 GameObject:
   m_ObjectHideFlags: 0
@@ -2582,7 +2649,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2809,7 +2876,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3185,6 +3252,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1133895688}
+  - {fileID: 713051349}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &490163003
@@ -3545,8 +3613,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4020,7 +4088,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5100,7 +5168,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5295,6 +5363,112 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 712217162}
   m_CullTransparentMesh: 1
+--- !u!1 &712749423
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 712749425}
+  - component: {fileID: 712749424}
+  m_Layer: 0
+  m_Name: EntryPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &712749424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712749423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0553030bf6b28a445a8e416fa0432afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Core.Services.Quests.DailyQuestsEntryPoint
+  _view: {fileID: 166319832}
+--- !u!4 &712749425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712749423}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &713051348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 713051349}
+  - component: {fileID: 713051350}
+  m_Layer: 0
+  m_Name: DailyQuestViewsHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &713051349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713051348}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 466159692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &713051350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713051348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813f465c9c3ccc84987ab3db3fc33915, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestViewsHolder
+  _views:
+  - {fileID: 1748692003}
+  - {fileID: 1206545165}
+  - {fileID: 1436233686}
+  - {fileID: 1208993845}
+  - {fileID: 1478873069}
+  - {fileID: 1935134747}
+  - {fileID: 258712252}
+  - {fileID: 1209189948}
+  - {fileID: 184770756}
+  - {fileID: 1292863523}
+  - {fileID: 1169158106}
+  - {fileID: 1165890221}
+  - {fileID: 1249615374}
+  - {fileID: 1377571255}
+  - {fileID: 2052673941}
+  - {fileID: 47228091}
 --- !u!1 &719727967
 GameObject:
   m_ObjectHideFlags: 0
@@ -6183,8 +6357,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6537,8 +6711,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 26
-  m_fontSizeBase: 26
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6827,10 +7001,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 490, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -7284,10 +7458,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 98, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -7476,7 +7650,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7566,7 +7740,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8526,7 +8700,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8843,6 +9017,7 @@ GameObject:
   - component: {fileID: 1165890220}
   - component: {fileID: 1165890219}
   - component: {fileID: 1165890218}
+  - component: {fileID: 1165890221}
   m_Layer: 5
   m_Name: Quest (11)
   m_TagString: Untagged
@@ -8928,6 +9103,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1165890216}
   m_CullTransparentMesh: 1
+--- !u!114 &1165890221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165890216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 958748298}
+  _descriptionLabel: {fileID: 510437604}
+  _rewardLabel: {fileID: 490163005}
+  _progressBar: {fileID: 1422300020}
 --- !u!1 &1169158101
 GameObject:
   m_ObjectHideFlags: 0
@@ -8940,6 +9131,7 @@ GameObject:
   - component: {fileID: 1169158105}
   - component: {fileID: 1169158104}
   - component: {fileID: 1169158103}
+  - component: {fileID: 1169158106}
   m_Layer: 5
   m_Name: Quest (10)
   m_TagString: Untagged
@@ -9025,6 +9217,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1169158101}
   m_CullTransparentMesh: 1
+--- !u!114 &1169158106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1169158101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 88760331}
+  _descriptionLabel: {fileID: 1260627942}
+  _rewardLabel: {fileID: 766275955}
+  _progressBar: {fileID: 877858187}
 --- !u!1 &1173947463
 GameObject:
   m_ObjectHideFlags: 0
@@ -9478,6 +9686,7 @@ GameObject:
   - component: {fileID: 1206545164}
   - component: {fileID: 1206545163}
   - component: {fileID: 1206545162}
+  - component: {fileID: 1206545165}
   m_Layer: 5
   m_Name: Quest (1)
   m_TagString: Untagged
@@ -9563,6 +9772,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1206545160}
   m_CullTransparentMesh: 1
+--- !u!114 &1206545165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1206545160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 25573179}
+  _descriptionLabel: {fileID: 203259129}
+  _rewardLabel: {fileID: 1064717314}
+  _progressBar: {fileID: 1351364627}
 --- !u!1 &1208993840
 GameObject:
   m_ObjectHideFlags: 0
@@ -9575,6 +9800,7 @@ GameObject:
   - component: {fileID: 1208993844}
   - component: {fileID: 1208993843}
   - component: {fileID: 1208993842}
+  - component: {fileID: 1208993845}
   m_Layer: 5
   m_Name: Quest (3)
   m_TagString: Untagged
@@ -9660,6 +9886,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1208993840}
   m_CullTransparentMesh: 1
+--- !u!114 &1208993845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1208993840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1478695124}
+  _descriptionLabel: {fileID: 230999057}
+  _rewardLabel: {fileID: 537831307}
+  _progressBar: {fileID: 999942660}
 --- !u!1 &1209189943
 GameObject:
   m_ObjectHideFlags: 0
@@ -9672,6 +9914,7 @@ GameObject:
   - component: {fileID: 1209189947}
   - component: {fileID: 1209189946}
   - component: {fileID: 1209189945}
+  - component: {fileID: 1209189948}
   m_Layer: 5
   m_Name: Quest (7)
   m_TagString: Untagged
@@ -9757,6 +10000,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1209189943}
   m_CullTransparentMesh: 1
+--- !u!114 &1209189948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1209189943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1825027012}
+  _descriptionLabel: {fileID: 246039720}
+  _rewardLabel: {fileID: 1803624909}
+  _progressBar: {fileID: 380818889}
 --- !u!1 &1213822963
 GameObject:
   m_ObjectHideFlags: 0
@@ -10284,6 +10543,7 @@ GameObject:
   - component: {fileID: 1249615373}
   - component: {fileID: 1249615372}
   - component: {fileID: 1249615371}
+  - component: {fileID: 1249615374}
   m_Layer: 5
   m_Name: Quest (12)
   m_TagString: Untagged
@@ -10369,6 +10629,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1249615369}
   m_CullTransparentMesh: 1
+--- !u!114 &1249615374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1249615369}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1614229854}
+  _descriptionLabel: {fileID: 55684837}
+  _rewardLabel: {fileID: 2035505866}
+  _progressBar: {fileID: 1155082467}
 --- !u!1 &1259329779
 GameObject:
   m_ObjectHideFlags: 0
@@ -10528,8 +10804,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 22
+  m_fontSizeBase: 22
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -10743,7 +11019,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -10915,6 +11191,7 @@ GameObject:
   - component: {fileID: 1292863522}
   - component: {fileID: 1292863521}
   - component: {fileID: 1292863520}
+  - component: {fileID: 1292863523}
   m_Layer: 5
   m_Name: Quest (9)
   m_TagString: Untagged
@@ -11000,6 +11277,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1292863518}
   m_CullTransparentMesh: 1
+--- !u!114 &1292863523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1292863518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 722663423}
+  _descriptionLabel: {fileID: 650380385}
+  _rewardLabel: {fileID: 1173947465}
+  _progressBar: {fileID: 613610745}
 --- !u!1 &1295329302
 GameObject:
   m_ObjectHideFlags: 0
@@ -11427,7 +11720,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11666,8 +11959,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 56
-  m_fontSizeBase: 56
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -12069,7 +12362,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.32
+  m_FillAmount: 0.605
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -12169,6 +12462,7 @@ GameObject:
   - component: {fileID: 1377571254}
   - component: {fileID: 1377571253}
   - component: {fileID: 1377571252}
+  - component: {fileID: 1377571255}
   m_Layer: 5
   m_Name: Quest (13)
   m_TagString: Untagged
@@ -12254,6 +12548,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377571250}
   m_CullTransparentMesh: 1
+--- !u!114 &1377571255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1377571250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1243830642}
+  _descriptionLabel: {fileID: 1237731661}
+  _rewardLabel: {fileID: 1213822965}
+  _progressBar: {fileID: 1625518939}
 --- !u!1 &1416562673
 GameObject:
   m_ObjectHideFlags: 0
@@ -12289,10 +12599,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 882, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -12496,6 +12806,7 @@ GameObject:
   - component: {fileID: 1436233685}
   - component: {fileID: 1436233684}
   - component: {fileID: 1436233683}
+  - component: {fileID: 1436233686}
   m_Layer: 5
   m_Name: Quest (2)
   m_TagString: Untagged
@@ -12581,6 +12892,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1436233681}
   m_CullTransparentMesh: 1
+--- !u!114 &1436233686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1436233681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 601422718}
+  _descriptionLabel: {fileID: 800339472}
+  _rewardLabel: {fileID: 602267837}
+  _progressBar: {fileID: 2124919732}
 --- !u!1 &1478695121
 GameObject:
   m_ObjectHideFlags: 0
@@ -12683,6 +13010,7 @@ GameObject:
   - component: {fileID: 1478873068}
   - component: {fileID: 1478873067}
   - component: {fileID: 1478873066}
+  - component: {fileID: 1478873069}
   m_Layer: 5
   m_Name: Quest (4)
   m_TagString: Untagged
@@ -12768,6 +13096,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1478873064}
   m_CullTransparentMesh: 1
+--- !u!114 &1478873069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478873064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1075975496}
+  _descriptionLabel: {fileID: 834872070}
+  _rewardLabel: {fileID: 1121347803}
+  _progressBar: {fileID: 1046126210}
 --- !u!1 &1484211825
 GameObject:
   m_ObjectHideFlags: 0
@@ -12916,7 +13260,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -13009,10 +13353,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -13201,7 +13545,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14043,7 +14387,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14235,6 +14579,7 @@ GameObject:
   - component: {fileID: 1748692002}
   - component: {fileID: 1748692001}
   - component: {fileID: 1748692000}
+  - component: {fileID: 1748692003}
   m_Layer: 5
   m_Name: Quest
   m_TagString: Untagged
@@ -14320,6 +14665,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1748691998}
   m_CullTransparentMesh: 1
+--- !u!114 &1748692003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748691998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 90648287}
+  _descriptionLabel: {fileID: 867179300}
+  _rewardLabel: {fileID: 712217164}
+  _progressBar: {fileID: 1163478449}
 --- !u!1 &1759769477
 GameObject:
   m_ObjectHideFlags: 0
@@ -14724,7 +15085,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15243,10 +15604,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 686, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:
@@ -15435,7 +15796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15555,6 +15916,7 @@ GameObject:
   - component: {fileID: 1935134746}
   - component: {fileID: 1935134745}
   - component: {fileID: 1935134744}
+  - component: {fileID: 1935134747}
   m_Layer: 5
   m_Name: Quest (5)
   m_TagString: Untagged
@@ -15640,6 +16002,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1935134742}
   m_CullTransparentMesh: 1
+--- !u!114 &1935134747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1935134742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1115521549}
+  _descriptionLabel: {fileID: 1007974712}
+  _rewardLabel: {fileID: 336413527}
+  _progressBar: {fileID: 314931234}
 --- !u!1 &1935616792
 GameObject:
   m_ObjectHideFlags: 0
@@ -15940,7 +16318,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16146,7 +16524,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6720823118415889712, guid: e6d33117dd2aaf945af4d5f27493cb8b, type: 3}
+  m_Sprite: {fileID: 6116188034216586524, guid: 79d16dbee41f41d439a0d35c8b5b4398, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16450,6 +16828,7 @@ GameObject:
   - component: {fileID: 2052673940}
   - component: {fileID: 2052673939}
   - component: {fileID: 2052673938}
+  - component: {fileID: 2052673941}
   m_Layer: 5
   m_Name: Quest (14)
   m_TagString: Untagged
@@ -16535,6 +16914,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2052673936}
   m_CullTransparentMesh: 1
+--- !u!114 &2052673941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2052673936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 1790179697}
+  _descriptionLabel: {fileID: 1331762530}
+  _rewardLabel: {fileID: 559977202}
+  _progressBar: {fileID: 95620826}
 --- !u!1 &2054285044
 GameObject:
   m_ObjectHideFlags: 0
@@ -17050,3 +17445,4 @@ SceneRoots:
   - {fileID: 1837881446}
   - {fileID: 755271408}
   - {fileID: 466159692}
+  - {fileID: 712749425}

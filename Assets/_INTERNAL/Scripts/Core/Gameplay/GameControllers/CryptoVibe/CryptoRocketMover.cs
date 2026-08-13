@@ -22,7 +22,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         private Transform _rocketTransform;
 
         private bool _isMoving;
-        private bool _hasCrashed;
 
         private Tween _rotationTween;
         private float _currentAngle;
@@ -59,7 +58,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
             _currentPath = path;
             _isMoving = true;
-            _hasCrashed = false;
 
             float totalDistance = 0f;
             for (int i = 0; i < _currentPath.AscentPoints.Length - 1; i++)
@@ -189,7 +187,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             }
 
             Vector3[] points = _currentPath.DescentPoints;
-            _hasCrashed = true;
             _currentAngle = _rocketTransform.rotation.eulerAngles.z;
 
             float descentSpeed = _movementSpeed * _descentSpeedMultiplier;

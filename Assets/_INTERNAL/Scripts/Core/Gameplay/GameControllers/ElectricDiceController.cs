@@ -84,7 +84,8 @@ namespace Core.Gameplay.GameControllers
                 rewardCoins: reward,
                 rewardXP: xp,
                 questTag: questTag,
-                gameId: GameConstants.GAME_ELECTRIC_DICE);
+                gameId: GameConstants.GAME_ELECTRIC_DICE,
+                true);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             _view.ShowResultPanel(isWin, sum, Mathf.RoundToInt(reward));

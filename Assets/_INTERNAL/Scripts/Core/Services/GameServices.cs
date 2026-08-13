@@ -3,7 +3,9 @@ using Core.Services.LeaderboardSystem;
 using Core.Services.Player;
 using Core.Services.Quests;
 using Core.Services.SaveSystem;
-using Cysharp.Threading.Tasks;
+using Core.SO;
+using System;
+using UnityEngine;
 
 namespace Core.Services
 {
@@ -18,10 +20,10 @@ namespace Core.Services
         public static LeaderboardService Leaderboard { get; private set; }
         public static AvatarService AvatarService { get; private set; }
 
-        public static async UniTask InitializeAll()
+        public static void InitializeAll()
         {
             SaveService = new();
-            await SaveService.Init();
+            SaveService.Init();
 
             PlayerService = new();
             PlayerService.Init(SaveService.PlayerData);
@@ -29,24 +31,36 @@ namespace Core.Services
             EconomyService = new();
             EconomyService.Init(PlayerService.GetData().Coins);
 
-            EnergyService = new(() => SaveService.SavePlayerData().Forget());
-            EnergyService.Init(PlayerService.GetData());
+            try
+            {
+                var questSpritesConfig = Resources.Load<QuestSpritesConfig>("Configs/Meta/Quests/SpritesConfig");
+                Quests = new DailyQuestsService();
+                Quests.Init(PlayerService.GetData(), questSpritesConfig, EconomyService, PlayerService);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Game Services] Failed to initialize Quests: {ex.Message}");
+            }
 
-            Quests = new DailyQuestsService();
-            Quests.Init(PlayerService.GetData());
+            EnergyService = new(() => SaveService.SavePlayerData(), () => Quests.ProgressQuest(GameConstants.TAG_CLAIM_FREE_ENERGY));
+            EnergyService.Init(PlayerService.GetData());
 
             Leaderboard = new LeaderboardService();
             Leaderboard.Init(PlayerService.GetData());
 
             AvatarService = new(PlayerService.GetData());
 
-            GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData().Forget());
+            GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData());
+
+#if UNITY_EDITOR
+            SaveService.DeleteAllSaves();
+#endif
         }
 
-        public static async UniTask SaveAll()
+        public static void SaveAll()
         {
             SaveService.PlayerData.Coins = EconomyService.GetCoinsBalance();
-            await SaveService.SavePlayerData();
+            SaveService.SavePlayerData();
             SaveService.SaveSettings();
         }
     }

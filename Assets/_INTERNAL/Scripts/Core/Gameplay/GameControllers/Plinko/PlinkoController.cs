@@ -12,6 +12,8 @@ namespace Core.Gameplay.GameControllers.Plinko
 {
     public class PlinkoController : GameController
     {
+        private const string KEY_ARCADE_ALREADY_PLAYED = "Plinko_Vibe_Arcade";
+
         [Header("View Setup")]
         [SerializeField] private PlinkoView _view;
         [SerializeField] private PlinkoBallKillZone _ballKillZone;
@@ -157,6 +159,7 @@ namespace Core.Gameplay.GameControllers.Plinko
         private void HandleFinish(float multiplier)
         {
             bool isWin = multiplier > 0f;
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
 
             var rewardCoins = Mathf.RoundToInt(_currentBet * multiplier);
             if (rewardCoins > 0)
@@ -174,7 +177,8 @@ namespace Core.Gameplay.GameControllers.Plinko
                 rewardCoins: rewardCoins,
                 rewardXP: 5 * (int)Mathf.Max(1, multiplier),
                 questTag: GameConstants.TAG_DROP_10_PLINKO_BALLS,
-                gameId: GameConstants.GAME_PLINKO_VIBE);
+                gameId: GameConstants.GAME_PLINKO_VIBE,
+                arcadePlayed: isAlreadyPlayed);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             _isPlaying = false;

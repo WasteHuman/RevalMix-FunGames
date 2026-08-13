@@ -12,6 +12,8 @@ namespace Core.Gameplay.GameControllers
 {
     public class CyberMasterController : GameController
     {
+        private const string KEY_ARCADE_ALREADY_PLAYED = "Cyber_Master_Arcade";
+
         [Header("Cards Setup")]
         [SerializeField] private List<CardData> _deckCards;
 
@@ -19,7 +21,7 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private CyberMasterView _view;
 
         [Space(5), Header("Game Settings")]
-        [SerializeField] private int _baseReward = 150;
+        [SerializeField] private int _baseBet = 150;
         [SerializeField] private int _perfect21Multiplier = 3; // x3 за ровно 21
         [Tooltip("Задержка между вылетом стартовых карт")]
         [SerializeField] private float _dealStagger = 0.15f;
@@ -29,7 +31,7 @@ namespace Core.Gameplay.GameControllers
         private List<CardData> _playerHand;
         private bool _isGameActive;
         private int _currentScore;
-        private int _currentBet;
+        
         private int _softAces; // для подсчета тузов (1 или 11)
 
         public override void Enter()
@@ -53,8 +55,8 @@ namespace Core.Gameplay.GameControllers
             {
                 _view.Init(_deckCards.Count);
                 _view.UpdateScore(_currentScore);
-                _view.UpdateBet(_currentBet);
-                _view.SetButtonsInteractable(_isGameActive);
+                _view.UpdateBet(_baseBet);
+                _view.SetButtonsState(_isGameActive);
             }
         }
 
@@ -73,19 +75,19 @@ namespace Core.Gameplay.GameControllers
 
         private void ResetGame()
         {
+            GameServices.EconomyService.SpendCoins(_baseBet);
+
             _playerHand = new List<CardData>();
             _currentScore = 0;
             _softAces = 0;
             _isGameActive = false;
 
-            _currentBet = 150;
-
             if (_view != null)
             {
                 _view.ClearHand();
                 _view.UpdateScore(_currentScore);
-                _view.UpdateBet(_currentBet);
-                _view.SetButtonsInteractable(false);
+                _view.UpdateBet(_baseBet);
+                _view.SetButtonsState(false);
             }
 
             // Раздаем 2 стартовые карты
@@ -95,7 +97,7 @@ namespace Core.Gameplay.GameControllers
             _isGameActive = true;
 
             if (_view != null)
-                _view.SetButtonsInteractable(_isGameActive);
+                _view.SetButtonsState(_isGameActive);
 
             // Проверяем, не получили ли мы сразу 21
             CheckForBlackjack();
@@ -129,7 +131,7 @@ namespace Core.Gameplay.GameControllers
             }
 
             if (_currentScore == 21)
-                EndGame(true, _baseReward * _perfect21Multiplier, true);
+                EndGame(true, _baseBet * _perfect21Multiplier, true);
 
             Debug.Log($"[CyberMaster] Dealt card: Value={card.CardValue}, IsAce={card.IsAce}, Total={_currentScore}");
         }
@@ -149,7 +151,7 @@ namespace Core.Gameplay.GameControllers
             if (_currentScore == 21 && _playerHand.Count == 2)
             {
                 // Blackjack! Завершаем игру с супер-бонусом
-                EndGame(true, _baseReward * _perfect21Multiplier, true);
+                EndGame(true, _baseBet * _perfect21Multiplier, true);
             }
         }
 
@@ -157,14 +159,15 @@ namespace Core.Gameplay.GameControllers
         {
             _isGameActive = false;
 
-            GameServices.EconomyService.SpendCoins(_currentBet);
-
-            _view.SetButtonsInteractable(false);
+            _view.SetStartButtonState(_isGameActive);
+            _view.SetButtonsState(_isGameActive);
 
             // Определяем quest tag
             string questTag = null;
             if (isWin && _currentScore == 21)
                 questTag = GameConstants.TAG_HIT_21;
+
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
 
             // Создаем GameResult
             GameResult result = new(
@@ -172,7 +175,8 @@ namespace Core.Gameplay.GameControllers
                 rewardCoins: isWin ? reward : 0f,
                 rewardXP: isWin ? (isBlackjack ? 100f : 50f) : 10f,
                 questTag: questTag,
-                gameId: GameConstants.GAME_CYBER_MASTER
+                gameId: GameConstants.GAME_CYBER_MASTER,
+                arcadePlayed: isAlreadyPlayed
             );
 
             // Отправляем результат в GameCompletionHandler
@@ -220,11 +224,11 @@ namespace Core.Gameplay.GameControllers
                 int distanceFrom21 = 21 - _currentScore;
 
                 if (_currentScore == 21)
-                    reward = _baseReward * _perfect21Multiplier;
+                    reward = _baseBet * _perfect21Multiplier;
                 else if (distanceFrom21 <= 2)
-                    reward = _baseReward * 2f;
+                    reward = _baseBet * 2f;
                 else
-                    reward = _baseReward;
+                    reward = _baseBet * 1.05f;
             }
 
             EndGame(isWin, reward, false);
@@ -238,15 +242,20 @@ namespace Core.Gameplay.GameControllers
                 return;
             }
 
-            if (!GameServices.EconomyService.HasEnoughBalance(_currentBet))
+            if (!GameServices.EconomyService.HasEnoughBalance(_baseBet))
             {
-                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_currentBet}) for this bet.");
+                _view.ShowWarningMessage("Not enough coins!", $"You don't have enough coins ({_baseBet}) for this bet.");
                 return;
             }
 
             ResetGame();
         }
 
-        private void HandleRestart() => ResetGame();
+        private void HandleRestart()
+        {
+            _view.UpdateScore(0);
+            _view.ClearHand();
+            _view.SetStartButtonState(true);
+        }
     }
 }

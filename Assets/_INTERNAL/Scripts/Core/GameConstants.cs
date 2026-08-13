@@ -32,9 +32,9 @@
 
         #region Economy & Limits
         public const float INITIAL_COINS = 1000f;
-        public const int INITIAL_ENERGY = 25;
-        public const int MAX_ENERGY = 25;
-        public const float ENERGY_REGEN_MINUTES = 60f;
+        public const int INITIAL_ENERGY = 50;
+        public const int MAX_ENERGY = 50;
+        public const float ENERGY_REGEN_MINUTES = 30f;
         #endregion
 
         #region Quest Tags

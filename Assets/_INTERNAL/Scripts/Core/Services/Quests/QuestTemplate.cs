@@ -1,8 +1,11 @@
-﻿namespace Core.Services.Quests
+﻿using UnityEngine;
+
+namespace Core.Services.Quests
 {
     [System.Serializable]
     public class QuestTemplate
     {
+        public Sprite Sprite;
         public string Id;
         public string Description;
         public string Tag;
@@ -10,8 +13,9 @@
         public int RewardCoins;
         public int RewardXP;
 
-        public QuestTemplate(string id, string description, string tag, int target, int coins, int xp)
+        public QuestTemplate(Sprite sprite, string id, string description, string tag, int target, int coins, int xp)
         {
+            Sprite = sprite;
             Id = id;
             Description = description;
             Tag = tag;

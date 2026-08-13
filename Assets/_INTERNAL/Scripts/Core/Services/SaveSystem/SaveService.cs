@@ -1,74 +1,83 @@
 ﻿using Core.Data;
-using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Core.Services.SaveSystem
 {
     public class SaveService
     {
-        private const string KEY_PLAYER = GameConstants.KEY_PLAYER_DATA;
         private const string KEY_SETTINGS = GameConstants.KEY_SETTINGS;
 
         private PlayerData _playerData;
         private SettingsData _settingsData;
+        private string SaveFilePath => Path.Combine(Application.persistentDataPath, "player_data.sav");
 
         public PlayerData PlayerData => _playerData;
         public SettingsData Settings => _settingsData;
 
-        public async UniTask Init()
+        public void Init()
         {
-            await LoadPlayerData();
+            LoadPlayerData();
             LoadSettings();
         }
 
-        private async UniTask LoadPlayerData()
+        private void LoadPlayerData()
         {
-            if (PlayerPrefs.HasKey(KEY_PLAYER))
+            if (File.Exists(SaveFilePath))
             {
                 try
                 {
-                    string json = PlayerPrefs.GetString(KEY_PLAYER);
-                    _playerData = JsonConvert.DeserializeObject<PlayerData>(json) ?? throw new Exception("Null data");
-                    Debug.Log("[SaveService] Player data loaded.");
+                    string json = File.ReadAllText(SaveFilePath);
+                    _playerData = JsonConvert.DeserializeObject<PlayerData>(json);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Debug.LogError($"[SaveService] Corrupted save data, creating new. Error: {e.Message}");
-                    await CreateNewPlayerData();
+                    CreateNewPlayerData();
                 }
             }
             else
-            {
-                await CreateNewPlayerData();
-            }
+                CreateNewPlayerData();
         }
 
-        private async UniTask CreateNewPlayerData()
+        private void CreateNewPlayerData()
         {
             _playerData = new PlayerData();
-            await SavePlayerData();
+            SavePlayerData();
             Debug.Log("[SaveService] New player data created.");
         }
 
-        public async UniTask SavePlayerData()
+        public void SavePlayerData()
         {
             if (_playerData == null) 
                 return;
 
             try
             {
-                _playerData.CurrentAvatar = null; // Reset the current avatar before saving
+                _playerData.CurrentAvatar = null;
                 string json = JsonConvert.SerializeObject(_playerData);
-                PlayerPrefs.SetString(KEY_PLAYER, json);
-                PlayerPrefs.Save();
-                Debug.Log("[SaveService] Player data saved.");
+
+                string tempPath = SaveFilePath + ".tmp";
+                File.WriteAllText(tempPath, json);
+
+                if (File.Exists(SaveFilePath))
+                    File.Delete(SaveFilePath);
+
+                File.Move(tempPath, SaveFilePath);
+
+                Debug.Log("[SaveService] File saved successfully.");
             }
             catch (Exception e)
             {
-                Debug.LogError($"[SaveService] Failed to save player  {e.Message}");
+                Debug.LogError($"[SaveService] File save failed: {e.Message}");
             }
+        }
+
+        public void DeleteAllSaves()
+        {
+            if (File.Exists(SaveFilePath))
+                File.Delete(SaveFilePath);
         }
 
         private void LoadSettings()

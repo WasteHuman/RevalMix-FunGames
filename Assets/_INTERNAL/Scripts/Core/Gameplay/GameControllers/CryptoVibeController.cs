@@ -10,6 +10,8 @@ namespace Core.Gameplay.GameControllers
 {
     public class CryptoVibeController : GameController
     {
+        private const string KEY_ARCADE_ALREADY_PLAYED = "Crypto_Pump_Vibe_Arcade";
+
         [Header("Setup")]
         [SerializeField] private CryptoVibeView _view;
 
@@ -160,13 +162,15 @@ namespace Core.Gameplay.GameControllers
             string questTag)
         {
             _state = isWin ? GameState.CashedOut : GameState.Crashed;
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
 
             GameResult result = new(
                 isWin: isWin,
                 rewardCoins: reward,
                 rewardXP: isWin ? 30f : 10f,
                 questTag: questTag,
-                gameId: GameConstants.GAME_CRYPTO_VIBE
+                gameId: GameConstants.GAME_CRYPTO_VIBE,
+                arcadePlayed: isAlreadyPlayed
             );
 
             GameServices.GameCompletionHandler.HandleGameResult(result);

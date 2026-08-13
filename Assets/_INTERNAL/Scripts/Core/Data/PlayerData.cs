@@ -15,6 +15,7 @@ namespace Core.Data
         public float Coins;
         public int Energy;
         public DateTime LastEnergyUpdate;
+        public DateTime? LastFreeEnergyTime;
 
         public int Level;
         public int Rank;

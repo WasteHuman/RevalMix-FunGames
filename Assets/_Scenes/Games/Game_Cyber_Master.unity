@@ -1641,7 +1641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 2100000, guid: c488acb4f3ef02941aa5f984399617dc, type: 2}
+  m_Material: {fileID: 2100000, guid: 40c0b681835907641906cb91bfd1d029, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -2660,6 +2660,7 @@ MonoBehaviour:
   _getFreeEnergyButton: {fileID: 0}
   _energyLabel: {fileID: 1907374287}
   _energyAnimationDuration: 0.5
+  _isCheatActive: 0
 --- !u!1 &752747003
 GameObject:
   m_ObjectHideFlags: 0
@@ -5764,7 +5765,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 2100000, guid: c488acb4f3ef02941aa5f984399617dc, type: 2}
+  m_Material: {fileID: 2100000, guid: 40c0b681835907641906cb91bfd1d029, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -6345,10 +6346,10 @@ MonoBehaviour:
     CardValue: 1
     IsAce: 1
   _view: {fileID: 166319832}
-  _baseReward: 150
-  _perfect21Multiplier: 10
+  _baseBet: 150
+  _perfect21Multiplier: 25
   _dealStagger: 0.15
-  _resultShowDelay: 0.9
+  _resultShowDelay: 0.75
 --- !u!1 &1837881442
 GameObject:
   m_ObjectHideFlags: 0

@@ -52,11 +52,12 @@ namespace Core.WheelOfLuck
 
         private const string PREF_FREE_SPINS = "Wheel_FreeSpins";
         private const string PREF_NEXT_AVAILABLE_TICKS = "Wheel_NextAvailableTicks";
+        private string KEY_ARCADE_ALREADY_PLAYED = "Wheel_Of_Luck_Arcade";
 
         private int _selectedSector;
 
         private int _freeSpins;
-        private DateTime _nextAvailableUtc;
+        private DateTimeOffset _nextAvailableUtc;
         private bool _isSpinning;
         private WheelReward _pendingReward;
         private int _pendingIndex;
@@ -75,6 +76,9 @@ namespace Core.WheelOfLuck
         private void Awake()
         {
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_WHEEL_OF_REVOLUT);
+
+            if (_isNeonWheel)
+                KEY_ARCADE_ALREADY_PLAYED = "Neon_Cyan_Wheel_Arcade";
 
             LoadState();
             UpdateCooldownLabel();
@@ -108,11 +112,9 @@ namespace Core.WheelOfLuck
                 _prepareAndStartSpinAction = () => PrepareAndStartSpin(ClaimWithoutAd);
                 _startSpinButton.OnButtonClick += _prepareAndStartSpinAction;
 
-                if (!IsAvailable())
-                {
-                    _startSpinButton.Interactable = false;
+                _startSpinButton.Interactable = CanSpin();
+                if (!CanSpin())
                     _startSpinButton.Animations.StopPulseAnimation();
-                }
             }
         }
 
@@ -216,25 +218,32 @@ namespace Core.WheelOfLuck
         private void LoadState()
         {
             _freeSpins = PlayerPrefs.GetInt(PREF_FREE_SPINS, _initialFreeSpins);
-            long ticks = Convert.ToInt64(PlayerPrefs.GetString(PREF_NEXT_AVAILABLE_TICKS, "0"));
-            _nextAvailableUtc = ticks == 0 ? DateTime.MinValue : new DateTime(ticks, DateTimeKind.Utc);
+            long unixTime = Convert.ToInt64(PlayerPrefs.GetString(PREF_NEXT_AVAILABLE_TICKS, "0"));
 
-            if (_spinsCountText == null)
-                return;
+            _nextAvailableUtc = unixTime == 0 ? DateTimeOffset.MinValue : DateTimeOffset.FromUnixTimeSeconds(unixTime);
 
-            _spinsCountText.text = $"FREE SPINS: {_freeSpins}";
+            if (!_isNeonWheel && IsAvailable() && _freeSpins == 0)
+            {
+                _freeSpins = 1;
+                _nextAvailableUtc = DateTimeOffset.UtcNow.Add(COOLDOWN);
+                SaveState();
+            }
+
+            if (_spinsCountText != null)
+                _spinsCountText.text = $"FREE SPINS: {_freeSpins}";
         }
 
         private void SaveState()
         {
             PlayerPrefs.SetInt(PREF_FREE_SPINS, _freeSpins);
-            PlayerPrefs.SetString(PREF_NEXT_AVAILABLE_TICKS, _nextAvailableUtc == DateTime.MinValue ? "0" : _nextAvailableUtc.Ticks.ToString());
+            long unixTime = _nextAvailableUtc == DateTimeOffset.MinValue ? 0 : _nextAvailableUtc.ToUnixTimeSeconds();
+            PlayerPrefs.SetString(PREF_NEXT_AVAILABLE_TICKS, unixTime.ToString());
             PlayerPrefs.Save();
         }
 
         public bool IsAvailable()
         {
-            return DateTime.UtcNow >= _nextAvailableUtc;
+            return DateTimeOffset.UtcNow >= _nextAvailableUtc;
         }
 
         public int GetFreeSpins() => _freeSpins;
@@ -421,8 +430,11 @@ namespace Core.WheelOfLuck
                 case WheelReward.RewardType.FreeSpin:
                     int spins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
                     _freeSpins += spins;
+
+                    _nextAvailableUtc = DateTimeOffset.UtcNow;
                     SaveState();
-                    _nextAvailableUtc = DateTime.UtcNow;
+
+                    _startSpinButton.Interactable = CanSpin();
                     UpdatePulseState();
                     Debug.Log($"[Wheel] Given free spins: {spins}");
 
@@ -448,16 +460,20 @@ namespace Core.WheelOfLuck
                     AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
                     break;
                 case WheelReward.RewardType.Sector:
+                    bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+
                     if (_selectedSector == reward.Amount)
                     {
                         Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
+                        
 
                         GameResult result = new(
                             isWin: true,
                             rewardCoins: reward.Amount,
                             rewardXP: 20,
                             questTag: string.Empty,
-                            gameId: GameConstants.GAME_NEON_WHEEL
+                            gameId: GameConstants.GAME_NEON_WHEEL,
+                            arcadePlayed: isAlreadyPlayed
                         );
 
                         GameServices.GameCompletionHandler.HandleGameResult(result);
@@ -471,7 +487,8 @@ namespace Core.WheelOfLuck
                             rewardCoins: 0,
                             rewardXP: 0,
                             questTag: string.Empty,
-                            gameId: GameConstants.GAME_NEON_WHEEL
+                            gameId: GameConstants.GAME_NEON_WHEEL,
+                            arcadePlayed: isAlreadyPlayed
                         );
 
                         GameServices.GameCompletionHandler.HandleGameResult(result);
@@ -481,9 +498,9 @@ namespace Core.WheelOfLuck
                     break;
             }
 
-            if(_startSpinButton != null)
+            if (_startSpinButton != null)
             {
-                _startSpinButton.Interactable = true;
+                _startSpinButton.Interactable = CanSpin();
                 UpdatePulseState();
             }
         }
@@ -546,10 +563,10 @@ namespace Core.WheelOfLuck
 
         public TimeSpan GetRemainingCooldown()
         {
-            if (IsAvailable()) 
+            if (IsAvailable())
                 return TimeSpan.Zero;
 
-            return _nextAvailableUtc - DateTime.UtcNow;
+            return _nextAvailableUtc - DateTimeOffset.UtcNow;
         }
 
         private void StartCooldownUpdater()

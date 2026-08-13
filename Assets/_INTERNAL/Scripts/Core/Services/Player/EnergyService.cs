@@ -7,6 +7,8 @@ namespace Core.Services.Player
     public class EnergyService
     {
         private PlayerData _playerData;
+        private Action _onEnergyClaimed;
+
         private readonly Action _onEnergyChanged;
 
         public int CurrentEnergy => _playerData.Energy;
@@ -17,14 +19,18 @@ namespace Core.Services.Player
 
         public event Action<int> OnEnergyChanged;
 
-        public EnergyService(Action onEnergyChanged)
+        public EnergyService(Action onEnergyChanged, Action onEnergyClaimed)
         {
             _onEnergyChanged = onEnergyChanged;
+            _onEnergyClaimed = onEnergyClaimed;
         }
 
         public void Init(PlayerData playerData)
         {
             _playerData = playerData;
+
+            LastFreeEnergyTime = _playerData.LastFreeEnergyTime;
+
             RegenerateEnergy();
         }
 
@@ -41,14 +47,17 @@ namespace Core.Services.Player
             if (energyToRegen > 0)
             {
                 int newEnergy = Mathf.Min(_playerData.Energy + energyToRegen, MaxEnergy);
+                int actualRegen = newEnergy - _playerData.Energy;
 
-                if (newEnergy != _playerData.Energy)
+                if (actualRegen > 0)
                 {
                     _playerData.Energy = newEnergy;
-                    _playerData.LastEnergyUpdate = now;
-                    OnEnergyChanged?.Invoke(_playerData.Energy);
 
-                    Debug.Log($"[Energy] Regenerated {energyToRegen} energy. New energy: {_playerData.Energy}/{MaxEnergy}");
+                    var timeConsumed = TimeSpan.FromMinutes(actualRegen * GameConstants.ENERGY_REGEN_MINUTES);
+                    _playerData.LastEnergyUpdate = _playerData.LastEnergyUpdate.Add(timeConsumed);
+
+                    OnEnergyChanged?.Invoke(_playerData.Energy);
+                    Debug.Log($"[Energy] Regenerated {actualRegen} energy. New energy: {_playerData.Energy}/{MaxEnergy}");
                 }
             }
         }
@@ -110,7 +119,11 @@ namespace Core.Services.Player
             }
 
             AddEnergy(amount);
+
             LastFreeEnergyTime = now;
+            _playerData.LastFreeEnergyTime = now;
+            _onEnergyClaimed?.Invoke();
+            _onEnergyClaimed = null;
 
             Debug.Log($"[Energy] Free energy received: +{amount}");
             return true;

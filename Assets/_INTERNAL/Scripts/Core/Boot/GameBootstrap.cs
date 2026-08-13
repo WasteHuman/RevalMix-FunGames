@@ -34,10 +34,10 @@ namespace Core.Boot
 //#endif
             PlayerPrefs.DeleteKey("ShownLetsPlay");
 
-            RunAsync().Forget();
+            Run();
         }
         
-        private static async UniTask InitializeExternalSDK()
+        private static void InitializeExternalSDK()
         {
             CheckFirstLaunch();
 
@@ -69,14 +69,14 @@ namespace Core.Boot
             }
         }
 
-        private static async UniTaskVoid RunAsync()
+        private static void Run()
         {
             try
             {
-                await InitializeExternalSDK();
+                InitializeExternalSDK();
 
                 _instance.LoadMainScene();
-                await GameServices.InitializeAll();
+                GameServices.InitializeAll();
             }
             catch (System.Exception ex)
             {
@@ -172,6 +172,18 @@ namespace Core.Boot
     {
         private void Awake() => DontDestroyOnLoad(gameObject);
 
-        private void OnApplicationQuit() => GameServices.SaveAll().Forget();
+        private void OnApplicationPause(bool pause)
+        {
+            if (pause)
+                GameServices.SaveAll();
+        }
+
+        private void OnApplicationFocus(bool focus)
+        {
+            if (!focus)
+                GameServices.SaveAll();
+        }
+
+        private void OnApplicationQuit() => GameServices.SaveAll();
     }
 }

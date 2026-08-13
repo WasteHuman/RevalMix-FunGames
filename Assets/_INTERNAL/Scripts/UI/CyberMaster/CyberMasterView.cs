@@ -184,7 +184,9 @@ namespace UI.CyberMaster
                 _betText.text = $"Bet: {bet}";
         }
 
-        public void SetButtonsInteractable(bool isGameActive)
+        public void SetStartButtonState(bool value) => _startButton.Interactable = value;
+
+        public void SetButtonsState(bool isGameActive)
         {
             if (_startButton != null)
                 _startButton.gameObject.SetActive(!isGameActive);
@@ -221,14 +223,19 @@ namespace UI.CyberMaster
             }
         }
 
-        private void ClearSlot(Transform slot)
+        private void ClearSlot(RectTransform slot)
         {
-            if (slot == null) return;
+            if (slot == null) 
+                return;
 
             foreach (Transform child in slot)
             {
                 child.DOKill();
-                Destroy(child.gameObject);
+                child.DOScale(0f, 0.25f).SetEase(Ease.InOutQuad).OnComplete(() =>
+                {
+                    child.DOKill();
+                    Destroy(child.gameObject);
+                });
             }
         }
 

@@ -1,12 +1,15 @@
-﻿namespace Core.Data.Quests
+﻿using UnityEngine;
+
+namespace Core.Data.Quests
 {
     [System.Serializable]
     public class DailyQuest
     {
+        public Sprite Sprite;
         public string Id;
         public string Description;
         public string QuestTag;
-        public int TargetValue;
+        public int TargetProgress;
         public int CurrentProgress;
         public int RewardCoins;
         public int RewardXP;

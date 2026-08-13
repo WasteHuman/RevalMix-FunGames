@@ -55,7 +55,6 @@ namespace UI.CryptoVibe
         public event Action OnEjectClicked;
         public event Action OnRestartButtonClicked;
         public event Action<float> OnBetChanged;
-        public event Action<float> OnMultiplierUpdated;
 
         private void Start()
         {

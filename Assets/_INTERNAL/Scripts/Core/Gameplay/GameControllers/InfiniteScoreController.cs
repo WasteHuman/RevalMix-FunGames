@@ -124,7 +124,8 @@ namespace Core.Gameplay.GameControllers
                 rewardCoins: reward,
                 rewardXP: xp,
                 questTag: questTag,
-                gameId: GameConstants.GAME_INFINITE_SCORE);
+                gameId: GameConstants.GAME_INFINITE_SCORE,
+                true);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             _view.SetButtonsInteractable(false);
