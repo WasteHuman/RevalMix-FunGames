@@ -15,6 +15,17 @@ namespace UI.Player
 
         private DailyQuestsService _dailyQuestsService;
         private Coroutine _timerCoroutine;
+        private readonly WaitForSeconds _requestDelay = new(1f);
+
+        private void OnDestroy()
+        {
+            _dailyQuestsService.OnQuestsUpdated -= HandleUpdatedQuests;
+
+            _viewsHolder.Dispose();
+
+            if (_timerCoroutine != null)
+                StopCoroutine(_timerCoroutine);
+        }
 
         public void Init(DailyQuestsService dailyQuestsService)
         {
@@ -28,16 +39,6 @@ namespace UI.Player
         {
             _viewsHolder.SetupQuestViews();
             StartTimer();
-        }
-
-        public void Dispose()
-        {
-            _dailyQuestsService.OnQuestsUpdated -= HandleUpdatedQuests;
-
-            _viewsHolder.Dispose();
-
-            if (_timerCoroutine != null)
-                StopCoroutine(_timerCoroutine);
         }
 
         private void StartTimer()
@@ -57,7 +58,7 @@ namespace UI.Player
                 if (_refreshTimerLabel != null)
                     _refreshTimerLabel.text = FormatTime(timeLeft);
 
-                yield return new WaitForSeconds(1f);
+                yield return _requestDelay;
             }
         }
 

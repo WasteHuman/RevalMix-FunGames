@@ -17,12 +17,19 @@ namespace Core.Services.Quests
         private PlayerData _data;
         private EconomyService _economyService;
         private PlayerService _playerService;
+
         private List<DailyQuest> _currentQuests;
+        private List<DailyQuest> _requestedQuestsToMainMenu;
+
         private DateTime _nextRefreshTimeUtc;
+
+        private bool _isQuestsRequested = false;
 
         private string SaveFilePath => Path.Combine(Application.persistentDataPath, "quests_data.sav");
 
         public IReadOnlyList<DailyQuest> CurrentQuests => _currentQuests.AsReadOnly();
+        public IReadOnlyList<DailyQuest> RequestedQuests => _requestedQuestsToMainMenu.AsReadOnly();
+
         public event Action<List<DailyQuest>> OnQuestsUpdated;
         public event Action<DailyQuest> OnQuestUpdated;
 
@@ -50,10 +57,6 @@ namespace Core.Services.Quests
                 new("upgrade_level", "Upgrade Your Level", GameConstants.TAG_UPGRADE_YOUR_LEVEL, 1, 100, 25),
                 new("win_3_games", "Win 3 Games", GameConstants.TAG_WIN_3_GAMES, 3, 250, 250),
             };
-
-#if UNITY_EDITOR
-            DeleteAllQuests();
-#endif
 
             _data = data;
             _economyService = economyService;
@@ -116,6 +119,30 @@ namespace Core.Services.Quests
 
             SaveQuestsToData();
             Debug.Log($"[DailyQuests] Generated {_currentQuests.Count} new daily quests.");
+        }
+
+        /// <summary>
+        /// Запрос определённого колличества квестов
+        /// </summary>
+        public void RequestQuests(int count)
+        {
+            if (_currentQuests == null || _currentQuests.Count == 0 || count <= 0 || _isQuestsRequested)
+                return;
+
+            _requestedQuestsToMainMenu ??= new();
+
+            var availableQuests = _currentQuests.Except(_requestedQuestsToMainMenu).ToList();
+
+            for (int i = 0; i < count && availableQuests.Count > 0; i++)
+            {
+                int randomIndex = UnityEngine.Random.Range(0, availableQuests.Count);
+                var quest = availableQuests[randomIndex];
+
+                _requestedQuestsToMainMenu.Add(quest);
+                availableQuests.RemoveAt(randomIndex);
+            }
+
+            _isQuestsRequested = true;
         }
 
         public void ProgressQuests(IEnumerable<string> tags, int amount = 1)
@@ -186,6 +213,9 @@ namespace Core.Services.Quests
 
             if (changed)
                 SaveQuestsToData();
+
+            Debug.Log($"[Daily Quests Service] Quest {tag} updated" +
+                $" {_currentQuests.FirstOrDefault(quest => quest.QuestTag == tag).CurrentProgress}");
         }
 
         /// <summary>

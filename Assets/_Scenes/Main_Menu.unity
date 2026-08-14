@@ -2395,6 +2395,7 @@ GameObject:
   - component: {fileID: 556888415}
   - component: {fileID: 556888414}
   - component: {fileID: 556888416}
+  - component: {fileID: 556888417}
   m_Layer: 5
   m_Name: Quest (1)
   m_TagString: Untagged
@@ -2480,6 +2481,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &556888417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 556888411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 814560242}
+  _descriptionLabel: {fileID: 853788310}
+  _rewardLabel: {fileID: 143744954}
+  _progressBar: {fileID: 770148686}
 --- !u!1 &595192876
 GameObject:
   m_ObjectHideFlags: 0
@@ -4090,6 +4107,7 @@ MonoBehaviour:
   _getFreeEnergyButton: {fileID: 971755580}
   _energyLabel: {fileID: 1593864875}
   _energyAnimationDuration: 0.5
+  _isCheatActive: 0
 --- !u!1 &853788308
 GameObject:
   m_ObjectHideFlags: 0
@@ -5012,6 +5030,7 @@ GameObject:
   - component: {fileID: 997614670}
   - component: {fileID: 997614669}
   - component: {fileID: 997614671}
+  - component: {fileID: 997614672}
   m_Layer: 5
   m_Name: Quest (2)
   m_TagString: Untagged
@@ -5097,6 +5116,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &997614672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 997614666}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 32802037}
+  _descriptionLabel: {fileID: 169061016}
+  _rewardLabel: {fileID: 884472695}
+  _progressBar: {fileID: 1342089440}
 --- !u!1 &1012287278
 GameObject:
   m_ObjectHideFlags: 0
@@ -8381,6 +8416,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1685154862}
+  - component: {fileID: 1685154863}
   m_Layer: 5
   m_Name: DailyQuestsContainer
   m_TagString: Untagged
@@ -8408,6 +8444,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -300}
   m_SizeDelta: {x: -40, y: 550}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1685154863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1685154861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba1bf66a8d72abb40949b5588ccf7223, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestsMainMenuView
+  _views:
+  - {fileID: 1976615965}
+  - {fileID: 556888417}
+  - {fileID: 997614672}
+  _questsCount: 3
+  _config: {fileID: 11400000, guid: 26425d6a820468048bc9b0c2c57621b5, type: 2}
+  _refreshTimerLabel: {fileID: 1783547996}
 --- !u!1 &1691918796
 GameObject:
   m_ObjectHideFlags: 0
@@ -9154,6 +9209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cce95c40007b31c438963c373f450cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Screens.MainMenuScreenView
+  _dailyQuestsView: {fileID: 1685154863}
 --- !u!1 &1838810839
 GameObject:
   m_ObjectHideFlags: 0
@@ -10100,6 +10156,7 @@ GameObject:
   - component: {fileID: 1976615963}
   - component: {fileID: 1976615962}
   - component: {fileID: 1976615964}
+  - component: {fileID: 1976615965}
   m_Layer: 5
   m_Name: Quest
   m_TagString: Untagged
@@ -10185,6 +10242,22 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &1976615965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1976615959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d80deed6ef87d2f4f82f5bac56ca37b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.DailyQuestView
+  _questImage: {fileID: 881871293}
+  _descriptionLabel: {fileID: 527758404}
+  _rewardLabel: {fileID: 1611932343}
+  _progressBar: {fileID: 611481949}
 --- !u!1 &2029731627
 GameObject:
   m_ObjectHideFlags: 0

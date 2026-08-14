@@ -103,6 +103,9 @@ namespace Core.Services.Player
         /// <returns>true если успешно получено</returns>
         public bool TryGetFreeEnergy(int amount = 5)
         {
+            if (_playerData.Energy == GameConstants.MAX_ENERGY)
+                return false;
+
             RegenerateEnergy();
 
             var now = DateTime.Now;

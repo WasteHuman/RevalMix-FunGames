@@ -16,10 +16,5 @@ namespace Core.Services.Quests
         {
             _view.SetupViewsHolder();
         }
-
-        private void OnDestroy()
-        {
-            _view.Dispose();
-        }
     }
 }

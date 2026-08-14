@@ -44,6 +44,8 @@ namespace UI.Player
 
             if (_progressBar != null)
                 _progressBar.fillAmount = Mathf.Clamp01(_data.CurrentProgress / _data.TargetProgress);
+
+            Debug.Log($"[Quest View] Quest {_data.QuestTag}: {_data.CurrentProgress}/{_data.TargetProgress}");
         }
 
         public void UpdateQuestProgress(float progress)
