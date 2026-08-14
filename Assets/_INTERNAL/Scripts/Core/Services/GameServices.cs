@@ -45,10 +45,10 @@ namespace Core.Services
             EnergyService = new(() => SaveService.SavePlayerData(), () => Quests.ProgressQuest(GameConstants.TAG_CLAIM_FREE_ENERGY));
             EnergyService.Init(PlayerService.GetData());
 
+            AvatarService = new(PlayerService.GetData());
+
             Leaderboard = new LeaderboardService();
             Leaderboard.Init(PlayerService.GetData());
-
-            AvatarService = new(PlayerService.GetData());
 
             GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData());
 
@@ -63,5 +63,7 @@ namespace Core.Services
             SaveService.SavePlayerData();
             SaveService.SaveSettings();
         }
+
+        public static void Dispose() => PlayerService.Dispose();
     }
 }

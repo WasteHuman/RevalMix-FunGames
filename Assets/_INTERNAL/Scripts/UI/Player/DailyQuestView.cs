@@ -43,9 +43,7 @@ namespace UI.Player
                 _rewardLabel.text = data.RewardCoins.ToString("N0");
 
             if (_progressBar != null)
-                _progressBar.fillAmount = Mathf.Clamp01(_data.CurrentProgress / _data.TargetProgress);
-
-            Debug.Log($"[Quest View] Quest {_data.QuestTag}: {_data.CurrentProgress}/{_data.TargetProgress}");
+                _progressBar.fillAmount = Mathf.Clamp01((float)_data.CurrentProgress / _data.TargetProgress);
         }
 
         public void UpdateQuestProgress(float progress)

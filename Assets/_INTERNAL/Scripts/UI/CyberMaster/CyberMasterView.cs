@@ -1,4 +1,5 @@
 ﻿using Core.Data.Cyber21;
+using Core.Services.Audio;
 using DG.Tweening;
 using System;
 using TMPro;
@@ -23,6 +24,10 @@ namespace UI.CyberMaster
         [Space(5), Header("Card Setup")]
         [SerializeField] private GameObject _cardPrefab;
         [SerializeField] private Sprite _cardBackSprite;
+
+        [Space(5), Header("SFX Settings")]
+        [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioClip _addCardToHandClip;
 
         [Space(5), Header("Text Elements")]
         [SerializeField] private TextMeshProUGUI _scoreText;
@@ -63,6 +68,9 @@ namespace UI.CyberMaster
 
         public void Init(int deckSize)
         {
+            if (_sfxSource != null)
+                _sfxSource.volume = AudioService.Instance.GetSfxVolume();
+
             InitButtons();
             Debug.Log($"[CyberMasterView] Initialized with deck size: {deckSize}");
         }
@@ -109,6 +117,9 @@ namespace UI.CyberMaster
                 Debug.LogError("[CyberMasterView] Left/Right slot is not assigned!");
                 return;
             }
+
+            if (_sfxSource != null && _addCardToHandClip != null)
+                _sfxSource.PlayOneShot(_addCardToHandClip);
 
             // Режим замены: старая карта схлопывается, новая занимает её место
             if (_replacePreviousCard)

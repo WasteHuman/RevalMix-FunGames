@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.Services.Audio;
+using System;
 using UI.Animations.GameScreen;
 using UnityEngine;
 using UnityEngine.UI;
@@ -60,6 +61,8 @@ namespace UI.Other
         private void HandleButtonClick()
         {
             Interactable = false;
+
+            AudioService.Instance.PlaySfx(0);
 
             _animations.ButtonClickAnimation(() =>
             {

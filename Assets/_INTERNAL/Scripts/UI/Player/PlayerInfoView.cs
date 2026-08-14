@@ -49,8 +49,6 @@ namespace UI.Player
                 _displayedEnergy = GameServices.EnergyService.CurrentEnergy;
                 _energyLabel.text = $"{_displayedEnergy}";
             }
-
-            GameServices.AvatarService.LoadSavedAvatar();
         }
 
         private void Start()
@@ -71,6 +69,8 @@ namespace UI.Player
 
             if (_avatarImage != null)
             {
+                GameServices.AvatarService.LoadSavedAvatar();
+
                 if (_changeAvatarSize)
                     _avatarImage.rectTransform.sizeDelta = new(105f, 105f);
 

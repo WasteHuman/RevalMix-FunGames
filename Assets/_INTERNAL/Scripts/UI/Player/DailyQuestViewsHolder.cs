@@ -42,11 +42,11 @@ namespace UI.Player
 
         private void HandleUpdatedQuest(DailyQuest changedQuest)
         {
-            var quest = _views.FirstOrDefault(v => v.Data == changedQuest);
+            var quest = _views.FirstOrDefault(v => v.Data != null && v.Data.Id == changedQuest.Id);
 
-            if(quest != null)
+            if (quest != null)
             {
-                float progress = Mathf.Clamp01(changedQuest.CurrentProgress / changedQuest.TargetProgress);
+                float progress = Mathf.Clamp01((float)changedQuest.CurrentProgress / changedQuest.TargetProgress);
                 quest.UpdateQuestProgress(progress);
             }
         }

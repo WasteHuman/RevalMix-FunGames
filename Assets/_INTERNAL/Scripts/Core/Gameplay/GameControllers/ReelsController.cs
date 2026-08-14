@@ -3,6 +3,7 @@ using Core.Data;
 using Core.Data.Reels;
 using Core.Services;
 using Core.Services.Analytics;
+using Core.Services.Audio;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,10 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private GameObject _winPanel;
         [SerializeField] private GameObject _infoPanel;
         [SerializeField] private WarningMessageView _warningMessageView;
+
+        [Space(5), Header("Audio Settings")]
+        [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioClip _slotsSFXClip;
 
         [Space(5), Header("Auto Spin View Setup")]
         [SerializeField] private TMP_ColorGradient _activeColor;
@@ -83,6 +88,9 @@ namespace Core.Gameplay.GameControllers
 
             if (_infoPanel != null && _infoPanel.activeSelf)
                 _infoPanel.SetActive(false);
+
+            if (_sfxSource != null)
+                _sfxSource.volume = AudioService.Instance.GetSfxVolume();
         }
 
         public override void Initialize()
@@ -184,6 +192,9 @@ namespace Core.Gameplay.GameControllers
             }
 
             GameServices.EconomyService.SpendCoins(_currentBet);
+
+            if (_sfxSource != null && _slotsSFXClip != null)
+                _sfxSource.PlayOneShot(_slotsSFXClip);
 
             _isSpinning = true;
             SetInteractable(false);
@@ -305,6 +316,9 @@ namespace Core.Gameplay.GameControllers
 
             bool isWin = IsWinningCombination(symbolIndices, matchCount);
             bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_IS_ARCADE_ALREADY_PLAYED);
+
+            if (_reelsType == ReelsType.Diamond && IsDiamondSymbol(symbolIndices[0]))
+                GameServices.Quests.ProgressQuest(GameConstants.TAG_COLLECT_5_DIAMONDS, matchCount);
 
             if (isWin)
             {

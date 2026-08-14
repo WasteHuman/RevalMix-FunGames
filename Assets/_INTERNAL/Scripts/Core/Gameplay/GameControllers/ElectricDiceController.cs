@@ -10,6 +10,8 @@ namespace Core.Gameplay.GameControllers
 {
     public class ElectricDiceController : GameController
     {
+        private const string KEY_ARCADE_ALREADY_PLAYED = "Electric_Dice_Arcade";
+
         [SerializeField] private ElectricDiceView _view;
 
         [Header("Settings")]
@@ -66,9 +68,14 @@ namespace Core.Gameplay.GameControllers
             string questTag = isDouble ? GameConstants.TAG_ROLL_DOUBLE_DICE : null;
 
             bool isWin = false;
-            if (_currentCondition == Condition.Less && sum < _targetSum) isWin = true;
-            else if (_currentCondition == Condition.Equal && sum == _targetSum) isWin = true;
-            else if (_currentCondition == Condition.More && sum > _targetSum) isWin = true;
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+
+            if (_currentCondition == Condition.Less && sum < _targetSum)
+                isWin = true;
+            else if (_currentCondition == Condition.Equal && sum == _targetSum)
+                isWin = true;
+            else if (_currentCondition == Condition.More && sum > _targetSum)
+                isWin = true;
 
             float reward = 0f;
             int xp = 10;
@@ -89,6 +96,7 @@ namespace Core.Gameplay.GameControllers
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             _view.ShowResultPanel(isWin, sum, Mathf.RoundToInt(reward));
+            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
         }
 
         private int GetFavorableCombinations()

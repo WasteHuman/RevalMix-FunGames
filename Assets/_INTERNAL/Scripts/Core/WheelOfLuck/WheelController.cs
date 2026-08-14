@@ -281,6 +281,8 @@ namespace Core.WheelOfLuck
 
             _startSpinButton.Interactable = false;
             _startSpinButton.Animations.StopPulseAnimation();
+
+            GameServices.Quests.ProgressQuest(GameConstants.TAG_SPIN_LUCKY_WHEEL);
         }
 
         private int SelectRewardIndexByWeight()
@@ -333,9 +335,7 @@ namespace Core.WheelOfLuck
             float minRequiredAngle = currentAngle + (_minFullRotations * 360f);
 
             while (targetAbsoluteAngle < minRequiredAngle)
-            {
                 targetAbsoluteAngle += 360f;
-            }
 
             float endAngle = targetAbsoluteAngle;
 
@@ -461,6 +461,7 @@ namespace Core.WheelOfLuck
                     break;
                 case WheelReward.RewardType.Sector:
                     bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+                    PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
                     if (_selectedSector == reward.Amount)
                     {

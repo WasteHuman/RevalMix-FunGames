@@ -181,6 +181,7 @@ namespace Core.Gameplay.GameControllers.Plinko
                 arcadePlayed: isAlreadyPlayed);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
             _isPlaying = false;
         }
 

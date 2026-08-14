@@ -48,7 +48,7 @@ Material:
     m_Floats:
     - _BevelStrength: 0.5
     - _BevelWidth: 0.01
-    - _BlurSize: 0.01
+    - _BlurSize: 0.05
     - _BorderWidth: 0.015
     - _ChromAberration: 0.0015
     - _ColorMask: 15
@@ -57,15 +57,15 @@ Material:
     - _EdgeRefraction: 0.005
     - _EnableExternalAlpha: 0
     - _FlipBgY: 0
-    - _FlowSpeed: 0.25
+    - _FlowSpeed: 1
     - _GradientStrength: 0.25
     - _HighlightIntensity: 2
     - _HighlightWidth: 0.25
     - _NoiseScale: 10
-    - _NoiseStrength: 0.3
+    - _NoiseStrength: 0
     - _Opacity: 1
-    - _SpecularIntensity: 0.8
-    - _SpecularPower: 32
+    - _SpecularIntensity: 0
+    - _SpecularPower: 1
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

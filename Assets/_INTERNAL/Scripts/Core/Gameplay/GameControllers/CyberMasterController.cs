@@ -168,6 +168,7 @@ namespace Core.Gameplay.GameControllers
                 questTag = GameConstants.TAG_HIT_21;
 
             bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             // Создаем GameResult
             GameResult result = new(

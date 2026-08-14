@@ -18,6 +18,7 @@ namespace Core.Services.Player
         public AvatarService(PlayerData playerData)
         {
             _playerData = playerData;
+            LoadSavedAvatar();
         }
 
         public void RequestPermission()

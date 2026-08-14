@@ -7,9 +7,13 @@ namespace Core.Services.LeaderboardSystem
     public class LeaderboardService
     {
         private PlayerData _playerData;
+
         private List<LeaderboardEntry> _leaderboard;
 
-        public List<LeaderboardEntry> Leaderboard => _leaderboard;
+        private List<LeaderboardEntry> _top3Places;
+        private List<LeaderboardEntry> _otherPlaces;
+
+        public IReadOnlyList<LeaderboardEntry> Leaderboard => _leaderboard.AsReadOnly();
 
         public void Init(PlayerData data)
         {
@@ -38,6 +42,7 @@ namespace Core.Services.LeaderboardSystem
 
                 _leaderboard.Add(new LeaderboardEntry
                 {
+                    Avatar = null,
                     Rank = i + 1,
                     Name = names[i],
                     WithdrawalAmount = withdrawalAmount,
@@ -48,20 +53,23 @@ namespace Core.Services.LeaderboardSystem
             // Добавляем текущего игрока
             _leaderboard.Add(new LeaderboardEntry
             {
+                Avatar = _playerData.CurrentAvatar,
                 Rank = 0, // Будет пересчитан после сортировки
                 Name = _playerData.Name != "" ? _playerData.Name : "Player",
                 WithdrawalAmount = _playerData.WithdrawalAmount,
                 IsCurrentPlayer = true
             });
 
-            // Сортируем по XP (убывание)
+            Debug.Log($"[Leaderboard] Player avatar is: {(_playerData.CurrentAvatar != null ? "Loaded" : "NULL")}");
+
+            // Сортируем по Withdrawal Amount (убывание)
             _leaderboard.Sort((a, b) => b.WithdrawalAmount.CompareTo(a.WithdrawalAmount));
 
             // Пересчитываем ранги
             for (int i = 0; i < _leaderboard.Count; i++)
                 _leaderboard[i].Rank = i + 1;
 
-            UnityEngine.Debug.Log($"[Leaderboard] Generated {_leaderboard.Count} entries. Player position: {GetPlayerPosition()}");
+            Debug.Log($"[Leaderboard] Generated {_leaderboard.Count} entries. Player position: {GetPlayerPosition()}");
         }
 
         /// <summary>
@@ -77,8 +85,20 @@ namespace Core.Services.LeaderboardSystem
             return _leaderboard.Count;
         }
 
+        public void UpdatePlayerAvatar()
+        {
+            for (int i = 0; i < _leaderboard.Count; i++)
+            {
+                if (_leaderboard[i].IsCurrentPlayer)
+                {
+                    _leaderboard[i].Avatar = _playerData.CurrentAvatar;
+                    break;
+                }
+            }
+        }
+
         /// <summary>
-        /// Обновить таблицу после изменения XP игрока
+        /// Обновить таблицу после изменения Withdrawal Amount игрока
         /// </summary>
         public void RefreshLeaderboard()
         {
@@ -96,7 +116,26 @@ namespace Core.Services.LeaderboardSystem
             for (int i = 0; i < _leaderboard.Count; i++)
                 _leaderboard[i].Rank = i + 1;
 
-            UnityEngine.Debug.Log($"[Leaderboard] Refreshed. Player position: {GetPlayerPosition()}");
+            Debug.Log($"[Leaderboard] Refreshed. Player position: {GetPlayerPosition()}");
+        }
+        
+
+        /// <summary>
+        /// Получить всё, что ниже топа игроков
+        /// </summary>
+        public List<LeaderboardEntry> GetOtherPlayers()
+        {
+            _otherPlaces ??= new();
+            _otherPlaces.Clear();
+
+            int startIndex = _top3Places.Count;
+
+            if (startIndex >= _leaderboard.Count)
+                return _otherPlaces;
+
+            _otherPlaces.AddRange(_leaderboard.GetRange(startIndex, _leaderboard.Count - startIndex));
+
+            return _otherPlaces;
         }
 
         /// <summary>
@@ -104,7 +143,12 @@ namespace Core.Services.LeaderboardSystem
         /// </summary>
         public List<LeaderboardEntry> GetTop(int count)
         {
-            return _leaderboard.GetRange(0, Mathf.Min(count, _leaderboard.Count));
+            _top3Places ??= new();
+
+            _top3Places.Clear();
+            _top3Places.AddRange(_leaderboard.GetRange(0, Mathf.Min(count, _leaderboard.Count)));
+
+            return _top3Places;
         }
     }
 }

@@ -10,4 +10,5 @@
   <Project Path="UniTask.Editor.csproj" />
   <Project Path="NativeGallery.Editor.csproj" />
   <Project Path="UniTask.DOTween.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>

@@ -1,4 +1,5 @@
 ﻿using Core.Data.Cyber21;
+using Core.Services.Audio;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -22,6 +23,10 @@ namespace UI.InfiniteScore
         [SerializeField] private RectTransform _cardPrefab;
         [SerializeField] private float _dealStagger = 0.25f;
         [SerializeField] private float _cardOffsetY = 150f;
+
+        [Space(5), Header("SFX Setup")]
+        [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioClip _delayCardsClip;
 
         [Space(5), Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI _orangeScoreLabel;
@@ -57,6 +62,9 @@ namespace UI.InfiniteScore
                 _resultPanelView.OnRestartGameButtonClick += HandleRestartGameButtonClick;
                 _resultPanelView.OnPanelOpened += HandleOpenedResultsPanel;
             }
+
+            if (_sfxSource != null)
+                _sfxSource.volume = AudioService.Instance.GetSfxVolume();
         }
 
         private void OnDestroy()
@@ -114,6 +122,9 @@ namespace UI.InfiniteScore
                     SpawnCard(_orangeTeamZone, orangeCards[i], i);
                     currentScoreOrange += orangeCards[i].CardValue;
                     UpdateScoreText(_orangeScoreLabel, currentScoreOrange);
+
+                    if (_sfxSource != null && _delayCardsClip != null)
+                        _sfxSource.PlayOneShot(_delayCardsClip);
                 }
 
                 if (i < redCards.Count)
@@ -121,6 +132,9 @@ namespace UI.InfiniteScore
                     SpawnCard(_redTeamZone, redCards[i], i);
                     currentScoreRed += redCards[i].CardValue;
                     UpdateScoreText(_redScoreLabel, currentScoreRed);
+
+                    if (_sfxSource != null && _delayCardsClip != null)
+                        _sfxSource.PlayOneShot(_delayCardsClip);
                 }
 
                 await UniTask.Delay(TimeSpan.FromSeconds(_dealStagger), ignoreTimeScale: false);

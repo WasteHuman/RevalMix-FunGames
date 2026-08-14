@@ -2,6 +2,7 @@
 using Core.Data;
 using Core.Services;
 using Core.Services.Analytics;
+using Core.Services.Audio;
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using TMPro;
@@ -13,7 +14,7 @@ namespace Core.Gameplay.GameControllers
 {
     public class VaultBreakerController : GameController
     {
-        private const string KEY_PLAYED_ARCADE = "Vault_Breaker_Played";
+        private const string KEY_ARCADE_ALREADY_PLAYED = "Vault_Breaker_Played";
 
         [Header("Vault UI")]
         [SerializeField] private TextMeshProUGUI _scoreLabel;
@@ -22,6 +23,11 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private ActionButton _startButton;
         [SerializeField] private GameObject _alarmPanel;
         [SerializeField] private Image _alarmFlashImage;
+
+        [Space(5), Header("SFX Setup")]
+        [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioClip _openVaultClip;
+        [SerializeField] private AudioClip _alarmClip;
 
         [Space(5), Header("Settings")]
         [SerializeField] private float _gameDuration = 10f;
@@ -47,6 +53,9 @@ namespace Core.Gameplay.GameControllers
 
             if (_alarmPanel != null && _alarmPanel.activeSelf)
                 _alarmPanel.SetActive(false);
+
+            if (_sfxSource != null)
+                _sfxSource.volume = AudioService.Instance.GetSfxVolume();
 
             ResetGameState();
             UpdateUI();
@@ -110,6 +119,10 @@ namespace Core.Gameplay.GameControllers
                 if (!_canClaim && _elapsedTime >= _claimThresholdTime)
                 {
                     _canClaim = true;
+
+                    if (_sfxSource != null && _openVaultClip != null)
+                        _sfxSource.PlayOneShot(_openVaultClip);
+
                     Debug.Log("[Vault] Can claim now!");
                 }
 
@@ -136,6 +149,8 @@ namespace Core.Gameplay.GameControllers
         private void TriggerAlarm()
         {
             Debug.Log("[Vault] ALARM TRIGGERED!");
+            if (_sfxSource != null && _alarmClip != null)
+                _sfxSource.PlayOneShot(_alarmClip);
 
             if (_alarmPanel != null)
                 _alarmPanel.SetActive(true);
@@ -171,7 +186,7 @@ namespace Core.Gameplay.GameControllers
             _isPlaying = false;
 
             string questTag = isWin ? GameConstants.TAG_OPEN_THE_VAULT : null;
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_PLAYED_ARCADE);
+            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
 
             GameResult result = new(
                 isWin: isWin,
@@ -183,6 +198,7 @@ namespace Core.Gameplay.GameControllers
             );
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             ShowResult(isWin, reward);
             SetInteractable(true);

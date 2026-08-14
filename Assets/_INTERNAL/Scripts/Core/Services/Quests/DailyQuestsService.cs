@@ -117,6 +117,7 @@ namespace Core.Services.Quests
                 _currentQuests.Add(quest);
             }
 
+            OnQuestsUpdated?.Invoke(_currentQuests);
             SaveQuestsToData();
             Debug.Log($"[DailyQuests] Generated {_currentQuests.Count} new daily quests.");
         }

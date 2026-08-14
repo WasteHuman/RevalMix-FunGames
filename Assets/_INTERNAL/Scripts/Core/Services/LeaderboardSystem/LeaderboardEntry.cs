@@ -1,8 +1,11 @@
-﻿namespace Core.Services.LeaderboardSystem
+﻿using UnityEngine;
+
+namespace Core.Services.LeaderboardSystem
 {
     [System.Serializable]
     public class LeaderboardEntry
     {
+        public Texture2D Avatar;
         public int Rank;
         public string Name;
         public float WithdrawalAmount;

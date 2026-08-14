@@ -1,4 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Core.Services.Audio;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,10 @@ namespace UI.ElectricDice
         [SerializeField] private Image _die1Face;
         [SerializeField] private Image _die2Face;
         [SerializeField] private List<Sprite> _diceFaces; // 6 спрайтов (1-6)
+
+        [Space(5), Header("SFX Setup")]
+        [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioClip _rollClip;
 
         [Space(5), Header("Target Number Controls")]
         [SerializeField] private ActionButton _decreaseTargetButton;
@@ -71,6 +76,9 @@ namespace UI.ElectricDice
 
             if(_resultPanelView != null)
                 _resultPanelView.OnRestartGameButtonClick += HandleRestartButtonClick;
+
+            if (_sfxSource != null)
+                _sfxSource.volume = AudioService.Instance.GetSfxVolume();
         }
 
         private void OnDestroy()
@@ -101,6 +109,9 @@ namespace UI.ElectricDice
             var t1 = AnimateDie(_die1, _die1Face, value1);
             var t2 = AnimateDie(_die2, _die2Face, value2);
 
+            if (_sfxSource != null && _rollClip != null)
+                _sfxSource.PlayOneShot(_rollClip);
+
             await UniTask.WhenAll(t1, t2);
         }
 
@@ -130,7 +141,8 @@ namespace UI.ElectricDice
 
         public void UpdateTargetNumber(int value)
         {
-            if (_targetNumberLabel != null) _targetNumberLabel.text = value.ToString();
+            if (_targetNumberLabel != null) 
+                _targetNumberLabel.text = value.ToString();
 
             if (_decreaseTargetButton != null) 
                 _decreaseTargetButton.Interactable = value > 2;

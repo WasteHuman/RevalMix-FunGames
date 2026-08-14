@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Core.Gameplay
+namespace Core.Gameplay.GameControllers.CryptoVibe
 {
     public sealed class CrashResultGenerator
     {

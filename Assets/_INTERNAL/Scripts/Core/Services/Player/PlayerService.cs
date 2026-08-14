@@ -29,8 +29,14 @@ namespace Core.Services.Player
             remove => _currentPlayerData.OnLevelChanged -= value;
         }
 
-        public void Init(PlayerData playerData) => _currentPlayerData = playerData;
-        
+        public void Init(PlayerData playerData)
+        {
+            _currentPlayerData = playerData;
+            _currentPlayerData.OnLevelChanged += HandleChangedLevel;
+        }
+
+        public void Dispose() => _currentPlayerData.OnLevelChanged -= HandleChangedLevel;
+
         public void SetName(string name) => _currentPlayerData.Name = name;
         public void AddXP(float amount) => _currentPlayerData.AddXP(Mathf.RoundToInt(amount));
         public void AddEnergy(int amount) => _currentPlayerData.Energy += amount;
@@ -44,9 +50,7 @@ namespace Core.Services.Player
         {
             _currentPlayerData.TotalGames++;
             if (isWin)
-            {
                 _currentPlayerData.TotalWins++;
-            }
         }
 
         /// <summary>
@@ -54,5 +58,7 @@ namespace Core.Services.Player
         /// Использовать осторожно, только для внутренних сервисов
         /// </summary>
         internal PlayerData GetData() => _currentPlayerData;
+
+        private void HandleChangedLevel(int newLevel) => GameServices.Quests.ProgressQuest(GameConstants.TAG_UPGRADE_YOUR_LEVEL);
     }
 }

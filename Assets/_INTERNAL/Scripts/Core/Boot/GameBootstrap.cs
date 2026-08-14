@@ -184,6 +184,10 @@ namespace Core.Boot
                 GameServices.SaveAll();
         }
 
-        private void OnApplicationQuit() => GameServices.SaveAll();
+        private void OnApplicationQuit()
+        {
+            GameServices.SaveAll();
+            GameServices.Dispose();
+        }
     }
 }

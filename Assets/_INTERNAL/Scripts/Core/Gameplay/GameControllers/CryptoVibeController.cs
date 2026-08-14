@@ -1,5 +1,6 @@
 ﻿using Core.Common;
 using Core.Data;
+using Core.Gameplay.GameControllers.CryptoVibe;
 using Core.Services;
 using Core.Services.Analytics;
 using Cysharp.Threading.Tasks;
@@ -174,6 +175,7 @@ namespace Core.Gameplay.GameControllers
             );
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             _view.ShowResult(isWin, reward);
         }
