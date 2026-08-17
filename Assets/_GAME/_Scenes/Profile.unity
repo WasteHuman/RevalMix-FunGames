@@ -1024,6 +1024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -1488,6 +1489,7 @@ GameObject:
   - component: {fileID: 411220337}
   - component: {fileID: 411220336}
   - component: {fileID: 411220338}
+  - component: {fileID: 411220339}
   m_Layer: 5
   m_Name: ThirdPlace
   m_TagString: Untagged
@@ -1566,6 +1568,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
   m_AspectMode: 1
   m_AspectRatio: 0.6578947
+--- !u!114 &411220339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411220334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33be80a0d8040e4fbe8138f5b239dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.FavoriteArcadeSlot
+  _sprite: {fileID: 411220336}
+  _slotPosition: 3
 --- !u!1 &464775175
 GameObject:
   m_ObjectHideFlags: 0
@@ -3149,6 +3165,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 750611989}
+  - component: {fileID: 750611990}
   m_Layer: 5
   m_Name: FavoriteGamesContainer
   m_TagString: Untagged
@@ -3177,6 +3194,24 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 140.25075}
   m_SizeDelta: {x: 1080, y: 599.4983}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &750611990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750611988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74a976ac4d523684dbf5ef67d4e5b9a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.FavoriteAcradesView
+  _topCount: 3
+  _slots:
+  - {fileID: 1553833078}
+  - {fileID: 1205490681}
+  - {fileID: 411220339}
+  _spritesConfig: {fileID: 11400000, guid: be08d970e4b948e4699ad3ee8a28cf60, type: 2}
 --- !u!1 &755271405
 GameObject:
   m_ObjectHideFlags: 0
@@ -3903,6 +3938,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -4182,6 +4218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -4268,10 +4305,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 490, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -4337,6 +4374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -4423,10 +4461,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 98, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -4492,6 +4530,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -5112,6 +5151,7 @@ GameObject:
   - component: {fileID: 1205490679}
   - component: {fileID: 1205490678}
   - component: {fileID: 1205490680}
+  - component: {fileID: 1205490681}
   m_Layer: 5
   m_Name: SecondPlace
   m_TagString: Untagged
@@ -5190,6 +5230,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
   m_AspectMode: 1
   m_AspectRatio: 0.6578947
+--- !u!114 &1205490681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1205490676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33be80a0d8040e4fbe8138f5b239dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.FavoriteArcadeSlot
+  _sprite: {fileID: 1205490678}
+  _slotPosition: 2
 --- !u!1 &1218653946
 GameObject:
   m_ObjectHideFlags: 0
@@ -5782,10 +5836,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 882, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -5851,6 +5905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -6166,10 +6221,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 294, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -6235,6 +6290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -6486,6 +6542,7 @@ GameObject:
   - component: {fileID: 1553833077}
   - component: {fileID: 1553833076}
   - component: {fileID: 1553833075}
+  - component: {fileID: 1553833078}
   m_Layer: 5
   m_Name: FirstPlace
   m_TagString: Untagged
@@ -6564,6 +6621,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1553833073}
   m_CullTransparentMesh: 1
+--- !u!114 &1553833078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1553833073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33be80a0d8040e4fbe8138f5b239dc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Player.FavoriteArcadeSlot
+  _sprite: {fileID: 1553833076}
+  _slotPosition: 1
 --- !u!1 &1560537820
 GameObject:
   m_ObjectHideFlags: 0
@@ -6655,6 +6726,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -7169,9 +7241,6 @@ MonoBehaviour:
   _rankLabel: {fileID: 799301500}
   _playedHoursLabel: {fileID: 51696728}
   _playedGamesLabel: {fileID: 718368488}
-  _firstPlace: {fileID: 1553833076}
-  _secondPlace: {fileID: 1205490678}
-  _thirdPlace: {fileID: 411220336}
   _changePhotoButton: {fileID: 211416594}
   _changeNameButton: {fileID: 893268684}
   _playerInfoView: {fileID: 2130344210}
@@ -7211,10 +7280,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 686, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:
@@ -7280,6 +7349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -7754,6 +7824,7 @@ MonoBehaviour:
   _getFreeEnergyButton: {fileID: 971755580}
   _energyLabel: {fileID: 464775177}
   _energyAnimationDuration: 0.5
+  _isCheatActive: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

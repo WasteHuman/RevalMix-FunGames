@@ -2,21 +2,27 @@
 using Core.Services.Audio;
 using Solo.MOST_IN_ONE;
 using System;
+using System.Collections;
 using UI.Animations.GameScreen;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace UI.Other
 {
     [RequireComponent(typeof(Button))]
     [RequireComponent(typeof(RectTransform))]
-    public class ActionButton : MonoBehaviour
+    public class ActionButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
+        [SerializeField] private float _headRepeatTime = 0.1f;
         [SerializeField] private MOST_HapticFeedback.HapticTypes _onClick = MOST_HapticFeedback.HapticTypes.SoftImpact;
         [SerializeField] private ButtonAnimations _animations;
         [SerializeField] private RectTransform _rectTransform;
 
         private Button _button;
+        private bool _wasHeld;
+
+        private Coroutine _heldCoroutine;
 
         public bool Interactable
         {
@@ -29,6 +35,8 @@ namespace UI.Other
                 _button.interactable = value;
             }
         }
+        public bool IsUseHeldFunc { get; set; } = false;
+        public bool IsHeld { get; private set; }
         public ButtonAnimations Animations => _animations;
 
         public event Action OnButtonClick;
@@ -61,8 +69,62 @@ namespace UI.Other
             _animations.Init(_rectTransform);
         }
 
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (!IsUseHeldFunc)
+                return;
+
+            IsHeld = false;
+            _animations.ClickUpAnimation();
+
+            if (_heldCoroutine != null)
+            {
+                StopCoroutine(_heldCoroutine);
+                _heldCoroutine = null;
+            }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (!IsUseHeldFunc)
+                return;
+
+            IsHeld = true;
+            _wasHeld = false;
+            _animations.ClickDownAnimation();
+            _heldCoroutine = StartCoroutine(HeldRepeatRoutine());
+        }
+
+        private IEnumerator HeldRepeatRoutine()
+        {
+            yield return new WaitForSeconds(_headRepeatTime);
+
+            if (!IsHeld)
+                yield break;
+
+            OnButtonClick?.Invoke();
+            _wasHeld = true;
+
+            while (IsHeld)
+            {
+                yield return new WaitForSeconds(_headRepeatTime);
+                if (!IsHeld) 
+                    break;
+                OnButtonClick?.Invoke();
+            }
+        }
+
         private void HandleButtonClick()
         {
+            if (_wasHeld)
+            {
+                _wasHeld = false;
+                return;
+            }
+
+            if (IsHeld)
+                return;
+
             Interactable = false;
 
             if (PlayerPrefs.GetInt(GameConstants.KEY_VIBRATIONS) == 1)

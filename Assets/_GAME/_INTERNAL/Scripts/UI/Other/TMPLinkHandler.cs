@@ -21,11 +21,11 @@ namespace UI.Other
             switch (linkInfo.GetLinkID())
             {
                 case "terms":
-                    Application.OpenURL("https://telegra.ph/Terms-Of-Use-07-23");
+                    Application.OpenURL("https://telegra.ph/Terms-Of-Use-08-17-8");
                     Debug.Log("Terms Of Use URL opened");
                     break;
                 case "privacy":
-                    Application.OpenURL("https://telegra.ph/Privacy-Policy-07-23-125");
+                    Application.OpenURL("https://telegra.ph/Privacy-Policy-08-17-129");
                     Debug.Log("Privacy Poliscy URL opened");
                     break;
             }

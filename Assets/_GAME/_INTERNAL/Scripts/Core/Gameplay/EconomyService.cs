@@ -6,12 +6,18 @@ namespace Core.Gameplay
     public class EconomyService
     {
         private float _currentCoinsBalance;
+        private bool _isDailyFreeBonusAvailable;
+
+        private DateTime _dailyFreeBonusNextRefreshTimeUtc;
 
         public event Action<float> OnCoinsBalanceChanged;
 
         public void Init(float initialCoinsBalance)
         {
             _currentCoinsBalance = initialCoinsBalance;
+            _dailyFreeBonusNextRefreshTimeUtc.AddDays(1);
+
+            CheckDailyFreeBonus();
         }
 
         /// <summary>
@@ -23,6 +29,11 @@ namespace Core.Gameplay
         /// Запросить текущий баланс Coins (invoke события)
         /// </summary>
         public void RequestCoinsBalance() => OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
+
+        /// <summary>
+        /// Запросить актуальность ежедневного бонуса
+        /// </summary>
+        public bool RequestDailyFreeBonusAvailable() => _isDailyFreeBonusAvailable;
 
         /// <summary>
         /// Добавить средства (выигрыш, бонус)
@@ -77,6 +88,20 @@ namespace Core.Gameplay
         {
             _currentCoinsBalance = Mathf.Max(0, amount);
             OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
+        }
+
+        private void CheckDailyFreeBonus()
+        {
+            string todayUtc = DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
+            string lastDate = PlayerPrefs.GetString(GameConstants.KEY_LAST_DAILY_BONUS_CLAIM, "");
+
+            if (todayUtc != lastDate)
+                _isDailyFreeBonusAvailable = true;
+            else
+            {
+                _isDailyFreeBonusAvailable = false;
+                Debug.LogWarning($"[Economy Service] Daily Free Bonus is already claimed!");
+            }
         }
     }
 }

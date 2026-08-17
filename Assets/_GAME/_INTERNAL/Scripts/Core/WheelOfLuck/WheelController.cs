@@ -47,6 +47,11 @@ namespace Core.WheelOfLuck
         [SerializeField] private ActionButton _sector_2500;
         [SerializeField] private ActionButton _sector_5000;
 
+        [Space(5), Header("Other")]
+        [SerializeField] private WarningMessageView _warningMessageView;
+        [SerializeField] private ResultPanelView _resultPanelView;
+        [SerializeField] private AudioSource _sfxSource;
+
         [Space(5), Header("Debug")]
         [SerializeField] private bool _isDebug = false;
 
@@ -78,7 +83,10 @@ namespace Core.WheelOfLuck
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_WHEEL_OF_REVOLUT);
 
             if (_isNeonWheel)
+            {
+                _resultPanelView.SetAudioSource(_sfxSource);
                 KEY_ARCADE_ALREADY_PLAYED = "Neon_Cyan_Wheel_Arcade";
+            }
 
             LoadState();
             UpdateCooldownLabel();
@@ -253,7 +261,11 @@ namespace Core.WheelOfLuck
             if (_isNeonWheel)
                 return true;
 
-            if (!_isSpinning && _freeSpins > 0 && IsAvailable() && _rewardViews != null && _rewardViews.Count > 0)
+            if (!_isSpinning
+                && _freeSpins > 0
+                && IsAvailable()
+                && _rewardViews != null
+                && _rewardViews.Count > 0)
                 return true;
 
             return false;
@@ -261,6 +273,20 @@ namespace Core.WheelOfLuck
 
         public void PrepareAndStartSpin(Action onComplete = null)
         {
+            if(_isNeonWheel && !GameServices.EconomyService.HasEnoughBalance(_selectedSector))
+            {
+                _warningMessageView.SetWarningMessage("Not enough coins!", $"You don't have enough coins ({_selectedSector}) for this bet.");
+                _warningMessageView.Show();
+                return;
+            }
+
+            if (!GameServices.EnergyService.SpendEnergy(GameConstants.ENERGY_FOR_GAME))
+            {
+                _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({GameConstants.ENERGY_FOR_GAME}) for this game.");
+                _warningMessageView.Show();
+                return;
+            }
+
             if (!CanSpin())
             {
                 Debug.LogWarning("[Wheel] Невозможно начать спин. Проверьте CanSpin()");
@@ -281,7 +307,7 @@ namespace Core.WheelOfLuck
 
             _startSpinButton.Interactable = false;
             _startSpinButton.Animations.StopPulseAnimation();
-
+            
             GameServices.Quests.ProgressQuest(GameConstants.TAG_SPIN_LUCKY_WHEEL);
         }
 
@@ -479,6 +505,8 @@ namespace Core.WheelOfLuck
 
                         GameServices.GameCompletionHandler.HandleGameResult(result);
 
+                        _resultPanelView.ShowResultPanel(result.IsWin, false, (int)result.RewardCoins, (int)result.RewardCoins);
+
                         _selectedSector = 0;
                     }
                     else
@@ -494,10 +522,17 @@ namespace Core.WheelOfLuck
 
                         GameServices.GameCompletionHandler.HandleGameResult(result);
 
+                        _resultPanelView.ShowResultPanel(result.IsWin, false, (int)result.RewardCoins, (int)result.RewardCoins);
+
                         Debug.LogWarning($"[Wheel] Sector mismatch. Expected: {_selectedSector}, but got: {reward.Amount}");
                     }
                     break;
             }
+
+            if (_isNeonWheel)
+                GameServices.FavoriteGamesService.RecordGamePlay(GameConstants.GAME_NEON_WHEEL);
+            else
+                GameServices.FavoriteGamesService.RecordGamePlay(GameConstants.GAME_WHEEL_OF_REVOLUT);
 
             if (_startSpinButton != null)
             {
@@ -509,6 +544,9 @@ namespace Core.WheelOfLuck
         private void Handle5000SectorButtonClick()
         {
             _selectedSector = 5000;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -516,6 +554,9 @@ namespace Core.WheelOfLuck
         private void Handle2500SectorButtonClick()
         {
             _selectedSector = 2500;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -523,6 +564,9 @@ namespace Core.WheelOfLuck
         private void Handle1000SectorButtonClick()
         {
             _selectedSector = 1000;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -530,6 +574,9 @@ namespace Core.WheelOfLuck
         private void Handle950SectorButtonClick()
         {
             _selectedSector = 950;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -537,6 +584,9 @@ namespace Core.WheelOfLuck
         private void Handle750SectorButtonClick()
         {
             _selectedSector = 750;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -544,6 +594,9 @@ namespace Core.WheelOfLuck
         private void Handle500SectorButtonClick()
         {
             _selectedSector = 500;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -551,6 +604,9 @@ namespace Core.WheelOfLuck
         private void Handle450SectorButtonClick()
         {
             _selectedSector = 450;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }
@@ -558,6 +614,9 @@ namespace Core.WheelOfLuck
         private void Handle250SectorButtonClick()
         {
             _selectedSector = 250;
+            if (!GameServices.EnergyService.HasEnoughEnergy)
+                return;
+
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }

@@ -128,9 +128,10 @@ namespace Core.Gameplay.GameControllers
                 rewardXP: xp,
                 questTag: questTag,
                 gameId: GameConstants.GAME_INFINITE_SCORE,
-                true);
+                arcadePlayed: isAlreadyPlayed);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_INFINITE_SCORE);
             PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             _view.SetButtonsInteractable(false);

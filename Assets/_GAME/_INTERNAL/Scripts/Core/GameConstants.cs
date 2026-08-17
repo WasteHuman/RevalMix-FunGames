@@ -23,7 +23,7 @@
         public const string GAME_ELECTRIC_DICE = "Game_Electric_Dice";
         #endregion
 
-        #region
+        #region Settings Prefs
         public const string KEY_NOTIFICATIONS = "Notifications";
         public const string KEY_VIBRATIONS = "Vibrations";
         #endregion
@@ -31,8 +31,10 @@
         #region Player Prefs
         public const string KEY_HAS_PROFILE = "Has_Profile";
         public const string KEY_PLAYER_DATA = "Player_Data_JSON";
+        public const string KEY_DAILY_FREE_BONUS_CLAIMED = "Daily_Free_Bonus_Claimed";
         public const string KEY_SETTINGS = "Settings_JSON";
         public const string KEY_LAST_DAILY_DATE = "Last_Daily_Date";
+        public const string KEY_LAST_DAILY_BONUS_CLAIM = "Last_Daily_Bonus_Claim";
         #endregion
 
         #region Economy & Limits
@@ -40,6 +42,7 @@
         public const int INITIAL_ENERGY = 50;
         public const int MAX_ENERGY = 50;
         public const float ENERGY_REGEN_MINUTES = 30f;
+        public const int ENERGY_FOR_GAME = 5;
         #endregion
 
         #region Quest Tags

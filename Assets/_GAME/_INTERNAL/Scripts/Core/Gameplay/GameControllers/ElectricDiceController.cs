@@ -92,9 +92,11 @@ namespace Core.Gameplay.GameControllers
                 rewardXP: xp,
                 questTag: questTag,
                 gameId: GameConstants.GAME_ELECTRIC_DICE,
-                true);
+                arcadePlayed: isAlreadyPlayed);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_ELECTRIC_DICE);
+
             _view.ShowResultPanel(isWin, sum, Mathf.RoundToInt(reward));
             PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
         }

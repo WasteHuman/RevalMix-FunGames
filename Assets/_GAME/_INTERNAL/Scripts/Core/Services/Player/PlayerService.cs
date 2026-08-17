@@ -38,7 +38,7 @@ namespace Core.Services.Player
 
         public void SetName(string name) => _currentPlayerData.Name = name;
         public void AddXP(float amount) => _currentPlayerData.AddXP(Mathf.RoundToInt(amount));
-        public void AddEnergy(int amount) => _currentPlayerData.Energy += amount;
+        public void AddEnergy(int amount) => GameServices.EnergyService.AddEnergy(amount);
         public void RequestActualProgressState() => _currentPlayerData.RequestActualProgressState();
         public float GetWinRate() => _currentPlayerData.GetWinRate();
 

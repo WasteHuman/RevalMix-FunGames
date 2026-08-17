@@ -175,6 +175,7 @@ namespace Core.Gameplay.GameControllers
             );
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_CRYPTO_VIBE);
             PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             _view.ShowResult(isWin, reward);

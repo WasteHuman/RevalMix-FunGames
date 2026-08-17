@@ -1,5 +1,7 @@
 ﻿using Core.Data;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Core.Services.Player
 {
@@ -11,16 +13,38 @@ namespace Core.Services.Player
 
         public FavoriteGamesService(PlayerData data) => _playerData = data;
 
-        public List<FavoriteGameData> RequestTopFavoriteGames(int count)
+        /// <summary>
+        /// Отметить игру как сыгранную (увеличить счётчик игр)
+        /// </summary>
+        public void RecordGamePlay(string gameId)
         {
-            if (_playerData.FavoriteGames.Count == 0 && _playerData.FavoriteGames.Count < count)
-                return null;
+            if (string.IsNullOrEmpty(gameId))
+            {
+                Debug.LogWarning("[FavoriteGames] GameId is null or empty");
+                return;
+            }
 
-            _topFavoriteGames.Clear();
-            _topFavoriteGames.AddRange(_playerData.FavoriteGames.GetRange(0, count));
-            _topFavoriteGames.Sort((a, b) => b.TotalPlayed.CompareTo(a));
+            if (_playerData.FavoriteGames.TryGetValue(gameId, out var gameData))
+            {
+                gameData.TotalPlayed++;
+            }
+            else
+            {
+                _playerData.FavoriteGames[gameId] = new FavoriteGameData(gameId, 1);
+            }
+        }
 
-            return _topFavoriteGames;
+        public List<FavoriteGameData> GetTopFavoriteGames(int count)
+        {
+            if (_playerData.FavoriteGames.Count == 0)
+                return new List<FavoriteGameData>();
+
+            var sortedGames = _playerData.FavoriteGames.Values
+                .OrderByDescending(g => g.TotalPlayed)
+                .Take(count)
+                .ToList();
+
+            return sortedGames;
         }
     }
 }

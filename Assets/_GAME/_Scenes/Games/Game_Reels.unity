@@ -1556,9 +1556,9 @@ MonoBehaviour:
   - {fileID: 399045623}
   - {fileID: 1295382490}
   - {fileID: 1306204102}
-  _spinSpeed: 3000
-  _turboSpinSpeed: 4500
-  _symbolHeight: 165
+  _spinSpeed: 5000
+  _turboSpinSpeed: 10000
+  _symbolHeight: 225
   _blurReelImage: {fileID: 124269974}
 --- !u!1 &399045621
 GameObject:
@@ -2489,9 +2489,9 @@ MonoBehaviour:
   - {fileID: 1492543060}
   - {fileID: 138018129}
   - {fileID: 906011305}
-  _spinSpeed: 3000
-  _turboSpinSpeed: 4500
-  _symbolHeight: 165
+  _spinSpeed: 5000
+  _turboSpinSpeed: 10000
+  _symbolHeight: 225
   _blurReelImage: {fileID: 1323984312}
 --- !u!1 &546074096
 GameObject:
@@ -4481,9 +4481,9 @@ MonoBehaviour:
   - {fileID: 260449594}
   - {fileID: 1844413548}
   - {fileID: 2015353244}
-  _spinSpeed: 3000
-  _turboSpinSpeed: 4500
-  _symbolHeight: 165
+  _spinSpeed: 5000
+  _turboSpinSpeed: 10000
+  _symbolHeight: 225
   _blurReelImage: {fileID: 1841053719}
 --- !u!1 &994516812
 GameObject:
@@ -4520,10 +4520,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 490, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -4676,10 +4676,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 98, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -6563,9 +6563,9 @@ MonoBehaviour:
   - {fileID: 1217002115}
   - {fileID: 1507129607}
   - {fileID: 1602300008}
-  _spinSpeed: 3000
-  _turboSpinSpeed: 4500
-  _symbolHeight: 165
+  _spinSpeed: 5000
+  _turboSpinSpeed: 10000
+  _symbolHeight: 225
   _blurReelImage: {fileID: 1557580059}
 --- !u!1 &1247188547
 GameObject:
@@ -7069,10 +7069,10 @@ RectTransform:
   - {fileID: 1283079136}
   m_Father: {fileID: 645596113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -380, y: -1220}
+  m_SizeDelta: {x: 700, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1295382488
 GameObject:
@@ -7466,10 +7466,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 882, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -8046,10 +8046,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -8926,9 +8926,9 @@ MonoBehaviour:
   - {fileID: 1592697911}
   - {fileID: 546074098}
   - {fileID: 1981331791}
-  _spinSpeed: 3000
-  _turboSpinSpeed: 4500
-  _symbolHeight: 165
+  _spinSpeed: 5000
+  _turboSpinSpeed: 10000
+  _symbolHeight: 225
   _blurReelImage: {fileID: 662296232}
 --- !u!1 &1804418171
 GameObject:
@@ -9590,14 +9590,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -9678,10 +9678,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 686, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:

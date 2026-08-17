@@ -19,6 +19,8 @@ namespace UI.Animations.GameScreen
         private RectTransform _rectTransform;
 
         private Tween _pulseTween;
+        private Tween _clickUpTween;
+        private Tween _clickDownTween;
 
         private Sequence _clickSequence;
 
@@ -47,6 +49,28 @@ namespace UI.Animations.GameScreen
                 .DOScale(_pulseScale, _pulseAnimationDuration)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo);
+        }
+
+        public void ClickDownAnimation()
+        {
+            _clickUpTween?.Kill();
+            _clickDownTween?.Kill();
+
+            _clickDownTween = _rectTransform
+                .DOScale(_clickedScale, _clickAnimationDuration)
+                .SetEase(Ease.InOutQuad)
+                .OnComplete(() => _rectTransform.localScale = _clickedScale);
+        }
+
+        public void ClickUpAnimation()
+        {
+            _clickDownTween?.Kill();
+            _clickUpTween?.Kill();
+
+            _clickUpTween = _rectTransform
+                .DOScale(Vector2.one, _clickAnimationDuration)
+                .SetEase(Ease.InOutQuad)
+                .OnComplete(() => _rectTransform.localScale = Vector2.one);
         }
 
         public void ButtonClickAnimation(Action onComplete = null)

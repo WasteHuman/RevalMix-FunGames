@@ -244,10 +244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 882, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45527429
 MonoBehaviour:
@@ -261,6 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -499,6 +500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -564,9 +566,9 @@ MonoBehaviour:
   - {fileID: 553230098}
   - {fileID: 1762168885}
   - {fileID: 496779820}
-  _spinSpeed: 4000
-  _turboSpinSpeed: 5000
-  _symbolHeight: 125
+  _spinSpeed: 7500
+  _turboSpinSpeed: 15000
+  _symbolHeight: 150
   _blurReelImage: {fileID: 731019585}
 --- !u!1 &77363015
 GameObject:
@@ -1828,6 +1830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -2311,7 +2314,7 @@ MonoBehaviour:
   _symbols:
   - {fileID: 4374545847661931972, guid: b2c63da273dce4647a1efbfc98cf0f3c, type: 3}
   - {fileID: -478559387293086990, guid: 6bf09e0a5bbe24b4597b44cfd0a84eb4, type: 3}
-  _diamondReelsMultiplier: 250
+  _diamondReelsMultiplier: 100
 --- !u!1 &539290199
 GameObject:
   m_ObjectHideFlags: 0
@@ -2460,6 +2463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -2828,6 +2832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -3568,10 +3573,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 686, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &771872802
 MonoBehaviour:
@@ -3585,6 +3590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -4104,10 +4110,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 490, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &947115815
 MonoBehaviour:
@@ -4121,6 +4127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -4956,9 +4963,9 @@ MonoBehaviour:
   - {fileID: 1051056617}
   - {fileID: 1809235394}
   - {fileID: 475990064}
-  _spinSpeed: 4000
-  _turboSpinSpeed: 5000
-  _symbolHeight: 125
+  _spinSpeed: 7500
+  _turboSpinSpeed: 15000
+  _symbolHeight: 150
   _blurReelImage: {fileID: 1666234661}
 --- !u!1 &1081913268
 GameObject:
@@ -5024,6 +5031,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5316,10 +5324,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1169711875
 MonoBehaviour:
@@ -5333,6 +5341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5571,6 +5580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5727,6 +5737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -7292,14 +7303,14 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
+  m_ContentType: 2
   m_InputType: 0
   m_AsteriskChar: 42
-  m_KeyboardType: 0
+  m_KeyboardType: 2
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 0
+  m_CharacterValidation: 2
   m_RegexValue: 
   m_GlobalPointSize: 14
   m_CharacterLimit: 0
@@ -8077,10 +8088,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 98, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1916139678
 MonoBehaviour:
@@ -8094,6 +8105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -8497,9 +8509,9 @@ MonoBehaviour:
   - {fileID: 1089885601}
   - {fileID: 1842530592}
   - {fileID: 312497268}
-  _spinSpeed: 4000
-  _turboSpinSpeed: 5000
-  _symbolHeight: 125
+  _spinSpeed: 7500
+  _turboSpinSpeed: 15000
+  _symbolHeight: 150
   _blurReelImage: {fileID: 887666783}
 --- !u!1 &2043538316
 GameObject:
@@ -8649,6 +8661,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -8769,10 +8782,10 @@ RectTransform:
   - {fileID: 5529184036472451357}
   m_Father: {fileID: 1703987915}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -380, y: -1220}
+  m_SizeDelta: {x: 700, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1539414335833058016
 MonoBehaviour:
@@ -8860,6 +8873,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15

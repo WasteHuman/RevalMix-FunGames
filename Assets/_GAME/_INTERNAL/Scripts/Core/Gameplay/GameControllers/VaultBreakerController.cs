@@ -195,6 +195,7 @@ namespace Core.Gameplay.GameControllers
             );
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_VAULT);
             PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             ShowResult(isWin, reward);
@@ -243,7 +244,7 @@ namespace Core.Gameplay.GameControllers
 
             if (!base.SpendEnergy())
             {
-                _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({GameConstants.ENERGY_FOR_GAME}) for this game.");
                 _warningMessageView.Show();
                 return;
             }

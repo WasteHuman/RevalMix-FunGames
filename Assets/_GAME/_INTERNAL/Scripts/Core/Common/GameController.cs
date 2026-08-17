@@ -9,6 +9,12 @@ namespace Core.Common
         public abstract void Initialize();
         public abstract void Exit();
 
-        public virtual bool SpendEnergy() => GameServices.EnergyService.SpendEnergy(5);
+        public virtual bool SpendEnergy() => GameServices.EnergyService.SpendEnergy(GameConstants.ENERGY_FOR_GAME);
+
+        protected void RecordArcadePlay(string gameId = null)
+        {
+            var id = gameId;
+            GameServices.FavoriteGamesService?.RecordGamePlay(id);
+        }
     }
 }

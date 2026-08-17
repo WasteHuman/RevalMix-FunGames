@@ -6,6 +6,7 @@ namespace Core.Services.AdsService
 {
     public class AdsService : MonoBehaviour
     {
+        [SerializeField] private bool _isEnabled = false;
         [SerializeField] private bool _isTestMode = false;
 
         private bool _isInitialized = false;
@@ -52,6 +53,12 @@ namespace Core.Services.AdsService
 
         private void InitializeAds()
         {
+            if (!_isEnabled)
+            {
+                Debug.LogWarning("[Ads] Ads Service is disabled.");
+                return;
+            }
+
             try
             {
                 Debug.Log("[Ads] Initialization Start.io...");

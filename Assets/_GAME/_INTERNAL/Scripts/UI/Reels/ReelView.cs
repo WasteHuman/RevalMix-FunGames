@@ -36,6 +36,8 @@ namespace UI.Reels
 
         private void Awake()
         {
+            _calculatedRowHeight = _symbolHeight;
+
             for (int i = 0; i < _symbolSlots.Length; i++)
             {
                 if (_symbolSlots[i] == null) 

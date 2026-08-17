@@ -182,6 +182,7 @@ namespace Core.Gameplay.GameControllers
 
             // Отправляем результат в GameCompletionHandler
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_CYBER_MASTER);
 
             StartCoroutine(ShowResultRoutine(isWin, reward, isBlackjack));
 

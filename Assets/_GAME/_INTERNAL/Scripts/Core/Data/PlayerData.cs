@@ -16,6 +16,7 @@ namespace Core.Data
         public int Energy;
         public DateTime LastEnergyUpdate;
         public DateTime? LastFreeEnergyTime;
+        public DateTime? LastDailyBonusTime;
 
         public int Level;
         public int Rank;
@@ -42,6 +43,7 @@ namespace Core.Data
             Coins = GameConstants.INITIAL_COINS;
             Energy = GameConstants.INITIAL_ENERGY;
             LastEnergyUpdate = DateTime.Now;
+            LastDailyBonusTime = DateTime.Now;
 
             Level = 1;
             Rank = 1;

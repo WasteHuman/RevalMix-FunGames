@@ -27,18 +27,26 @@ namespace UI.Plinko
 
         public void Init()
         {
-            _betUpButton.OnButtonClick += HandleBetUpButtonClick;
-            _betDownButton.OnButtonClick += HandleBetDownButtonClick;
+            _betUpButton.IsUseHeldFunc = true;
+            _betDownButton.IsUseHeldFunc = true;
+
             _dropBallButton.OnButtonClick += HandleDropButtonClick;
             _betInputField.onEndEdit.AddListener(HandleBetInputEndEdit);
         }
 
         public void Dispose()
         {
-            _betUpButton.OnButtonClick -= HandleBetUpButtonClick;
-            _betDownButton.OnButtonClick -= HandleBetDownButtonClick;
             _dropBallButton.OnButtonClick -= HandleDropButtonClick;
             _betInputField.onEndEdit.RemoveListener(HandleBetInputEndEdit);
+        }
+
+        private void Update()
+        {
+            if (_betUpButton.IsHeld)
+                HandleBetUpButtonClick();
+
+            if (_betDownButton.IsHeld)
+                HandleBetDownButtonClick();
         }
 
         public void UpdateUI(string currentBet)

@@ -25,6 +25,7 @@ namespace Core.Gameplay.GameControllers.Plinko
         [SerializeField] private Transform _bucketsRoot;
         [SerializeField] private Transform _pegsRoot;
         [SerializeField] private AudioSource _sfxSource;
+        [SerializeField] private AudioSource _resultsSFXSource;
 
         [Space(5), Header("Economy Settings")]
         [SerializeField] private int _minBet = 10;
@@ -68,7 +69,7 @@ namespace Core.Gameplay.GameControllers.Plinko
             _view.OnDropButtonClick += HandleDropButtonClick;
 
             _resultPanelView.OnRestartGameButtonClick += HandleRestartGameButtonClick;
-            _resultPanelView.SetAudioSource(_sfxSource);
+            _resultPanelView.SetAudioSource(_resultsSFXSource);
 
             _ballKillZone.OnBallDropToKillZone += HandleFinish;
 
@@ -139,7 +140,7 @@ namespace Core.Gameplay.GameControllers.Plinko
 
             if (!base.SpendEnergy())
             {
-                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({GameConstants.ENERGY_FOR_GAME}) for this game.");
                 return;
             }
 
@@ -151,7 +152,8 @@ namespace Core.Gameplay.GameControllers.Plinko
 
             _isPlaying = true;
             DropBall();
-            _view.ToggleButtonsInteractable(false);;
+            _view.ToggleButtonsInteractable(false);
+            GameServices.EconomyService.SpendCoins(_currentBet);
         }
 
         private void HandleFinish(float multiplier)
@@ -179,6 +181,7 @@ namespace Core.Gameplay.GameControllers.Plinko
                 arcadePlayed: isAlreadyPlayed);
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
+            RecordArcadePlay(GameConstants.GAME_PLINKO_VIBE);
             PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
             _isPlaying = false;
         }

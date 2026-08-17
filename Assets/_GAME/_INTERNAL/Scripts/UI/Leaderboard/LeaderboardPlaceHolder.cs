@@ -13,8 +13,7 @@ namespace UI.Leaderboard
         [Header("Place View Prefab")]
         [SerializeField] private List<LeaderboardPlaceView> _top3Prefabs = new();
         [SerializeField] private LeaderboardPlaceView _placePrefab;
-        [SerializeField] private RectTransform _top3Container;
-        [SerializeField] private RectTransform _otherPlacesContainer;
+        [SerializeField] private RectTransform _container;
 
         [Space(5), Header("Player Place View")]
         [SerializeField] private LeaderboardPlaceView _playerPlace;
@@ -62,7 +61,7 @@ namespace UI.Leaderboard
             for (int i = 0; i < top3Places.Count; i++)
             {
                 var entry = top3Places[i];
-                var view = Instantiate(_top3Prefabs[i], _top3Container);
+                var view = Instantiate(_top3Prefabs[i], _container);
                 view.Init(entry);
                 _top3Places.Add(view);
             }
@@ -75,7 +74,7 @@ namespace UI.Leaderboard
             for (int i = 0; i < otherPlaces.Count; i++)
             {
                 var entry = otherPlaces[i];
-                var view = Instantiate(_placePrefab, _otherPlacesContainer);
+                var view = Instantiate(_placePrefab, _container);
                 view.Init(entry);
                 _otherPlaces.Add(view);
             }

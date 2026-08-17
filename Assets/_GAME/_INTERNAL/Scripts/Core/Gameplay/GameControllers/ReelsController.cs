@@ -100,10 +100,16 @@ namespace Core.Gameplay.GameControllers
 
             if (_spinButton != null) 
                 _spinButton.OnButtonClick += HandleSpinButtonClick;
-            if (_betPlusButton != null) 
+            if (_betPlusButton != null)
+            {
+                _betPlusButton.IsUseHeldFunc = true;
                 _betPlusButton.OnButtonClick += HandleBetUpButtonClick;
-            if (_betMinusButton != null) 
+            }
+            if (_betMinusButton != null)
+            {
+                _betMinusButton.IsUseHeldFunc = true;
                 _betMinusButton.OnButtonClick += HandleBetDownButtonClick;
+            }
             if (_turboButton != null) 
                 _turboButton.OnButtonClick += HandleTurboModeButtonClick;
             if (_betInputField != null) 
@@ -127,9 +133,9 @@ namespace Core.Gameplay.GameControllers
 
             if (_spinButton != null) 
                 _spinButton.OnButtonClick -= HandleSpinButtonClick;
-            if (_betPlusButton != null) 
+            if (_betPlusButton != null)
                 _betPlusButton.OnButtonClick -= HandleBetUpButtonClick;
-            if (_betMinusButton != null) 
+            if (_betMinusButton != null)
                 _betMinusButton.OnButtonClick -= HandleBetDownButtonClick;
             if (_turboButton != null) 
                 _turboButton.OnButtonClick -= HandleTurboModeButtonClick;
@@ -176,7 +182,7 @@ namespace Core.Gameplay.GameControllers
         {
             if (!base.SpendEnergy())
             {
-                _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                _warningMessageView.SetWarningMessage("Not enough energy!", $"You don't have enough energy ({GameConstants.ENERGY_FOR_GAME}) for this game.");
                 _warningMessageView.Show();
                 if (_isAutoSpinEnabled)
                     StopAutoSpin();
@@ -196,7 +202,8 @@ namespace Core.Gameplay.GameControllers
                 _sfxSource.PlayOneShot(_slotsSFXClip);
 
             _isSpinning = true;
-            SetInteractable(false);
+            if(!_isAutoSpinEnabled)
+                SetInteractable(false);
 
             int reelCount = _reels.Count;
             int[][] results = new int[reelCount][];
@@ -291,6 +298,7 @@ namespace Core.Gameplay.GameControllers
             _isAutoSpinEnabled = true;
             _autoSpinCts = new CancellationTokenSource();
             _autoSpinTask = AutoSpinLoop().AttachExternalCancellation(_autoSpinCts.Token);
+            SetInteractable(false);
             UpdateUI();
         }
 
@@ -303,6 +311,7 @@ namespace Core.Gameplay.GameControllers
             _autoSpinCts?.Cancel();
             _autoSpinCts?.Dispose();
             _autoSpinCts = null;
+            SetInteractable(true);
             UpdateUI();
         }
 
@@ -357,6 +366,11 @@ namespace Core.Gameplay.GameControllers
                 GameServices.GameCompletionHandler.HandleGameResult(result);
                 PlayerPrefs.SetInt(KEY_IS_ARCADE_ALREADY_PLAYED, 1);
             }
+
+            if (_reelsType == ReelsType.Classic)
+                RecordArcadePlay(GameConstants.GAME_REELS);
+            else
+                RecordArcadePlay(GameConstants.GAME_DIAMOND_RETRO);
         }
 
         private int CalculateWin(int symbolIndex, int matchCount)
@@ -469,6 +483,7 @@ namespace Core.Gameplay.GameControllers
             _spinButton.Interactable = interactable;
             _betPlusButton.Interactable = interactable;
             _betMinusButton.Interactable = interactable;
+            _maxBetButton.Interactable = interactable;
         }
 
         private void RefreshInput()
