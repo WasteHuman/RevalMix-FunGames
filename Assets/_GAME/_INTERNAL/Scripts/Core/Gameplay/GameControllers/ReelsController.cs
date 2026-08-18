@@ -5,10 +5,12 @@ using Core.Services;
 using Core.Services.Analytics;
 using Core.Services.Audio;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
+using UI.Animations.Game;
 using UI.Other;
 using UI.Reels;
 using UnityEngine;
@@ -37,7 +39,9 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private ActionButton _autoButton;
         [SerializeField] private GameObject _winPanel;
         [SerializeField] private GameObject _infoPanel;
+        [SerializeField] private Image _winGlowImage;
         [SerializeField] private WarningMessageView _warningMessageView;
+        [SerializeField] private LineDisplayController _lineDisplayController;
 
         [Space(5), Header("Audio Settings")]
         [SerializeField] private AudioSource _sfxSource;
@@ -61,6 +65,8 @@ namespace Core.Gameplay.GameControllers
         [SerializeField] private List<Sprite> _symbols = new();
         [SerializeField] private int _diamondReelsMultiplier = 25;
 
+        private Material _winGlowMaterial;
+
         private float _maxBet;
         private int _currentBet;
         private bool _isSpinning;
@@ -75,6 +81,9 @@ namespace Core.Gameplay.GameControllers
         public override void Enter()
         {
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_REELS);
+
+            _winGlowMaterial = new(_winGlowImage.material);
+            _winGlowImage.material = _winGlowMaterial;
 
             if (_reelsType == ReelsType.Diamond)
                 KEY_IS_ARCADE_ALREADY_PLAYED = "Reels_Diamond_Arcade";
@@ -332,6 +341,26 @@ namespace Core.Gameplay.GameControllers
             {
                 if (_sfxSource != null && _winSFXClip != null)
                     _sfxSource.PlayOneShot(_winSFXClip);
+
+                List<List<Vector2Int>> winningLines = new() { new List<Vector2Int>() };
+
+                for (int i = 0; i < matchCount; i++)
+                    winningLines[0].Add(new Vector2Int(i, 2));
+
+                if (_lineDisplayController != null)
+                    _lineDisplayController.DrawWinningLines(winningLines, _reels.ToArray());
+
+                _winGlowImage.gameObject.SetActive(true);
+                _winGlowMaterial.DOKill();
+                _winGlowMaterial.DOFloat(0.95f, "_BoxSize", 0.45f)
+                    .SetEase(Ease.InOutSine)
+                    .SetLoops(8, LoopType.Yoyo)
+                    .OnComplete(() =>
+                    {
+                        _winGlowMaterial.SetFloat("_BoxSize", 0.925f);
+                        _winGlowImage.gameObject.SetActive(false);
+                    });
+
                 int totalWin = CalculateWin(symbolIndices[0], matchCount);
 
                 ShowResult(true, totalWin, symbolIndices);
@@ -351,6 +380,9 @@ namespace Core.Gameplay.GameControllers
             else
             {
                 Debug.Log("No win");
+
+                if (_lineDisplayController != null)
+                    _lineDisplayController.ClearLines();
 
                 ShowResult(false, 0, symbolIndices);
 
@@ -476,6 +508,9 @@ namespace Core.Gameplay.GameControllers
         {
             if (_winPanel != null)
                 _winPanel.SetActive(false);
+
+            if (_lineDisplayController != null)
+                _lineDisplayController.ClearLines();
         }
 
         private void SetInteractable(bool interactable)
@@ -513,6 +548,13 @@ namespace Core.Gameplay.GameControllers
                 Debug.LogWarning("[Reels] Not enough coins to spin");
                 return;
             }
+
+            _winGlowMaterial.DOKill();
+            _winGlowImage.gameObject.SetActive(false);
+            _winGlowMaterial.SetFloat("_BoxSize", 0.925f);
+
+            if (_lineDisplayController != null)
+                _lineDisplayController.ClearLines();
 
             StartSpin().Forget();
         }

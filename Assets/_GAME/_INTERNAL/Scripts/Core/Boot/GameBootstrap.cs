@@ -2,6 +2,7 @@
 using Core.Services.AdsService;
 using Core.Services.Analytics;
 using Core.Services.Audio;
+using Core.SO.Common;
 using Io.AppMetrica;
 using System.Collections;
 using UI.Loading;
@@ -14,6 +15,7 @@ namespace Core.Boot
     {
         private static GameBootstrap _instance;
 
+        private DebugConfig _debugConfig;
         private AnalyticsService _analyticsService;
         private AdsService _adsService;
         private AudioService _audioService;
@@ -27,9 +29,6 @@ namespace Core.Boot
 
             Application.targetFrameRate = 60;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
-//#if UNITY_EDITOR
-//            PlayerPrefs.DeleteAll();
-//#endif
 
             Run();
         }
@@ -41,6 +40,11 @@ namespace Core.Boot
             var analyticsServicePrefab = Resources.Load<AnalyticsService>("Prefabs/Services/[ANALYTICS_SERVICE]");
             var adsControllerPrefab = Resources.Load<AdsService>("Prefabs/Services/[ADS_CONTROLLER]");
             var audioControllerPrefab = Resources.Load<AudioService>("Prefabs/Services/[AUDIO_CONTROLLER]");
+
+            _instance._debugConfig = Resources.Load<DebugConfig>("Tools/Configs/DebugConfig");
+
+            if (_instance._debugConfig.IsDebug)
+                PlayerPrefs.DeleteAll();
 
             if(analyticsServicePrefab == null || adsControllerPrefab == null || audioControllerPrefab == null)
             {
@@ -73,6 +77,7 @@ namespace Core.Boot
                 InitializeExternalSDK();
 
                 _instance.LoadMainScene();
+                GameServices.SetDebugConfig(_instance._debugConfig);
                 GameServices.InitializeAll();
             }
             catch (System.Exception ex)

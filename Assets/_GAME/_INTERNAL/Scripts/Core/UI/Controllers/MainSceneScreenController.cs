@@ -11,8 +11,6 @@ namespace Core.UI.Controllers
         [SerializeField] private WelcomeScreenView _welcomeScreenView;
         [SerializeField] private MainMenuScreenView _mainMenuScreenView;
 
-        
-
         private void Awake()
         {
             _welcomeScreenView.OnPlayerReady += HandlePlayerReady;
@@ -47,7 +45,6 @@ namespace Core.UI.Controllers
                 _dailyFreeBonusScreen.Close();
                 _mainMenuScreenView.Open();
             }
-            
         }
 
         private void HandleBonusClaimed()
@@ -55,6 +52,7 @@ namespace Core.UI.Controllers
             GameServices.PlayerService.GetData().LastDailyBonusTime = DateTime.Now;
             string todayUtc = DateTime.UtcNow.Date.ToString("yyyy-MM-dd");
             PlayerPrefs.SetString(GameConstants.KEY_LAST_DAILY_BONUS_CLAIM, todayUtc);
+            GameServices.EconomyService.DailyBonusClaimed();
 
             _dailyFreeBonusScreen.Close();
             _mainMenuScreenView.Open();

@@ -92,6 +92,8 @@ namespace Core.Gameplay.GameControllers
             _canClaim = false;
             _claimThresholdTime = Random.Range(_minClaimTime, _maxClaimTime);
 
+            _claimButton.gameObject.SetActive(true);
+
             if (_alarmPanel != null)
                 _alarmPanel.SetActive(false);
         }

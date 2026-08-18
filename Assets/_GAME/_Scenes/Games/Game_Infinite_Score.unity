@@ -2470,6 +2470,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -2625,6 +2627,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -2727,6 +2731,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -3908,6 +3914,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -4101,6 +4109,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -4431,6 +4441,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -5797,6 +5809,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -5990,6 +6004,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -6733,6 +6749,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -8007,6 +8025,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}

@@ -4,6 +4,7 @@ using Core.Services.Player;
 using Core.Services.Quests;
 using Core.Services.SaveSystem;
 using Core.SO;
+using Core.SO.Common;
 using System;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace Core.Services
 {
     public static class GameServices
     {
+        private static DebugConfig _debugConfig;
+
         public static PlayerService PlayerService { get; private set; }
         public static EnergyService EnergyService { get; private set; }
         public static GameCompletionHandler GameCompletionHandler { get; private set; }
@@ -21,10 +24,12 @@ namespace Core.Services
         public static AvatarService AvatarService { get; private set; }
         public static FavoriteGamesService FavoriteGamesService { get; private set; }
 
+        public static void SetDebugConfig(DebugConfig config) => _debugConfig = config;
+
         public static void InitializeAll()
         {
             SaveService = new();
-            SaveService.Init();
+            SaveService.Init(_debugConfig.IsDebug);
 
             PlayerService = new();
             PlayerService.Init(SaveService.PlayerData);

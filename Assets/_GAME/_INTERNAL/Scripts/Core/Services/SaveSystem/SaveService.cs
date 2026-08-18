@@ -11,16 +11,14 @@ namespace Core.Services.SaveSystem
         private const string KEY_SETTINGS = GameConstants.KEY_SETTINGS;
 
         private PlayerData _playerData;
-        private SettingsData _settingsData;
         private string SaveFilePath => Path.Combine(Application.persistentDataPath, "player_data.sav");
 
         public PlayerData PlayerData => _playerData;
 
-        public void Init()
+        public void Init(bool isDebug)
         {
-//#if UNITY_EDITOR
-//            DeleteAllSaves();
-//#endif
+            if (isDebug)
+                DeleteAllSaves();
 
             LoadPlayerData();
         }

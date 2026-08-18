@@ -1333,6 +1333,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -3583,10 +3585,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 490, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -3652,6 +3654,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -3738,10 +3742,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 98, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -3807,6 +3811,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -4164,6 +4170,9 @@ MonoBehaviour:
   _sector_1000: {fileID: 0}
   _sector_2500: {fileID: 0}
   _sector_5000: {fileID: 0}
+  _warningMessageView: {fileID: 0}
+  _resultPanelView: {fileID: 0}
+  _sfxSource: {fileID: 0}
   _isDebug: 1
 --- !u!1 &1218653946
 GameObject:
@@ -4483,10 +4492,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 882, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -4552,6 +4561,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -4897,10 +4908,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 294, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -4966,6 +4977,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -5908,10 +5921,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 130, y: 152.94118}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 686, y: -80}
+  m_SizeDelta: {x: 130, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:
@@ -5977,6 +5990,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -6193,6 +6208,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -6504,8 +6521,10 @@ MonoBehaviour:
   _sliderBar: {fileID: 1410030551}
   _avatarImage: {fileID: 749284235}
   _changeAvatarSize: 1
+  _getFreeEnergyButton: {fileID: 0}
   _energyLabel: {fileID: 652986656}
   _energyAnimationDuration: 0.5
+  _isCheatActive: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

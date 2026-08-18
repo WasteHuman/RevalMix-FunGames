@@ -209,6 +209,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -982,6 +984,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -1502,6 +1506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -2727,6 +2733,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.9, y: 0.9}
@@ -3394,6 +3402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -3549,6 +3559,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -5072,6 +5084,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -5323,6 +5337,8 @@ MonoBehaviour:
   _loseEffect: {fileID: 8928823715514350562, guid: 04bc84c16773de043b93fbb914409705, type: 3}
   _winCupSprite: {fileID: 5630289498933763738, guid: f7b6bb0c573ff234bb2e8c55bf368e8f, type: 3}
   _loseCupSprite: {fileID: -7473049583577221048, guid: b9b4eb838b3560f4eacd1d7a060ad5e7, type: 3}
+  _winClip: {fileID: 0}
+  _loseClip: {fileID: 0}
   _restartGameButton: {fileID: 9373488}
 --- !u!1 &1461395550
 GameObject:
@@ -5669,6 +5685,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -6086,6 +6104,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}
@@ -7000,6 +7020,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.05
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.95, y: 0.95}
@@ -8116,6 +8138,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
+  _headRepeatTime: 0.1
+  _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
     _clickedScale: {x: 0.8, y: 0.8}

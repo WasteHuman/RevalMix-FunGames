@@ -261,7 +261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -500,7 +500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -1830,7 +1830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -2292,6 +2292,7 @@ MonoBehaviour:
   _autoButton: {fileID: 498685957}
   _winPanel: {fileID: 106921263}
   _infoPanel: {fileID: 0}
+  _winGlowImage: {fileID: 605578889}
   _warningMessageView: {fileID: 8663979514393749629}
   _sfxSource: {fileID: 787613191}
   _slotsSFXClip: {fileID: 8300000, guid: 500a8ed677a9f6f46841230f55cb300b, type: 3}
@@ -2463,7 +2464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -2832,7 +2833,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -3108,6 +3109,81 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604568750}
+  m_CullTransparentMesh: 1
+--- !u!1 &605578887
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 605578888}
+  - component: {fileID: 605578890}
+  - component: {fileID: 605578889}
+  m_Layer: 5
+  m_Name: WinGlow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &605578888
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605578887}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 903063234}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 640, y: 720}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &605578889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605578887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 2100000, guid: 914db33bf83ce9242af17b2cd4ff63fe, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 8145876365775782612, guid: fe78989457a298b439573daf85159406, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &605578890
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 605578887}
   m_CullTransparentMesh: 1
 --- !u!1 &618700548
 GameObject:
@@ -3590,7 +3666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -4067,13 +4143,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 605578888}
   - {fileID: 1403819063}
   m_Father: {fileID: 1448989018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -560}
-  m_SizeDelta: {x: 1040, y: 670}
+  m_AnchoredPosition: {x: 0, y: -470}
+  m_SizeDelta: {x: 1040, y: 850}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &947115813
 GameObject:
@@ -4127,7 +4204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5341,7 +5418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5580,7 +5657,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -5737,7 +5814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -8105,7 +8182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15
@@ -8661,7 +8738,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97362af319edd434d925303f61920d0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI.Other.ActionButton
-  _headRepeatTime: 0.1
+  _headRepeatTime: 0.05
   _onClick: 8
   _animations:
     _clickAnimationDuration: 0.15

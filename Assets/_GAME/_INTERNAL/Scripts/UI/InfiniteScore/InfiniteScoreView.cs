@@ -181,8 +181,8 @@ namespace UI.InfiniteScore
         {
             glow.DOKill();
             glow.DOFloat(0.85f, "_BoxSize", 0.75f)
-                .SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo);
-            Debug.Log($"Team: {glow.name}");
+                .SetEase(Ease.InOutSine)
+                .SetLoops(-1, LoopType.Yoyo);
         }
 
         private void ClearZone(RectTransform zone)
