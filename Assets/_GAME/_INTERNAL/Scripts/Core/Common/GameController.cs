@@ -15,6 +15,7 @@ namespace Core.Common
         {
             var id = gameId;
             GameServices.FavoriteGamesService?.RecordGamePlay(id);
+            GameServices.PlayedAcradesService?.AddPlayedArcadeToMap(id);
         }
     }
 }

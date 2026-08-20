@@ -14,6 +14,7 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         private readonly Vector2 _fallTargetPosition;
         private readonly float _ascentDeviation;
         private readonly float _descentDeviation;
+        private readonly bool _isScreenSpaceCamera;
 
         /// <summary>
         /// Конструктор генератора пути.
@@ -40,6 +41,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
             _seed = seed < 0 ? System.Environment.TickCount : seed;
             _rng = new System.Random(_seed);
+
+            _isScreenSpaceCamera = IsScreenSpaceCamera(gridContainer);
         }
 
         /// <summary>
@@ -71,16 +74,28 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         }
 
         /// <summary>
+        /// Проверяет, использует ли Canvas режим ScreenSpaceCamera.
+        /// </summary>
+        private bool IsScreenSpaceCamera(RectTransform rectTransform)
+        {
+            if (rectTransform == null)
+                return false;
+
+            Canvas canvas = rectTransform.GetComponentInParent<Canvas>();
+            return canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay == false
+                   && canvas.renderMode == RenderMode.ScreenSpaceCamera;
+        }
+
+        /// <summary>
         /// Генерирует путь взлёта с небольшими отклонениями.
         /// Путь строится линейно вправо-вверх с учётом множителя.
         /// </summary>
         private Vector3[] GenerateAscentPath(float crashMultiplier, Rect gridRect)
         {
             int pointCount = Mathf.Max(5, Mathf.FloorToInt(crashMultiplier * 1.5f));
-            var points = new System.Collections.Generic.List<Vector3>();
+            var points = new List<Vector3>();
 
-            // ИСПРАВЛЕНО: Стартуем строго из левого нижнего угла сетки
-            Vector3 startPoint = new Vector3(gridRect.xMin + 0.5f, gridRect.yMin + 0.5f, 0f);
+            Vector3 startPoint = new(gridRect.xMin, gridRect.yMin, 0f);
             points.Add(startPoint);
 
             float normalizedProgress = (crashMultiplier - 1f) / (_maxMultiplier - 1f);
@@ -91,6 +106,9 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             targetX = Mathf.Clamp(targetX, gridRect.xMin + 0.1f, gridRect.xMax - 0.1f);
             targetY = Mathf.Clamp(targetY, gridRect.yMin + 0.1f, gridRect.yMax - 0.1f);
 
+            float scaleModifier = _isScreenSpaceCamera ? 0.3f : 1f;
+            float adjustedAscentDeviation = _ascentDeviation * scaleModifier;
+
             for (int i = 1; i < pointCount; i++)
             {
                 float t = (float)i / (pointCount - 1);
@@ -98,8 +116,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float baseX = Mathf.Lerp(startPoint.x, targetX, t);
                 float baseY = Mathf.Lerp(startPoint.y, targetY, t);
 
-                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * _ascentDeviation;
-                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * _ascentDeviation;
+                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation;
+                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation;
 
                 float finalX = Mathf.Clamp(baseX + deviationX, gridRect.xMin, gridRect.xMax);
                 float finalY = Mathf.Clamp(baseY + deviationY, gridRect.yMin, gridRect.yMax);
@@ -118,11 +136,16 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         /// </summary>
         private Vector3[] GenerateDescentPath(Vector3 startPoint, Vector2 endPoint)
         {
-            var points = new System.Collections.Generic.List<Vector3>();
-            points.Add(startPoint);
+            var points = new List<Vector3>
+            {
+                startPoint
+            };
 
             // Количество точек падения
             int pointCount = 8;
+
+            float scaleModifier = _isScreenSpaceCamera ? 0.3f : 1f;
+            float adjustedDescentDeviation = _descentDeviation * scaleModifier;
 
             for (int i = 1; i < pointCount; i++)
             {
@@ -134,8 +157,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
                 // Добавляем отклонения (уменьшаются по мере приближения к цели)
                 float deviationFactor = 1f - t; // Отклонения уменьшаются к концу
-                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * _descentDeviation * deviationFactor;
-                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * _descentDeviation * deviationFactor;
+                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
+                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
 
                 points.Add(new Vector3(baseX + deviationX, baseY + deviationY, 0f));
             }

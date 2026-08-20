@@ -17,6 +17,7 @@ namespace Core.Services.Quests
         private PlayerData _data;
         private EconomyService _economyService;
         private PlayerService _playerService;
+        private PlayedAcradesService _playedAcradesService;
 
         private List<DailyQuest> _currentQuests;
         private List<DailyQuest> _requestedQuestsToMainMenu;
@@ -36,7 +37,7 @@ namespace Core.Services.Quests
         // Шаблоны квестов для генерации
         private static QuestTemplate[] QuestTemplates;
 
-        public void Init(PlayerData data, QuestSpritesConfig config, EconomyService economyService, PlayerService playerService)
+        public void Init(PlayerData data, PlayedAcradesService playedAcradesService, EconomyService economyService, PlayerService playerService)
         {
             QuestTemplates = new QuestTemplate[]
             {
@@ -61,6 +62,7 @@ namespace Core.Services.Quests
             _data = data;
             _economyService = economyService;
             _playerService = playerService;
+            _playedAcradesService = playedAcradesService;
 
             _nextRefreshTimeUtc = DateTime.UtcNow.Date.AddDays(1);
 
@@ -83,6 +85,7 @@ namespace Core.Services.Quests
             {
                 Debug.Log($"[DailyQuests] New day detected! Resetting quests. {lastDate} -> {todayUtc}");
                 PlayerPrefs.SetString(GameConstants.KEY_LAST_DAILY_DATE, todayUtc);
+                _playedAcradesService.RemoveMap();
                 GenerateNewQuests();
             }
             else
@@ -210,6 +213,7 @@ namespace Core.Services.Quests
 
                 changed = true;
                 OnQuestUpdated?.Invoke(quest);
+                OnQuestsUpdated?.Invoke(_currentQuests);
             }
 
             if (changed)
@@ -264,7 +268,7 @@ namespace Core.Services.Quests
             if (File.Exists(SaveFilePath))
                 File.Delete(SaveFilePath);
 
-            File.Move(tempPath, SaveFilePath); ;
+            File.Move(tempPath, SaveFilePath);
         }
 
         /// <summary>

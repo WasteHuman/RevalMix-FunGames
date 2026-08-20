@@ -244,10 +244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 882, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45527429
 MonoBehaviour:
@@ -566,8 +566,8 @@ MonoBehaviour:
   - {fileID: 553230098}
   - {fileID: 1762168885}
   - {fileID: 496779820}
-  _spinSpeed: 7500
-  _turboSpinSpeed: 15000
+  _spinSpeed: 6500
+  _turboSpinSpeed: 13000
   _symbolHeight: 150
   _blurReelImage: {fileID: 731019585}
 --- !u!1 &77363015
@@ -2294,6 +2294,7 @@ MonoBehaviour:
   _infoPanel: {fileID: 0}
   _winGlowImage: {fileID: 605578889}
   _warningMessageView: {fileID: 8663979514393749629}
+  _lineDisplayController: {fileID: 1948503944}
   _sfxSource: {fileID: 787613191}
   _slotsSFXClip: {fileID: 8300000, guid: 500a8ed677a9f6f46841230f55cb300b, type: 3}
   _winSFXClip: {fileID: 8300000, guid: 357aedf3cf580124799ae8a3bbd6c430, type: 3}
@@ -2309,8 +2310,8 @@ MonoBehaviour:
   _reelsType: 1
   _minBet: 10
   _betStep: 10
-  _baseSpinDuration: 2.2
-  _reelDelay: 0.1
+  _baseSpinDuration: 2.3
+  _reelDelay: 0.01
   _autoSpinDelay: 2
   _symbols:
   - {fileID: 4374545847661931972, guid: b2c63da273dce4647a1efbfc98cf0f3c, type: 3}
@@ -2985,9 +2986,9 @@ Canvas:
   m_GameObject: {fileID: 595192876}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
+  m_PlaneDistance: 10
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -3649,10 +3650,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 686, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &771872802
 MonoBehaviour:
@@ -4149,7 +4150,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -470}
+  m_AnchoredPosition: {x: 0, y: -545}
   m_SizeDelta: {x: 1040, y: 850}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &947115813
@@ -4187,10 +4188,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 490, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &947115815
 MonoBehaviour:
@@ -5040,8 +5041,8 @@ MonoBehaviour:
   - {fileID: 1051056617}
   - {fileID: 1809235394}
   - {fileID: 475990064}
-  _spinSpeed: 7500
-  _turboSpinSpeed: 15000
+  _spinSpeed: 6500
+  _turboSpinSpeed: 13000
   _symbolHeight: 150
   _blurReelImage: {fileID: 1666234661}
 --- !u!1 &1081913268
@@ -5401,10 +5402,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 294, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1169711875
 MonoBehaviour:
@@ -6287,9 +6288,9 @@ Canvas:
   m_GameObject: {fileID: 1301207409}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
+  m_PlaneDistance: 10
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -6536,6 +6537,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 722868333}
+  - {fileID: 1948503943}
   m_Father: {fileID: 1925958152}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1403819062
@@ -6644,8 +6646,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 106921264}
   - {fileID: 903063234}
+  - {fileID: 106921264}
   - {fileID: 1926742524}
   m_Father: {fileID: 369723520}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7501,9 +7503,9 @@ Canvas:
   m_GameObject: {fileID: 1703987911}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
+  m_PlaneDistance: 10
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -8165,10 +8167,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1389755939}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 98, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1916139678
 MonoBehaviour:
@@ -8439,6 +8441,60 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -447.5}
   m_SizeDelta: {x: 0, y: -895}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1948503942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1948503943}
+  - component: {fileID: 1948503944}
+  m_Layer: 0
+  m_Name: LineDisplayController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1948503943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948503942}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1390898496}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1948503944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1948503942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 012439dd92f8f514796d98cf0399303a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI.Animations.Game.LineDisplayController
+  lineRendererPrefab: {fileID: 518138857579747487, guid: 33c410fbb6118d044bbf257dabbfee16, type: 3}
+  lineWidth: 1.25
+  zOffset: -0.5
+  lineColors:
+  - {r: 1, g: 0.92, b: 0.016, a: 1}
+  - {r: 0.1, g: 0.8, b: 1, a: 1}
+  - {r: 1, g: 0.2, b: 0.2, a: 1}
+  - {r: 0.2, g: 1, b: 0.3, a: 1}
+  - {r: 0.8, g: 0.2, b: 1, a: 1}
+  segmentsPerConnection: 5
 --- !u!1 &1958334882
 GameObject:
   m_ObjectHideFlags: 0
@@ -8586,8 +8642,8 @@ MonoBehaviour:
   - {fileID: 1089885601}
   - {fileID: 1842530592}
   - {fileID: 312497268}
-  _spinSpeed: 7500
-  _turboSpinSpeed: 15000
+  _spinSpeed: 6500
+  _turboSpinSpeed: 13000
   _symbolHeight: 150
   _blurReelImage: {fileID: 887666783}
 --- !u!1 &2043538316

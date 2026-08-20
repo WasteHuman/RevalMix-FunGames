@@ -12,8 +12,6 @@ namespace Core.Gameplay.GameControllers
 {
     public class InfiniteScoreController : GameController
     {
-        private const string KEY_ARCADE_ALREADY_PLAYED = "Infinite_Score_Arcade";
-
         [SerializeField] private InfiniteScoreView _view;
         [SerializeField] private List<CardData> _deckCards;
 
@@ -116,7 +114,7 @@ namespace Core.Gameplay.GameControllers
             }
 
             bool isWin = betTeam == winningTeam;
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+            bool isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_INFINITE_SCORE);
             float reward = isWin ? _bet * _rewardMultiplier : 0f;
             int xp = isWin ? 40 : 10;
 
@@ -132,7 +130,6 @@ namespace Core.Gameplay.GameControllers
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             RecordArcadePlay(GameConstants.GAME_INFINITE_SCORE);
-            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             _view.SetButtonsInteractable(false);
             _view.ShowResultPanel(isWin, reward, score).Forget();

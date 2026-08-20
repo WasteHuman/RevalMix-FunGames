@@ -42,7 +42,7 @@ namespace UI.Animations.Game
 
             foreach (List<Vector2Int> singleLineCoords in allWinningLines)
             {
-                if (singleLineCoords.Count < 3) 
+                if (singleLineCoords.Count < 2) 
                     continue;
 
                 singleLineCoords.Sort((a, b) => a.x.CompareTo(b.x));
@@ -54,7 +54,7 @@ namespace UI.Animations.Game
                         continue;
 
                     ReelView targetReel = reels[coord.x];
-                    Transform slotTransform = targetReel.transform.Find($"Slot_{coord.y}");
+                    Transform slotTransform = targetReel.GetSlotTransform(coord.y);
 
                     if (slotTransform != null)
                     {

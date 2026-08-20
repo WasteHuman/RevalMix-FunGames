@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -28,6 +29,7 @@ namespace Core.Data
         public int PlayTimeSeconds;
 
         public List<string> CompletedQuests;
+        public Dictionary<string, bool> PlayedArcades;
         public Dictionary<string, FavoriteGameData> FavoriteGames;
         public Dictionary<string, int> DailyQuestProgress;
 
@@ -39,6 +41,7 @@ namespace Core.Data
             CompletedQuests = new();
             FavoriteGames = new();
             DailyQuestProgress = new Dictionary<string, int>();
+            PlayedArcades = new();
 
             Coins = GameConstants.INITIAL_COINS;
             Energy = GameConstants.INITIAL_ENERGY;

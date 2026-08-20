@@ -26,20 +26,25 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         private Tween _rotationTween;
         private float _currentAngle;
 
+        public int CurrentProgressIndex { get; private set; }
+        public int SegmentsPerConnection { get; private set;  }
+
         private void OnDestroy()
         {
             if (_moveCoroutine != null)
                 StopCoroutine(_moveCoroutine);
 
             _rotationTween?.Kill();
+            CurrentProgressIndex = 0;
         }
 
         /// <summary>
         /// Инициализация компонента.
         /// </summary>
-        public void Initialize(Transform rocketTransform)
+        public void Initialize(Transform rocketTransform, int segmentsPerConnection)
         {
             _rocketTransform = rocketTransform;
+            SegmentsPerConnection = segmentsPerConnection;
 
             if (_rocketTransform != null)
                 _currentAngle = _rocketTransform.rotation.eulerAngles.z;
@@ -55,6 +60,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 Debug.LogError("[CryptoVibeRocketMover] Rocket transform is not initialized!");
                 return;
             }
+
+            CurrentProgressIndex = 0;
 
             _currentPath = path;
             _isMoving = true;
@@ -91,7 +98,7 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         /// <summary>
         /// Запускает фазу падения (после краша).
         /// </summary>
-        public void StartDescent(System.Action onComplete = null)
+        public void StartDescent(Action onComplete = null)
         {
             if (_currentPath == null || _currentPath.DescentPoints == null || _currentPath.DescentPoints.Length == 0)
             {
@@ -103,15 +110,21 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             if (_moveCoroutine != null)
                 StopCoroutine(_moveCoroutine);
 
-            _rocketTransform.rotation = new(0f, 0f, 0f, 0f);
+            _rotationTween?.Kill();
+            _rotationTween = null;
+
+            _rocketTransform.rotation = Quaternion.identity;
+            _currentAngle = 0f;
 
             _moveCoroutine = StartCoroutine(PlayDescentAnimation(onComplete));
         }
 
         private Vector3 GetPointOnPathByProgress(Vector3[] points, float progress)
         {
-            if (points == null || points.Length == 0) return Vector3.zero;
-            if (points.Length == 1) return points[0];
+            if (points == null || points.Length == 0) 
+                return Vector3.zero;
+            if (points.Length == 1) 
+                return points[0];
 
             float totalLength = 0f;
             float[] segmentLengths = new float[points.Length - 1];
@@ -169,16 +182,20 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                     float t = Mathf.Clamp01(elapsed / duration);
 
                     _rocketTransform.position = Vector3.Lerp(startPoint, endPoint, t);
+
+                    CurrentProgressIndex = Mathf.FloorToInt((i + t) * SegmentsPerConnection);
+
                     yield return null;
                 }
 
                 _rocketTransform.position = endPoint;
+                CurrentProgressIndex = (i + 1) * SegmentsPerConnection;
             }
 
             _isMoving = false;
         }
 
-        private IEnumerator PlayDescentAnimation(System.Action onComplete)
+        private IEnumerator PlayDescentAnimation(Action onComplete)
         {
             if (_currentPath == null || _currentPath.DescentPoints == null || _currentPath.DescentPoints.Length == 0)
             {
@@ -187,8 +204,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             }
 
             Vector3[] points = _currentPath.DescentPoints;
-            _currentAngle = _rocketTransform.rotation.eulerAngles.z;
-
             float descentSpeed = _movementSpeed * _descentSpeedMultiplier;
 
             // Вычисляем общую длину пути
@@ -197,7 +212,9 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 totalDistance += Vector3.Distance(points[i], points[i + 1]);
 
             PlayExplosionEffect();
+
             float totalDuration = totalDistance / descentSpeed;
+            int ascentMaxIndex = CurrentProgressIndex;
 
             float elapsed = 0f;
             while (elapsed < totalDuration)
@@ -205,17 +222,20 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 elapsed += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsed / totalDuration);
 
-                // Общее ускорение на весь путь (easing применяется один раз)
                 float easedT = t * t;
 
                 Vector3 pos = GetPointOnPathByProgress(points, easedT);
                 _rocketTransform.position = pos;
 
+                int descentSegments = Mathf.FloorToInt(t * points.Length * SegmentsPerConnection);
+                CurrentProgressIndex = ascentMaxIndex + descentSegments;
+
                 yield return null;
             }
 
             _rocketTransform.position = points[^1];
-            
+            CurrentProgressIndex = ascentMaxIndex + points.Length * SegmentsPerConnection;
+
             onComplete?.Invoke();
         }
 
@@ -241,7 +261,7 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             // Длительность поворота: для взлёта плавнее, для падения резче
             float tweenDuration = isFalling
                 ? Mathf.Clamp(segmentDuration * 0.5f, 0.1f, 0.25f)
-                : Mathf.Clamp(segmentDuration * 1.5f, 0.3f, 0.6f);
+                : Mathf.Clamp(segmentDuration * 0.8f, 0.15f, 0.4f);
 
             // Для взлёта мягкий Ease, для падения резкий
             Ease ease = isFalling ? Ease.OutExpo : Ease.OutSine;
@@ -265,12 +285,10 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         /// </summary>
         private void PlayExplosionEffect()
         {
-            // Null-check для эффекта взрыва
             if (_explosionVFXPrefab != null)
             {
-                var vfx = Instantiate(_explosionVFXPrefab, _rocketTransform.position, Quaternion.identity, _rocketTransform);
+                var vfx = Instantiate(_explosionVFXPrefab, _rocketTransform.position, Quaternion.identity);
 
-                // Попытка получить ParticleSystem.MainModule для настройки duration
                 var ps = vfx.GetComponent<ParticleSystem>();
                 if (ps != null)
                 {
@@ -284,11 +302,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 }
             }
 
-            // Null-check для звука
             if (_explosionSound != null && _audioSource != null)
-            {
                 _audioSource.PlayOneShot(_explosionSound);
-            }
         }
 
         /// <summary>

@@ -159,7 +159,7 @@ namespace Core.Gameplay.GameControllers.Plinko
         private void HandleFinish(float multiplier)
         {
             bool isWin = multiplier > 0f;
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+            bool isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_PLINKO_VIBE);
 
             var rewardCoins = Mathf.RoundToInt(_currentBet * multiplier);
             if (rewardCoins > 0)
@@ -182,7 +182,6 @@ namespace Core.Gameplay.GameControllers.Plinko
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             RecordArcadePlay(GameConstants.GAME_PLINKO_VIBE);
-            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
             _isPlaying = false;
         }
 

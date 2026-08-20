@@ -12,7 +12,7 @@ namespace Core.Gameplay.GameControllers
 {
     public class CyberMasterController : GameController
     {
-        private const string KEY_ARCADE_ALREADY_PLAYED = "Cyber_Master_Arcade";
+        private const string ARCADE_KEY = "Cyber_Master_Arcade";
 
         [Header("Cards Setup")]
         [SerializeField] private List<CardData> _deckCards;
@@ -167,8 +167,7 @@ namespace Core.Gameplay.GameControllers
             if (isWin && _currentScore == 21)
                 questTag = GameConstants.TAG_HIT_21;
 
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
-            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
+            bool isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_CYBER_MASTER);
 
             // Создаем GameResult
             GameResult result = new(

@@ -4,6 +4,7 @@ using Core.SO;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace UI.Player
         public void Init(DailyQuestsService service)
         {
             _service = service;
-            _service.OnQuestsUpdated += HandleUpdatedQuests;
+            _service.OnQuestUpdated += HandleUpdatedQuest;
 
             _service.RequestQuests(_questsCount);
             SetupQuestViews();
@@ -55,7 +56,7 @@ namespace UI.Player
 
         public void Dispose()
         {
-            _service.OnQuestsUpdated -= HandleUpdatedQuests;
+            _service.OnQuestUpdated -= HandleUpdatedQuest;
 
             if (_timerCoroutine != null)
                 StopCoroutine(_timerCoroutine);
@@ -90,6 +91,15 @@ namespace UI.Player
             return $"Refresh in: {ts.Hours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
         }
 
-        private void HandleUpdatedQuests(List<DailyQuest> quests) => SetupQuestViews();
+        private void HandleUpdatedQuest(DailyQuest changedQuest)
+        {
+            var quest = _views.FirstOrDefault(v => v.Data != null && v.Data.Id == changedQuest.Id);
+
+            if (quest != null)
+            {
+                float progress = Mathf.Clamp01((float)changedQuest.CurrentProgress / changedQuest.TargetProgress);
+                quest.UpdateQuestProgress(progress);
+            }
+        }
     }
 }

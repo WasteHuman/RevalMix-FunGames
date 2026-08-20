@@ -14,8 +14,6 @@ namespace Core.Gameplay.GameControllers
 {
     public class VaultBreakerController : GameController
     {
-        private const string KEY_ARCADE_ALREADY_PLAYED = "Vault_Breaker_Played";
-
         [Header("Vault UI")]
         [SerializeField] private TextMeshProUGUI _scoreLabel;
         [SerializeField] private TextMeshProUGUI _timerLabel;
@@ -185,7 +183,7 @@ namespace Core.Gameplay.GameControllers
             _isPlaying = false;
 
             string questTag = isWin ? GameConstants.TAG_OPEN_THE_VAULT : null;
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+            bool isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_VAULT);
 
             GameResult result = new(
                 isWin: isWin,
@@ -198,7 +196,6 @@ namespace Core.Gameplay.GameControllers
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             RecordArcadePlay(GameConstants.GAME_VAULT);
-            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             ShowResult(isWin, reward);
             SetInteractable(true);

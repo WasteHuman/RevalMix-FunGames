@@ -23,6 +23,8 @@ namespace Core.Services
         public static LeaderboardService Leaderboard { get; private set; }
         public static AvatarService AvatarService { get; private set; }
         public static FavoriteGamesService FavoriteGamesService { get; private set; }
+        public static PlayedAcradesService PlayedAcradesService {  get; private set; }
+        public static QuestRouter QuestRouter { get; private set; }
 
         public static void SetDebugConfig(DebugConfig config) => _debugConfig = config;
 
@@ -37,16 +39,11 @@ namespace Core.Services
             EconomyService = new();
             EconomyService.Init(PlayerService.PlayerCoins);
 
-            try
-            {
-                var questSpritesConfig = Resources.Load<QuestSpritesConfig>("Configs/Meta/Quests/SpritesConfig");
-                Quests = new DailyQuestsService();
-                Quests.Init(PlayerService.GetData(), questSpritesConfig, EconomyService, PlayerService);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError($"[Game Services] Failed to initialize Quests: {ex.Message}");
-            }
+            PlayedAcradesService = new();
+            PlayedAcradesService.Init(PlayerService.GetData());
+
+            Quests = new DailyQuestsService();
+            Quests.Init(PlayerService.GetData(), PlayedAcradesService, EconomyService, PlayerService);
 
             EnergyService = new(() => SaveService.SavePlayerData(), () => Quests.ProgressQuest(GameConstants.TAG_CLAIM_FREE_ENERGY));
             EnergyService.Init(PlayerService.GetData());
@@ -56,7 +53,11 @@ namespace Core.Services
             Leaderboard = new LeaderboardService();
             Leaderboard.Init(PlayerService.GetData());
 
-            FavoriteGamesService = new(PlayerService.GetData());
+            FavoriteGamesService = new();
+            FavoriteGamesService.Init(PlayerService.GetData());
+
+            QuestRouter = new();
+            QuestRouter.Init(PlayedAcradesService);
 
             GameCompletionHandler = new(EconomyService, PlayerService, Quests, () => SaveService.SavePlayerData());
         }

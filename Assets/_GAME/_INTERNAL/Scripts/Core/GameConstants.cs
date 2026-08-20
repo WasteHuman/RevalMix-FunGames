@@ -1,4 +1,6 @@
-﻿namespace Core
+﻿using System.Collections.Generic;
+
+namespace Core
 {
     public static class GameConstants
     {
@@ -42,7 +44,7 @@
         public const int INITIAL_ENERGY = 50;
         public const int MAX_ENERGY = 50;
         public const float ENERGY_REGEN_MINUTES = 30f;
-        public const int ENERGY_FOR_GAME = 5;
+        public const int ENERGY_FOR_GAME = 1;
         #endregion
 
         #region Quest Tags

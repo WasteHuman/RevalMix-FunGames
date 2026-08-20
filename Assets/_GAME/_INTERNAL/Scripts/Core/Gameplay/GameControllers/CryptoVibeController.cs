@@ -11,7 +11,7 @@ namespace Core.Gameplay.GameControllers
 {
     public class CryptoVibeController : GameController
     {
-        private const string KEY_ARCADE_ALREADY_PLAYED = "Crypto_Pump_Vibe_Arcade";
+        private const string ARCADE_KEY = "Crypto_Pump_Vibe_Arcade";
 
         [Header("Setup")]
         [SerializeField] private CryptoVibeView _view;
@@ -142,7 +142,7 @@ namespace Core.Gameplay.GameControllers
 
             string questTag = _currentMultiplier >= 10f
                 ? GameConstants.TAG_REACH_10X_MULTIPLIER
-                : GameConstants.TAG_LAUNCH_3_ROCKETS;
+                : string.Empty;
 
             EndGame(
                 isWin: true,
@@ -163,7 +163,7 @@ namespace Core.Gameplay.GameControllers
             string questTag)
         {
             _state = isWin ? GameState.CashedOut : GameState.Crashed;
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
+            bool isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_CRYPTO_VIBE);
 
             GameResult result = new(
                 isWin: isWin,
@@ -176,7 +176,6 @@ namespace Core.Gameplay.GameControllers
 
             GameServices.GameCompletionHandler.HandleGameResult(result);
             RecordArcadePlay(GameConstants.GAME_CRYPTO_VIBE);
-            PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
 
             _view.ShowResult(isWin, reward);
         }
@@ -192,7 +191,7 @@ namespace Core.Gameplay.GameControllers
 
             if(!base.SpendEnergy())
             {
-                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({5}) for this game.");
+                _view.ShowWarningMessage("Not enough energy!", $"You don't have enough energy ({GameConstants.ENERGY_FOR_GAME}) for this game.");
                 return;
             }
 
@@ -203,6 +202,7 @@ namespace Core.Gameplay.GameControllers
             }
 
             GameServices.EconomyService.SpendCoins(_currentBet);
+            GameServices.Quests.ProgressQuest(GameConstants.TAG_LAUNCH_3_ROCKETS);
 
             _hasCrashed = false;
             StartGame().Forget();

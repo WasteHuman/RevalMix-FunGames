@@ -1,12 +1,16 @@
 ﻿using Core.Data.Quests;
+using Core.Services;
 using Core.SO;
 using DG.Tweening;
 using TMPro;
+using UI.Other;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI.Player
 {
+    [RequireComponent(typeof(ActionButton))]
     public class DailyQuestView : MonoBehaviour
     {
         [Header("View Setup")]
@@ -15,15 +19,26 @@ namespace UI.Player
         [SerializeField] private TextMeshProUGUI _rewardLabel;
         [SerializeField] private Image _progressBar;
         [SerializeField] private GameObject _completedMask;
+        [SerializeField] private ActionButton _goToGameButton;
 
         private DailyQuest _data;
         private QuestSpritesConfig _config;
 
         public DailyQuest Data => _data;
 
+        private void OnDestroy()
+        {
+            _goToGameButton.OnButtonClick -= HandleGoToGameButtonClick;
+        }
+
         public void Init(DailyQuest data, QuestSpritesConfig spritesConfig)
         {
             gameObject.name = $"Quest_View_{data.QuestTag}";
+
+            if (_goToGameButton == null)
+                _goToGameButton = GetComponent<ActionButton>();
+
+            _goToGameButton.OnButtonClick += HandleGoToGameButtonClick;
 
             _data = data;
             _config = spritesConfig;
@@ -56,8 +71,21 @@ namespace UI.Player
 
         public void UpdateQuestProgress(float progress)
         {
+            if (progress >= 1f)
+                _completedMask.SetActive(true);
+
             _progressBar.DOKill();
             _progressBar.DOFillAmount(progress, 0.5f);
+        }
+
+        private void HandleGoToGameButtonClick()
+        {
+            string targetScene = GameServices.QuestRouter.GetTargetSceneByQuestTag(_data.QuestTag);
+
+            if (!string.IsNullOrEmpty(targetScene))
+                SceneManager.LoadSceneAsync(targetScene);
+            else
+                Debug.Log($"Game for quest {_data.QuestTag} not found!");
         }
     }
 }

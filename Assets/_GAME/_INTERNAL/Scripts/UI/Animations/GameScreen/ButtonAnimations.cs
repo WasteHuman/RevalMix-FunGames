@@ -30,6 +30,8 @@ namespace UI.Animations.GameScreen
         {
             _rectTransform = target;
 
+            _clickAnimationDuration = 0.05f;
+
             if (_usingPulseAnimation)
                 PulseAnimation();
         }

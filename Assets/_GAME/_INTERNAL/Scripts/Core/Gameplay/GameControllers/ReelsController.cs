@@ -20,8 +20,6 @@ namespace Core.Gameplay.GameControllers
 {
     public class ReelsController : GameController
     {
-        private string KEY_IS_ARCADE_ALREADY_PLAYED = "Reels_Arcade";
-
         [Header("Reels")]
         [SerializeField] private List<ReelView> _reels = new();
 
@@ -84,9 +82,6 @@ namespace Core.Gameplay.GameControllers
 
             _winGlowMaterial = new(_winGlowImage.material);
             _winGlowImage.material = _winGlowMaterial;
-
-            if (_reelsType == ReelsType.Diamond)
-                KEY_IS_ARCADE_ALREADY_PLAYED = "Reels_Diamond_Arcade";
 
             _currentBet = _minBet;
             _isTurboMode = false;
@@ -205,14 +200,16 @@ namespace Core.Gameplay.GameControllers
                 return;
             }
 
+            if (_lineDisplayController != null)
+                _lineDisplayController.ClearLines();
+
             GameServices.EconomyService.SpendCoins(_currentBet);
 
             if (_sfxSource != null && _slotsSFXClip != null)
                 _sfxSource.PlayOneShot(_slotsSFXClip);
 
             _isSpinning = true;
-            if(!_isAutoSpinEnabled)
-                SetInteractable(false);
+            SetInteractable(false);
 
             int reelCount = _reels.Count;
             int[][] results = new int[reelCount][];
@@ -332,7 +329,11 @@ namespace Core.Gameplay.GameControllers
             int matchCount = CountSequentialMatches(symbolIndices);
 
             bool isWin = IsWinningCombination(symbolIndices, matchCount);
-            bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_IS_ARCADE_ALREADY_PLAYED);
+            bool isAlreadyPlayed = false;
+            if (_reelsType == ReelsType.Classic)
+                isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_REELS);
+            else
+                isAlreadyPlayed = GameServices.PlayedAcradesService.IsArcadePlayed(GameConstants.GAME_DIAMOND_RETRO);
 
             if (_reelsType == ReelsType.Diamond && IsDiamondSymbol(symbolIndices[0]))
                 GameServices.Quests.ProgressQuest(GameConstants.TAG_COLLECT_5_DIAMONDS, matchCount);
@@ -345,10 +346,12 @@ namespace Core.Gameplay.GameControllers
                 List<List<Vector2Int>> winningLines = new() { new List<Vector2Int>() };
 
                 for (int i = 0; i < matchCount; i++)
-                    winningLines[0].Add(new Vector2Int(i, 2));
+                    winningLines[0].Add(new Vector2Int(i, 1));
 
                 if (_lineDisplayController != null)
                     _lineDisplayController.DrawWinningLines(winningLines, _reels.ToArray());
+
+                AnimateWinningSymbols(winningLines[0]);
 
                 _winGlowImage.gameObject.SetActive(true);
                 _winGlowMaterial.DOKill();
@@ -396,7 +399,6 @@ namespace Core.Gameplay.GameControllers
                 );
 
                 GameServices.GameCompletionHandler.HandleGameResult(result);
-                PlayerPrefs.SetInt(KEY_IS_ARCADE_ALREADY_PLAYED, 1);
             }
 
             if (_reelsType == ReelsType.Classic)
@@ -485,7 +487,7 @@ namespace Core.Gameplay.GameControllers
         {
             2 => 2,
             3 => 16,
-            4 => 20,
+            4 => 24,
             5 => 40,
             6 => 80,
             _ => 2,
@@ -515,6 +517,9 @@ namespace Core.Gameplay.GameControllers
 
         private void SetInteractable(bool interactable)
         {
+            if (_isAutoSpinEnabled)
+                return;
+
             _spinButton.Interactable = interactable;
             _betPlusButton.Interactable = interactable;
             _betMinusButton.Interactable = interactable;
@@ -538,6 +543,43 @@ namespace Core.Gameplay.GameControllers
             _currentBetLabel.text = _currentBet.ToString("N0");
         }
 
+        /// <summary>
+        /// Плавно увеличивает и пульсирует выигрышные символы.
+        /// </summary>
+        private void AnimateWinningSymbols(List<Vector2Int> winningPositions)
+        {
+            if (winningPositions == null || winningPositions.Count == 0)
+                return;
+
+            foreach (var pos in winningPositions)
+            {
+                int reelIndex = pos.x;
+                int rowIndex = pos.y;
+
+                // Получаем Transform слота напрямую из ReelView
+                Transform symbolTransform = _reels[reelIndex].GetSlotTransform(rowIndex);
+
+                if (symbolTransform == null)
+                    continue;
+
+                // Сбрасываем перед запуском
+                symbolTransform.DOKill();
+                symbolTransform.localScale = Vector3.one;
+
+                // Создаем последовательность анимаций
+                Sequence pulseSequence = DOTween.Sequence();
+
+                // 1. Плавное увеличение (Pop-in эффект)
+                pulseSequence.Append(symbolTransform.DOScale(1.25f, 0.3f).SetEase(Ease.OutBack));
+
+                // 2. Пульсация (3 цикла туда-обратно)
+                pulseSequence.Append(symbolTransform.DOScale(1.1f, 0.3f).SetEase(Ease.InOutSine).SetLoops(3, LoopType.Yoyo));
+
+                // 3. Плавный возврат к исходному размеру
+                pulseSequence.Append(symbolTransform.DOScale(1f, 0.2f).SetEase(Ease.OutSine));
+            }
+        }
+
         private void HandleSpinButtonClick()
         {
             if (_isSpinning)
@@ -547,6 +589,12 @@ namespace Core.Gameplay.GameControllers
             {
                 Debug.LogWarning("[Reels] Not enough coins to spin");
                 return;
+            }
+
+            foreach (var reel in _reels)
+            {
+                reel.transform.DOKill();
+                reel.transform.localScale = Vector3.one;
             }
 
             _winGlowMaterial.DOKill();
@@ -622,6 +670,7 @@ namespace Core.Gameplay.GameControllers
             {
                 StopAutoSpin();
                 _autoSpinLabel.colorGradientPreset = _inactiveColor;
+                SetInteractable(true);
             }
             else
             {
@@ -630,6 +679,7 @@ namespace Core.Gameplay.GameControllers
                     Debug.LogWarning("[Reels] Not enough coins for auto spin");
                     return;
                 }
+                SetInteractable(false);
                 StartAutoSpin();
                 _autoSpinLabel.colorGradientPreset = _activeColor;
             }

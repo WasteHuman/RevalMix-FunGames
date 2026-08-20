@@ -55,12 +55,13 @@ namespace Core.WheelOfLuck
         [Space(5), Header("Debug")]
         [SerializeField] private bool _isDebug = false;
 
+        private Dictionary<WheelReward.RewardType, Action<WheelReward, int>> _rewardActions;
+        private Dictionary<WheelReward.RewardType, ResultConfig> _resultConfigs;
+
         private const string PREF_FREE_SPINS = "Wheel_FreeSpins";
         private const string PREF_NEXT_AVAILABLE_TICKS = "Wheel_NextAvailableTicks";
-        private string KEY_ARCADE_ALREADY_PLAYED = "Wheel_Of_Luck_Arcade";
 
         private int _selectedSector;
-
         private int _freeSpins;
         private DateTimeOffset _nextAvailableUtc;
         private bool _isSpinning;
@@ -82,11 +83,74 @@ namespace Core.WheelOfLuck
         {
             AnalyticsService.Instance.ReportGameStart(GameConstants.GAME_WHEEL_OF_REVOLUT);
 
-            if (_isNeonWheel)
+            _resultConfigs = new()
             {
+                { WheelReward.RewardType.Coins, new ResultConfig(isWin: true, baseXP: 20) },
+                { WheelReward.RewardType.XP, new ResultConfig(isWin: true, baseXP: 0) },
+                { WheelReward.RewardType.FreeSpin, new ResultConfig(isWin: true, baseXP: 5) },
+                { WheelReward.RewardType.Sector, new ResultConfig(isWin: true, baseXP: 20) },
+                { WheelReward.RewardType.Nothing, new ResultConfig(isWin: false, baseXP: 0) },
+                { WheelReward.RewardType.Energy, new ResultConfig(isWin:true, baseXP: 20) },
+            };
+
+            _rewardActions = new()
+            {
+                { WheelReward.RewardType.Coins, (reward, _) => 
+                    {
+                        Debug.Log($"[Wheel] Given coins: {reward.Amount}");
+                        HandleGameResult(reward.Type, reward.Amount);
+                    }  
+                },
+                { WheelReward.RewardType.XP, (reward, _) =>
+                    {
+                        Debug.Log($"[Wheel] Given coins: {reward.Amount}");
+                        HandleGameResult(reward.Type, 0);
+                    }
+                },
+                { WheelReward.RewardType.FreeSpin, (reward, mult) =>
+                    {
+                        int spins = (int)reward.Amount * Mathf.Max(1, mult);
+                        _freeSpins += spins;
+                        _nextAvailableUtc = DateTimeOffset.UtcNow;
+                        SaveState();
+                        Debug.Log($"[Wheel] Given free spins: {spins}");
+                        HandleGameResult(reward.Type, 0);
+                    }
+                },
+                { WheelReward.RewardType.Sector, (reward, _) =>
+                    {
+                        bool isSectorWin = _selectedSector == reward.Amount;
+                        float sectorCoins = isSectorWin ? reward.Amount : 0;
+
+                        if (isSectorWin)
+                        {
+                            Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
+                            _selectedSector = 0;
+                        }
+                        else
+                            Debug.LogWarning($"[Wheel] Sector mismatch. Expected: {_selectedSector}, but got: {reward.Amount}");
+
+                        GameResult result = HandleGameResult(reward.Type, sectorCoins, isSectorWin);
+                        _resultPanelView.ShowResultPanel(result.IsWin, false, (int)result.RewardCoins, (int)result.RewardCoins);
+                    }
+                },
+                { WheelReward.RewardType.Energy, (reward, _) =>
+                    {
+                        GameServices.PlayerService.AddEnergy(Mathf.RoundToInt(reward.Amount));
+                        Debug.Log($"[Wheel] Given energy: {reward.Amount}");
+                        HandleGameResult(reward.Type, 0);
+                    }
+                },
+                { WheelReward.RewardType.Nothing, (reward, _) =>
+                    {
+                        Debug.Log("[Wheel] Nothing to give");
+                        HandleGameResult(reward.Type, 0);
+                    }
+                }
+            };
+
+            if (_isNeonWheel)
                 _resultPanelView.SetAudioSource(_sfxSource);
-                KEY_ARCADE_ALREADY_PLAYED = "Neon_Cyan_Wheel_Arcade";
-            }
 
             LoadState();
             UpdateCooldownLabel();
@@ -105,14 +169,14 @@ namespace Core.WheelOfLuck
                 || _sector_2500 != null
                 || _sector_5000 != null)
             {
-                _sector_250.OnButtonClick += Handle250SectorButtonClick;
-                _sector_450.OnButtonClick += Handle450SectorButtonClick;
-                _sector_500.OnButtonClick += Handle500SectorButtonClick;
-                _sector_750.OnButtonClick += Handle750SectorButtonClick;
-                _sector_950.OnButtonClick += Handle950SectorButtonClick;
-                _sector_1000.OnButtonClick += Handle1000SectorButtonClick;
-                _sector_2500.OnButtonClick += Handle2500SectorButtonClick;
-                _sector_5000.OnButtonClick += Handle5000SectorButtonClick;
+                _sector_250.OnButtonClick += () => HandleSectorButtonClick(250);
+                _sector_450.OnButtonClick += () => HandleSectorButtonClick(450);
+                _sector_500.OnButtonClick += () => HandleSectorButtonClick(500);
+                _sector_750.OnButtonClick += () => HandleSectorButtonClick(750);
+                _sector_950.OnButtonClick += () => HandleSectorButtonClick(950);
+                _sector_1000.OnButtonClick += () => HandleSectorButtonClick(1000);
+                _sector_2500.OnButtonClick += () => HandleSectorButtonClick(2500);
+                _sector_5000.OnButtonClick += () => HandleSectorButtonClick(5000);
             }
 
             if (_startSpinButton != null)
@@ -142,25 +206,6 @@ namespace Core.WheelOfLuck
         {
             _spinTween?.Kill();
             _pulseTween?.Kill();
-
-            if (_sector_250 != null
-                || _sector_450 != null
-                || _sector_500 != null
-                || _sector_750 != null
-                || _sector_950 != null
-                || _sector_1000 != null
-                || _sector_2500 != null
-                || _sector_5000 != null)
-            {
-                _sector_250.OnButtonClick -= Handle250SectorButtonClick;
-                _sector_450.OnButtonClick -= Handle450SectorButtonClick;
-                _sector_500.OnButtonClick -= Handle500SectorButtonClick;
-                _sector_750.OnButtonClick -= Handle750SectorButtonClick;
-                _sector_950.OnButtonClick -= Handle950SectorButtonClick;
-                _sector_1000.OnButtonClick -= Handle1000SectorButtonClick;
-                _sector_2500.OnButtonClick -= Handle2500SectorButtonClick;
-                _sector_5000.OnButtonClick -= Handle5000SectorButtonClick;
-            }
 
             if (_startSpinButton != null)
                 _startSpinButton.OnButtonClick -= _prepareAndStartSpinAction;
@@ -443,180 +488,72 @@ namespace Core.WheelOfLuck
             if (reward == null) 
                 return;
 
-            switch (reward.Type)
+            if (_rewardActions.TryGetValue(reward.Type, out var action))
+                action.Invoke(reward, bonusMultiplier);
+            else
             {
-                case WheelReward.RewardType.Coins:
-                    float coins = reward.Amount;
-                    GameServices.EconomyService.AddCoins(coins);
-                    Debug.Log($"[Wheel] Given coins: {coins}");
-
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
-                    break;
-
-                case WheelReward.RewardType.FreeSpin:
-                    int spins = (int)reward.Amount * Math.Max(1, bonusMultiplier);
-                    _freeSpins += spins;
-
-                    _nextAvailableUtc = DateTimeOffset.UtcNow;
-                    SaveState();
-
-                    _startSpinButton.Interactable = CanSpin();
-                    UpdatePulseState();
-                    Debug.Log($"[Wheel] Given free spins: {spins}");
-
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
-                    break;
-
-                case WheelReward.RewardType.Nothing:
-                    Debug.Log("[Wheel] Nothing to give");
-                    AnalyticsService.Instance.ReportGameLoss(GameConstants.GAME_WHEEL_OF_REVOLUT);
-                    break;
-
-                case WheelReward.RewardType.Energy:
-                    GameServices.PlayerService.AddEnergy(Mathf.RoundToInt(reward.Amount));
-                    Debug.Log($"[Wheel] Given energy: {reward.Amount}");
-
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
-                    break;
-
-                case WheelReward.RewardType.XP:
-                    GameServices.SaveService.PlayerData.AddXP(Mathf.RoundToInt(reward.Amount));
-                    Debug.Log($"[Wheel] Given XP: {reward.Amount}");
-
-                    AnalyticsService.Instance.ReportGameWin(GameConstants.GAME_WHEEL_OF_REVOLUT);
-                    break;
-                case WheelReward.RewardType.Sector:
-                    bool isAlreadyPlayed = PlayerPrefs.HasKey(KEY_ARCADE_ALREADY_PLAYED);
-                    PlayerPrefs.SetInt(KEY_ARCADE_ALREADY_PLAYED, 1);
-
-                    if (_selectedSector == reward.Amount)
-                    {
-                        Debug.Log($"[Wheel] Claimed sector: {reward.Amount}");
-                        
-
-                        GameResult result = new(
-                            isWin: true,
-                            rewardCoins: reward.Amount,
-                            rewardXP: 20,
-                            questTag: string.Empty,
-                            gameId: GameConstants.GAME_NEON_WHEEL,
-                            arcadePlayed: isAlreadyPlayed
-                        );
-
-                        GameServices.GameCompletionHandler.HandleGameResult(result);
-
-                        _resultPanelView.ShowResultPanel(result.IsWin, false, (int)result.RewardCoins, (int)result.RewardCoins);
-
-                        _selectedSector = 0;
-                    }
-                    else
-                    {
-                        GameResult result = new(
-                            isWin: false,
-                            rewardCoins: 0,
-                            rewardXP: 0,
-                            questTag: string.Empty,
-                            gameId: GameConstants.GAME_NEON_WHEEL,
-                            arcadePlayed: isAlreadyPlayed
-                        );
-
-                        GameServices.GameCompletionHandler.HandleGameResult(result);
-
-                        _resultPanelView.ShowResultPanel(result.IsWin, false, (int)result.RewardCoins, (int)result.RewardCoins);
-
-                        Debug.LogWarning($"[Wheel] Sector mismatch. Expected: {_selectedSector}, but got: {reward.Amount}");
-                    }
-                    break;
+                Debug.LogError($"[Wheel] No action found for reward type: {reward.Type}");
+                return;
             }
 
-            if (_isNeonWheel)
-                GameServices.FavoriteGamesService.RecordGamePlay(GameConstants.GAME_NEON_WHEEL);
-            else
-                GameServices.FavoriteGamesService.RecordGamePlay(GameConstants.GAME_WHEEL_OF_REVOLUT);
+            RecordGamePlay();
 
             if (_startSpinButton != null)
+                _startSpinButton.Interactable = false;
+        }
+
+        private void RecordGamePlay()
+        {
+            string gameId = _isNeonWheel ? GameConstants.GAME_NEON_WHEEL : GameConstants.GAME_WHEEL_OF_REVOLUT;
+            GameServices.FavoriteGamesService.RecordGamePlay(gameId);
+        }
+
+        private GameResult HandleGameResult(WheelReward.RewardType type, float rewardCoins, bool? overrideIsWin = null)
+        {
+            // Достаем конфиг для данного типа награды
+            if (!_resultConfigs.TryGetValue(type, out var config))
             {
-                _startSpinButton.Interactable = CanSpin();
-                UpdatePulseState();
+                Debug.LogError($"[Wheel] No result config found for type: {type}");
+                return new();
             }
+
+            string gameId = _isNeonWheel ? GameConstants.GAME_NEON_WHEEL : GameConstants.GAME_WHEEL_OF_REVOLUT;
+            bool arcadePlayed = GameServices.PlayedAcradesService.IsArcadePlayed(gameId);
+
+            // Если передали overrideIsWin (как для Sector), используем его, иначе берем из конфига
+            bool finalIsWin = overrideIsWin ?? config.IsWin;
+
+            GameResult result = new GameResult(
+                isWin: finalIsWin,
+                rewardCoins: rewardCoins,
+                rewardXP: config.BaseXP,
+                questTag: string.Empty,
+                gameId: gameId,
+                arcadePlayed: arcadePlayed
+            );
+
+            GameServices.GameCompletionHandler.HandleGameResult(result);
+
+            if (config.ReportAnalytics)
+            {
+                if (finalIsWin)
+                    AnalyticsService.Instance.ReportGameWin(gameId);
+                else
+                    AnalyticsService.Instance.ReportGameLoss(gameId);
+            }
+
+            return result;
         }
 
-        private void Handle5000SectorButtonClick()
+        private void HandleSectorButtonClick(int sectorValue)
         {
-            _selectedSector = 5000;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
+            if (!GameServices.EnergyService.HasEnoughEnergy || !GameServices.EconomyService.HasEnoughBalance(sectorValue))
+            {
+                Debug.Log("Не хватает энергии");
                 return;
+            }
 
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle2500SectorButtonClick()
-        {
-            _selectedSector = 2500;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle1000SectorButtonClick()
-        {
-            _selectedSector = 1000;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle950SectorButtonClick()
-        {
-            _selectedSector = 950;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle750SectorButtonClick()
-        {
-            _selectedSector = 750;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle500SectorButtonClick()
-        {
-            _selectedSector = 500;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle450SectorButtonClick()
-        {
-            _selectedSector = 450;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
-            GameServices.EconomyService.SpendCoins(_selectedSector);
-            PrepareAndStartSpin(ClaimWithoutAd);
-        }
-
-        private void Handle250SectorButtonClick()
-        {
-            _selectedSector = 250;
-            if (!GameServices.EnergyService.HasEnoughEnergy)
-                return;
-
+            _selectedSector = sectorValue;
             GameServices.EconomyService.SpendCoins(_selectedSector);
             PrepareAndStartSpin(ClaimWithoutAd);
         }

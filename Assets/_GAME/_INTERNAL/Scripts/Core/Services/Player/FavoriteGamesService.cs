@@ -7,11 +7,11 @@ namespace Core.Services.Player
 {
     public class FavoriteGamesService
     {
-        private readonly PlayerData _playerData;
+        private PlayerData _playerData;
 
         private readonly List<FavoriteGameData> _topFavoriteGames = new();
 
-        public FavoriteGamesService(PlayerData data) => _playerData = data;
+        public void Init(PlayerData data) => _playerData = data;
 
         /// <summary>
         /// Отметить игру как сыгранную (увеличить счётчик игр)

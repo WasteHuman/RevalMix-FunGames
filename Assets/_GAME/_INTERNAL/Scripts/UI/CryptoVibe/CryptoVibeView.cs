@@ -25,7 +25,9 @@ namespace UI.CryptoVibe
         [SerializeField] private RectTransform _rocketTransform;
         [SerializeField] private Image _rocketImage;
         [SerializeField] private CryptoRocketMover _rocketMover;
-        [Header("Grid Reference")]
+        [SerializeField] private CryptoVibeLineRenderController _lineRenderer;
+
+        [Space(5), Header("Grid Reference")]
         [Tooltip("Фоновая сетка для определения границ полёта ракеты")]
         [SerializeField] private RectTransform _backgroundGrid;
         [SerializeField] private Sprite _rocketSprite;
@@ -50,6 +52,7 @@ namespace UI.CryptoVibe
 
         private float _crashMultiplier;
         private bool _isInitialized;
+        private bool _isFlying = false;
 
         public event Action OnStartClicked;
         public event Action OnEjectClicked;
@@ -78,6 +81,12 @@ namespace UI.CryptoVibe
             InitializeRocketSystem();
         }
 
+        private void Update()
+        {
+            if (_isFlying && _lineRenderer != null && _rocketTransform != null && _graphContainer != null)
+                _lineRenderer.UpdateLine(_rocketMover.CurrentProgressIndex);
+        }
+
         private void OnDestroy()
         {
             if (_startButton != null)
@@ -96,6 +105,9 @@ namespace UI.CryptoVibe
 
             if (_rocketMover != null)
                 _rocketMover.StopMove();
+
+            if (_lineRenderer != null)
+                _lineRenderer.ClearLine();
 
             _currentPath = null;
         }
@@ -122,7 +134,7 @@ namespace UI.CryptoVibe
             if (_rocketMover == null)
                 _rocketMover = _rocketTransform.gameObject.AddComponent<CryptoRocketMover>();
 
-            _rocketMover.Initialize(_rocketTransform);
+            _rocketMover.Initialize(_rocketTransform, _lineRenderer.SegmentsPerConnection);
             _rocketMover.SetMovementSpeed(_movementSpeed);
             _rocketMover.SetEffects(_explosionVFXPrefab, _explosionSound, _audioSource);
             _rocketMover.SetRotationAngleOffset(_rotationAngleOffset);
@@ -158,6 +170,11 @@ namespace UI.CryptoVibe
 
             if (_rocketMover != null)
                 _rocketMover.StopMove();
+
+            if (_lineRenderer != null)
+                _lineRenderer.ClearLine();
+
+            _isFlying = false;
         }
 
         // ------------------------------------------------------------------
@@ -182,8 +199,12 @@ namespace UI.CryptoVibe
 
             float flightTime = (crashMultiplier - 1f) / growRate;
 
+            if (_lineRenderer != null && _graphContainer != null)
+                _lineRenderer.InitPath(_currentPath, _graphContainer);
+
             // Запускаем движение ракеты с синхронизированной скоростью
             _rocketMover.StartMove(_currentPath, flightTime);
+            _isFlying = true;
         }
 
         public void Crash(Action onComplete)

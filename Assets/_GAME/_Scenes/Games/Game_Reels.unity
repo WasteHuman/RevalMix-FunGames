@@ -1560,8 +1560,8 @@ MonoBehaviour:
   - {fileID: 399045623}
   - {fileID: 1295382490}
   - {fileID: 1306204102}
-  _spinSpeed: 5000
-  _turboSpinSpeed: 10000
+  _spinSpeed: 4500
+  _turboSpinSpeed: 9000
   _symbolHeight: 225
   _blurReelImage: {fileID: 124269974}
 --- !u!1 &399045621
@@ -2493,8 +2493,8 @@ MonoBehaviour:
   - {fileID: 1492543060}
   - {fileID: 138018129}
   - {fileID: 906011305}
-  _spinSpeed: 5000
-  _turboSpinSpeed: 10000
+  _spinSpeed: 4500
+  _turboSpinSpeed: 9000
   _symbolHeight: 225
   _blurReelImage: {fileID: 1323984312}
 --- !u!1 &546074096
@@ -4560,8 +4560,8 @@ MonoBehaviour:
   - {fileID: 260449594}
   - {fileID: 1844413548}
   - {fileID: 2015353244}
-  _spinSpeed: 5000
-  _turboSpinSpeed: 10000
+  _spinSpeed: 4500
+  _turboSpinSpeed: 9000
   _symbolHeight: 225
   _blurReelImage: {fileID: 1841053719}
 --- !u!1 &994516812
@@ -4971,8 +4971,8 @@ MonoBehaviour:
   _reelsType: 0
   _minBet: 10
   _betStep: 10
-  _baseSpinDuration: 2.1
-  _reelDelay: 0.1
+  _baseSpinDuration: 2.2
+  _reelDelay: 0
   _autoSpinDelay: 2
   _symbols:
   - {fileID: 4374545847661931972, guid: b2c63da273dce4647a1efbfc98cf0f3c, type: 3}
@@ -6703,8 +6703,8 @@ MonoBehaviour:
   - {fileID: 1217002115}
   - {fileID: 1507129607}
   - {fileID: 1602300008}
-  _spinSpeed: 5000
-  _turboSpinSpeed: 10000
+  _spinSpeed: 4500
+  _turboSpinSpeed: 9000
   _symbolHeight: 225
   _blurReelImage: {fileID: 1557580059}
 --- !u!1 &1247188547
@@ -9068,8 +9068,8 @@ MonoBehaviour:
   - {fileID: 1592697911}
   - {fileID: 546074098}
   - {fileID: 1981331791}
-  _spinSpeed: 5000
-  _turboSpinSpeed: 10000
+  _spinSpeed: 4500
+  _turboSpinSpeed: 9000
   _symbolHeight: 225
   _blurReelImage: {fileID: 662296232}
 --- !u!1 &1804418171

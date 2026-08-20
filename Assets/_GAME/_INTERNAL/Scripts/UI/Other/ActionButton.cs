@@ -59,6 +59,7 @@ namespace UI.Other
         {
             _animations.StopAnimations();
             _button.onClick.RemoveAllListeners();
+            OnButtonClick = null;
         }
 
         public void ForceInit()

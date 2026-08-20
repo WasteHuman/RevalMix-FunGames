@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -56,10 +57,21 @@ namespace UI.Reels
                 StopCoroutine(_spinCoroutine);
                 _spinCoroutine = null;
             }
+
+            foreach (var slot in _symbolSlots)
+            {
+                if (slot != null)
+                {
+                    slot.DOKill();
+                    slot.localScale = Vector3.one;
+                }
+            }
+
             _isSpinning = false;
             _shouldStop = true;
 
-            if (_blurReelImage != null) _blurReelImage.enabled = false;
+            if (_blurReelImage != null) 
+                _blurReelImage.enabled = false;
             SetSlotsVisibility(true);
         }
 
@@ -108,6 +120,13 @@ namespace UI.Reels
                 await UniTask.Yield(cts);
         }
 
+        public Transform GetSlotTransform(int rowIndex)
+        {
+            if (rowIndex >= 0 && rowIndex < _symbolSlots.Length && _symbolSlots[rowIndex] != null)
+                return _symbolSlots[rowIndex];
+            return null;
+        }
+
         private void ApplyRestPositions()
         {
             for (int r = 0; r < _symbolSlots.Length; r++)
@@ -119,6 +138,15 @@ namespace UI.Reels
 
         private void StartSpinning(bool isTurbo)
         {
+            foreach (var slot in _symbolSlots)
+            {
+                if (slot != null)
+                {
+                    slot.DOKill();
+                    slot.localScale = Vector3.one;
+                }
+            }
+
             _isSpinning = true;
             _shouldStop = false;
             _spinCoroutine = StartCoroutine(SpinRoutine(isTurbo));
