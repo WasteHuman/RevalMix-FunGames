@@ -11,8 +11,6 @@ namespace Core.Gameplay.GameControllers
 {
     public class CryptoVibeController : GameController
     {
-        private const string ARCADE_KEY = "Crypto_Pump_Vibe_Arcade";
-
         [Header("Setup")]
         [SerializeField] private CryptoVibeView _view;
 

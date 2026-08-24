@@ -3873,7 +3873,6 @@ MonoBehaviour:
   _questsScreenButton: {fileID: 994516817}
   _profileScreenButton: {fileID: 1880575052}
   _settingsScreenButton: {fileID: 1416562678}
-  _getFreeEnergyButton: {fileID: 0}
   _achievementsButton: {fileID: 1560537825}
 --- !u!1 &971755575
 GameObject:

@@ -1,4 +1,5 @@
-﻿using DG.Tweening;
+﻿using Core.Services.Audio;
+using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
@@ -66,7 +67,11 @@ namespace UI.Other
             _closeTween?.Kill();
         }
 
-        public void SetAudioSource(AudioSource sfxSource) => _sfxSource = sfxSource; 
+        public void SetAudioSource(AudioSource sfxSource)
+        {
+            _sfxSource = sfxSource;
+            _sfxSource.volume = AudioService.Instance.GetSfxVolume();
+        } 
 
         public void ShowResultPanel(bool isWin, bool isBlackjack, int reward, int score = 0, bool isDraw = false)
         {

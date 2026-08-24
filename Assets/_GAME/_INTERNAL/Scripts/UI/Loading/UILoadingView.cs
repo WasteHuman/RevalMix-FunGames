@@ -30,12 +30,8 @@ namespace UI.Loading
             _fillTween?.Kill();
             Debug.Log($"[UI Loading View] Progress: {progress}");
 
-            _fillTween = DOTween.To(
-                () => _progressBarFill ? _progressBarFill.fillAmount : 0f,
-                x => { if (_progressBarFill) _progressBarFill.fillAmount = x; },
-                progress,
-                _progressAnimDuration
-            ).SetTarget(_progressBarFill);
+            _fillTween = _progressBarFill.DOFillAmount(progress, _progressAnimDuration)
+                .OnComplete(() => _progressBarFill.fillAmount = 1f);
 
             _fillTween.OnKill(() => _fillTween = null);
         }

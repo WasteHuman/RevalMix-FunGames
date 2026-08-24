@@ -14,11 +14,13 @@ namespace Core.UI.Controllers
         [SerializeField] private ActionButton _settingsScreenButton;
 
         [Space(5), Header("Other Buttons Setup")]
-        [SerializeField] private ActionButton _getFreeEnergyButton;
         [SerializeField] private ActionButton _achievementsButton;
 
         private void Awake()
         {
+            if(_achievementsButton != null)
+                _achievementsButton.OnButtonClick += HandleAchievementsButtonCLick;
+
             _gamesScreenButton.OnButtonClick += HandleGamesScreenButtonClick;
             _leaderboardScreenButton.OnButtonClick += HandleLeaderboardScreenButtonClick;
             _questsScreenButton.OnButtonClick += HandleQuestsScreenButtonClick;
@@ -28,11 +30,22 @@ namespace Core.UI.Controllers
 
         private void OnDestroy()
         {
+            if(_achievementsButton != null)
+                _achievementsButton.OnButtonClick -= HandleAchievementsButtonCLick;
+                
             _gamesScreenButton.OnButtonClick -= HandleGamesScreenButtonClick;
             _leaderboardScreenButton.OnButtonClick -= HandleLeaderboardScreenButtonClick;
             _questsScreenButton.OnButtonClick -= HandleQuestsScreenButtonClick;
             _profileScreenButton.OnButtonClick -= HandleProfileScreenButtonClick;
             _settingsScreenButton.OnButtonClick -= HandleSettingsScreenButtonClick;
+        }
+
+        private void HandleAchievementsButtonCLick()
+        {
+            if (SceneManager.GetActiveScene().name == GameConstants.ACHIEVEMENTS)
+                return;
+
+            SceneManager.LoadSceneAsync(GameConstants.ACHIEVEMENTS);
         }
 
         private void HandleSettingsScreenButtonClick()

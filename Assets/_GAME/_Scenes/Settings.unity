@@ -2563,10 +2563,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 490, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &994516814
 MonoBehaviour:
@@ -2871,10 +2871,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 98, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012287280
 MonoBehaviour:
@@ -4347,10 +4347,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 882, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1416562675
 MonoBehaviour:
@@ -4655,10 +4655,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 294, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1530921448
 MonoBehaviour:
@@ -4862,8 +4862,7 @@ MonoBehaviour:
   _questsScreenButton: {fileID: 994516817}
   _profileScreenButton: {fileID: 1880575052}
   _settingsScreenButton: {fileID: 1416562678}
-  _getFreeEnergyButton: {fileID: 0}
-  _achievementsButton: {fileID: 0}
+  _achievementsButton: {fileID: 445502012}
 --- !u!1 &1605176368
 GameObject:
   m_ObjectHideFlags: 0
@@ -5290,10 +5289,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1104760550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 686, y: -80}
-  m_SizeDelta: {x: 130, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 130, y: 152.94118}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1880575049
 MonoBehaviour:

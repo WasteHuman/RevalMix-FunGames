@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UI_Infinite_Score_Red_Glass_Material
-  m_Shader: {fileID: 4800000, guid: 6ccf0edaac4b5934280d469038108e91, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9f8f0d55041030f4282796b2090341ac, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -46,8 +46,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlurSize: 16
+    - _BevelStrength: 0.2
+    - _BevelWidth: 0.025
+    - _BlurSize: 0.01
     - _BorderWidth: 0.015
+    - _ChromAberration: 0.0015
     - _ColorMask: 15
     - _Distortion: 0.015
     - _EdgeLensWidth: 0.085
@@ -58,9 +61,11 @@ Material:
     - _GradientStrength: 0.035
     - _HighlightIntensity: 0.2
     - _HighlightWidth: 0.115
-    - _NoiseScale: 128
+    - _NoiseScale: 256
     - _NoiseStrength: 0
     - _Opacity: 1
+    - _SpecularIntensity: 0
+    - _SpecularPower: 128
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0

@@ -52,7 +52,6 @@ namespace UI.CryptoVibe
 
         private float _crashMultiplier;
         private bool _isInitialized;
-        private bool _isFlying = false;
 
         public event Action OnStartClicked;
         public event Action OnEjectClicked;
@@ -83,7 +82,7 @@ namespace UI.CryptoVibe
 
         private void Update()
         {
-            if (_isFlying && _lineRenderer != null && _rocketTransform != null && _graphContainer != null)
+            if (_lineRenderer != null && _rocketTransform != null && _graphContainer != null)
                 _lineRenderer.UpdateLine(_rocketMover.CurrentProgressIndex);
         }
 
@@ -173,8 +172,6 @@ namespace UI.CryptoVibe
 
             if (_lineRenderer != null)
                 _lineRenderer.ClearLine();
-
-            _isFlying = false;
         }
 
         // ------------------------------------------------------------------
@@ -204,7 +201,6 @@ namespace UI.CryptoVibe
 
             // Запускаем движение ракеты с синхронизированной скоростью
             _rocketMover.StartMove(_currentPath, flightTime);
-            _isFlying = true;
         }
 
         public void Crash(Action onComplete)

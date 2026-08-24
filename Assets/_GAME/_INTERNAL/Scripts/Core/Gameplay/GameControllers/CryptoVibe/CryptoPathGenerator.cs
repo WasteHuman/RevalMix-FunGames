@@ -92,11 +92,11 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         /// </summary>
         private Vector3[] GenerateAscentPath(float crashMultiplier, Rect gridRect)
         {
-            int pointCount = Mathf.Max(5, Mathf.FloorToInt(crashMultiplier * 1.5f));
-            var points = new List<Vector3>();
+            int basePointCount = Mathf.Max(5, Mathf.FloorToInt(crashMultiplier * 1.5f));
+            var rawPoints = new List<Vector3>();
 
             Vector3 startPoint = new(gridRect.xMin, gridRect.yMin, 0f);
-            points.Add(startPoint);
+            rawPoints.Add(startPoint);
 
             float normalizedProgress = (crashMultiplier - 1f) / (_maxMultiplier - 1f);
 
@@ -109,25 +109,30 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             float scaleModifier = _isScreenSpaceCamera ? 0.3f : 1f;
             float adjustedAscentDeviation = _ascentDeviation * scaleModifier;
 
-            for (int i = 1; i < pointCount; i++)
+            for (int i = 1; i < basePointCount; i++)
             {
-                float t = (float)i / (pointCount - 1);
+                float t = (float)i / (basePointCount - 1);
 
                 float baseX = Mathf.Lerp(startPoint.x, targetX, t);
                 float baseY = Mathf.Lerp(startPoint.y, targetY, t);
 
-                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation;
-                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation;
+                // Уменьшаем отклонения для более плавного пути (коэффициент 0.6)
+                float deviationFactor = 0.6f;
+                float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation * deviationFactor;
+                float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation * deviationFactor;
 
                 float finalX = Mathf.Clamp(baseX + deviationX, gridRect.xMin, gridRect.xMax);
                 float finalY = Mathf.Clamp(baseY + deviationY, gridRect.yMin, gridRect.yMax);
 
-                points.Add(new Vector3(finalX, finalY, 0f));
+                rawPoints.Add(new Vector3(finalX, finalY, 0f));
             }
 
-            points.Add(new Vector3(targetX, targetY, 0f));
+            rawPoints.Add(new Vector3(targetX, targetY, 0f));
 
-            return points.ToArray();
+            // Применяем сглаживание Catmull-Rom к точкам
+            Vector3[] smoothedPoints = SmoothPathCatmullRom(rawPoints.ToArray(), 3);
+
+            return smoothedPoints;
         }
 
         /// <summary>
@@ -136,7 +141,7 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         /// </summary>
         private Vector3[] GenerateDescentPath(Vector3 startPoint, Vector2 endPoint)
         {
-            var points = new List<Vector3>
+            var rawPoints = new List<Vector3>
             {
                 startPoint
             };
@@ -160,13 +165,59 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
                 float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
 
-                points.Add(new Vector3(baseX + deviationX, baseY + deviationY, 0f));
+                rawPoints.Add(new Vector3(baseX + deviationX, baseY + deviationY, 0f));
             }
 
             // Добавляем финальную точку
-            points.Add(new Vector3(endPoint.x, endPoint.y, 0f));
+            rawPoints.Add(new Vector3(endPoint.x, endPoint.y, 0f));
 
-            return points.ToArray();
+            // Применяем сглаживание Catmull-Rom к точкам падения
+            Vector3[] smoothedPoints = SmoothPathCatmullRom(rawPoints.ToArray(), 2);
+
+            return smoothedPoints;
+        }
+
+        /// <summary>
+        /// Сглаживает путь с использованием сплайнов Catmull-Rom.
+        /// </summary>
+        /// <param name="points">Исходные точки пути.</param>
+        /// <param name="resolution">Количество интерполированных точек на каждый сегмент.</param>
+        private Vector3[] SmoothPathCatmullRom(Vector3[] points, int resolution)
+        {
+            if (points == null || points.Length < 2)
+                return points;
+
+            if (points.Length == 2)
+                return points;
+
+            var smoothedPoints = new List<Vector3>();
+            smoothedPoints.Add(points[0]);
+
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                Vector3 p0 = i > 0 ? points[i - 1] : points[i];
+                Vector3 p1 = points[i];
+                Vector3 p2 = points[i + 1];
+                Vector3 p3 = i < points.Length - 2 ? points[i + 2] : p2 + (p2 - p1);
+
+                for (int j = 1; j <= resolution; j++)
+                {
+                    float t = (float)j / resolution;
+                    float t2 = t * t;
+                    float t3 = t2 * t;
+
+                    Vector3 smoothedPoint = 0.5f * (
+                        (2f * p1) +
+                        (-p0 + p2) * t +
+                        (2f * p0 - 5f * p1 + 4f * p2 - p3) * t2 +
+                        (-p0 + 3f * p1 - 3f * p2 + p3) * t3
+                    );
+
+                    smoothedPoints.Add(smoothedPoint);
+                }
+            }
+
+            return smoothedPoints.ToArray();
         }
 
         /// <summary>

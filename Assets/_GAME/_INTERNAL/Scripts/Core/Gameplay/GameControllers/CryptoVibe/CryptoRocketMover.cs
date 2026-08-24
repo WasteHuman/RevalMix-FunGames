@@ -26,6 +26,9 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         private Tween _rotationTween;
         private float _currentAngle;
 
+        private int _totalAscentSegments;
+        private int _totalDescentSegments;
+
         public int CurrentProgressIndex { get; private set; }
         public int SegmentsPerConnection { get; private set;  }
 
@@ -72,6 +75,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
             float safeFlightTime = Mathf.Max(0.1f, flightTime);
             _movementSpeed = totalDistance / safeFlightTime;
+
+            _totalAscentSegments = (_currentPath.AscentPoints.Length - 1) * SegmentsPerConnection;
 
             if (_moveCoroutine != null)
                 StopCoroutine(_moveCoroutine);
@@ -172,8 +177,9 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float distance = Vector3.Distance(startPoint, endPoint);
                 float duration = distance / _movementSpeed;
 
-                // Плавный поворот к цели сегмента (один раз в начале сегмента)
-                RotateSmooth(endPoint - startPoint, duration, false);
+                Vector3 segmentDirection = endPoint - startPoint;
+                float targetSegmentAngle = Mathf.Atan2(segmentDirection.y, segmentDirection.x) * Mathf.Rad2Deg;
+                targetSegmentAngle += _rotationAngleOffset;
 
                 float elapsed = 0f;
                 while (elapsed < duration)
@@ -183,12 +189,31 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
                     _rocketTransform.position = Vector3.Lerp(startPoint, endPoint, t);
 
+                    // Плавно поворачиваем к целевому углу сегмента в течение всего движения
+                    float rotationSpeed = 15f; // градусов в секунду - регулирует плавность поворота
+                    float delta = Mathf.DeltaAngle(_currentAngle, targetSegmentAngle);
+
+                    if (Mathf.Abs(delta) > 0.1f)
+                    {
+                        float maxRotation = rotationSpeed * Time.deltaTime;
+                        float rotationStep = Mathf.Clamp(delta, -maxRotation, maxRotation);
+                        _currentAngle += rotationStep;
+                    }
+
+                    if (_rocketTransform != null)
+                        _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
+
                     CurrentProgressIndex = Mathf.FloorToInt((i + t) * SegmentsPerConnection);
 
                     yield return null;
                 }
 
                 _rocketTransform.position = endPoint;
+
+                // Финальный поворот точно в цель сегмента
+                _currentAngle = targetSegmentAngle;
+                _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
+
                 CurrentProgressIndex = (i + 1) * SegmentsPerConnection;
             }
 
@@ -216,7 +241,10 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             float totalDuration = totalDistance / descentSpeed;
             int ascentMaxIndex = CurrentProgressIndex;
 
+            _totalDescentSegments = (points.Length - 1) * SegmentsPerConnection;
+
             float elapsed = 0f;
+            float rotationSpeed = 12f;
             while (elapsed < totalDuration)
             {
                 elapsed += Time.deltaTime;
@@ -225,16 +253,45 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float easedT = t * t;
 
                 Vector3 pos = GetPointOnPathByProgress(points, easedT);
+
+                // Вычисляем направление движения для поворота
+                float nextT = Mathf.Clamp01(easedT + 0.02f); // Небольшой шаг вперёд для вычисления касательной
+                Vector3 nextPos = GetPointOnPathByProgress(points, nextT);
+                Vector3 direction = nextPos - pos;
+
+                if (direction.sqrMagnitude > 0.0001f)
+                {
+                    float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+                    targetAngle += _rotationAngleOffset;
+
+                    // Плавно поворачиваем к целевому углу
+                    float delta = Mathf.DeltaAngle(_currentAngle, targetAngle);
+
+                    if (Mathf.Abs(delta) > 0.1f)
+                    {
+                        float maxRotation = rotationSpeed * Time.deltaTime;
+                        float rotationStep = Mathf.Clamp(delta, -maxRotation, maxRotation);
+                        _currentAngle += rotationStep;
+                    }
+                    else
+                    {
+                        _currentAngle = targetAngle;
+                    }
+
+                    if (_rocketTransform != null)
+                        _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
+                }
+
                 _rocketTransform.position = pos;
 
-                int descentSegments = Mathf.FloorToInt(t * points.Length * SegmentsPerConnection);
-                CurrentProgressIndex = ascentMaxIndex + descentSegments;
+                int descentProgress = Mathf.FloorToInt(easedT * _totalDescentSegments);
+                CurrentProgressIndex = ascentMaxIndex + descentProgress;
 
                 yield return null;
             }
 
             _rocketTransform.position = points[^1];
-            CurrentProgressIndex = ascentMaxIndex + points.Length * SegmentsPerConnection;
+            CurrentProgressIndex = ascentMaxIndex + _totalDescentSegments;
 
             onComplete?.Invoke();
         }

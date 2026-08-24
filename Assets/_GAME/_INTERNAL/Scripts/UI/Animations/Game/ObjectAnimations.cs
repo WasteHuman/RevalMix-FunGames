@@ -10,9 +10,14 @@ namespace UI.Animations.Game
         [SerializeField] private RectTransform _object;
 
         [Space(5), Header("Animation Duration Setup")]
-        [SerializeField] private float _appearAnimationDuration = 0.35f;
-        [SerializeField] private float _hoverAnimationDuration = 0.5f;
-        [SerializeField] private float _pulseAnimationDuration = 1f;
+        [SerializeField] protected float _scaleAppearAnimationDuration = 0.35f;
+        [SerializeField] protected float _hoverAnimationDuration = 0.5f;
+        [SerializeField] protected float _pulseAnimationDuration = 1f;
+        [SerializeField] protected float _movingAppearAnimationDuration = 1f;
+
+        [Space(5), Header("Move Appear Animation Setup")]
+        [SerializeField] private Vector3 _targetPosition;
+        [SerializeField] private Ease _movingAppearEase = Ease.InOutBack;
 
         [Space(5), Header("Hover Animation Setup")]
         [SerializeField] private float _yMoveOffset = 1.0f;
@@ -23,22 +28,27 @@ namespace UI.Animations.Game
         [SerializeField] private float _pulseTargetScale = 0.9f;
         [SerializeField] private LoopType _pulseLoopType = LoopType.Yoyo;
         [SerializeField, Tooltip("Set -1 for infinite loops count")] private int _pulseLoopsCount = -1;
-        [SerializeField] private float _pulseDelay = 0.25f;
+        [SerializeField, Tooltip("Using for cyclic breath")] protected float _pulseDelay = 0.25f;
 
         [Space(5), Header("Animations Flags")]
-        [SerializeField] private bool _hoverAnimationEnabled = false;
-        [SerializeField] private bool _pulseAnimationEnabled = false;
+        [SerializeField] protected bool _hoverAnimationEnabled = false;
+        [SerializeField] protected bool _pulseAnimationEnabled = false;
+        [SerializeField] protected bool _usePulseAnimationSequence = false;
 
         private Vector3 _originalScale;
 
-        private Tween _appearTween;
+        private Tween _scaleAppearTween;
+        private Tween _movingAppearTween;
         private Tween _hoverTween;
         private Tween _pulseTween;
+        private Sequence _cyclicPulseSequence;
 
         private void Awake()
         {
             if (_object == null)
                 _object.GetComponent<RectTransform>();
+
+            _originalScale = _object.localScale;
         }
 
         private void OnEnable()
@@ -46,25 +56,36 @@ namespace UI.Animations.Game
             if (_hoverAnimationEnabled)
                 HoverAnimation();
 
-            if (_pulseAnimationEnabled)
+            if (_pulseAnimationEnabled && !_usePulseAnimationSequence)
                 PulseAnimation();
+
+            if(_usePulseAnimationSequence && !_pulseAnimationEnabled)
+                CyclicPulseAnimation();
         }
 
         private void OnDisable()
         {
             _hoverTween?.Kill();
-            _appearTween?.Kill();
+            _scaleAppearTween?.Kill();
             _pulseTween?.Kill();
+            _movingAppearTween?.Kill();
+            
+            if(_usePulseAnimationSequence)
+                _cyclicPulseSequence?.Kill();
         }
 
         private void OnDestroy()
         {
             _hoverTween?.Kill();
-            _appearTween?.Kill();
+            _scaleAppearTween?.Kill();
             _pulseTween?.Kill();
+            _movingAppearTween?.Kill();
+
+            if(_usePulseAnimationSequence)
+                _cyclicPulseSequence?.Kill();
         }
 
-        private void HoverAnimation()
+        protected void HoverAnimation()
         {
             _hoverTween?.Kill();
 
@@ -78,7 +99,21 @@ namespace UI.Animations.Game
                 .OnKill(() => _object.localPosition = originalPosition);
         }
 
-        private void PulseAnimation()
+        protected void CyclicPulseAnimation()
+        {
+            _cyclicPulseSequence?.Kill();
+
+            _cyclicPulseSequence = DOTween.Sequence();
+
+            _cyclicPulseSequence
+                .AppendInterval(_pulseDelay)
+                .Append(_object.DOScale(_pulseTargetScale, _pulseAnimationDuration))
+                .Append(_object.DOScale(_originalScale, _pulseAnimationDuration))
+                .SetLoops(_pulseLoopsCount, _pulseLoopType)
+                .SetEase(Ease.InOutSine);
+        }
+
+        protected void PulseAnimation()
         {
             _pulseTween?.Kill();
 
@@ -86,20 +121,29 @@ namespace UI.Animations.Game
 
             _pulseTween = _object
                 .DOScale(_pulseTargetScale, _pulseAnimationDuration)
-                .SetDelay(_pulseDelay)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(_pulseLoopsCount, _pulseLoopType);
         }
 
-        public void Appear(Vector3 originalScale, Action onComplete = null)
+        public void MovingAppear()
+        {
+            _movingAppearTween?.Kill();
+
+            _movingAppearTween = _object
+                .DOAnchorPos(_targetPosition, _movingAppearAnimationDuration)
+                .SetEase(_movingAppearEase)
+                .OnComplete(() => _object.anchoredPosition = _targetPosition);
+        }
+
+        public void ScaleAppear(Vector3 originalScale, Action onComplete = null)
         {
             _object.localScale = Vector3.zero;
             _originalScale = originalScale;
 
-            _appearTween?.Kill();
+            _scaleAppearTween?.Kill();
 
-            _appearTween = _object
-                .DOScale(originalScale, _appearAnimationDuration)
+            _scaleAppearTween = _object
+                .DOScale(originalScale, _scaleAppearAnimationDuration)
                 .SetEase(Ease.InOutBounce)
                 .OnComplete(() => onComplete?.Invoke())
                 .OnKill(() => _object.localScale = _originalScale);

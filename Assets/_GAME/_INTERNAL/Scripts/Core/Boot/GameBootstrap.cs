@@ -128,8 +128,10 @@ namespace Core.Boot
             loadingScreenView.ResetProgress();
 
             float startTime = Time.time;
-            float minLoadingDuration = 25f;
+            float minLoadingDuration = 2f;
             float currentProgress = 0f;
+
+            yield return new WaitForSeconds(minLoadingDuration * 0.5f);
 
             AsyncOperation operation = SceneManager.LoadSceneAsync(GameConstants.MAIN_MENU);
             operation.allowSceneActivation = false;
@@ -153,7 +155,7 @@ namespace Core.Boot
                     {
                         currentProgress = 1f;
                         loadingScreenView.SetLoadingProgress(currentProgress);
-                        yield return new WaitForSeconds(0.35f);
+                        yield return new WaitForSeconds(0.75f);
 
                         operation.allowSceneActivation = true;
                     }
