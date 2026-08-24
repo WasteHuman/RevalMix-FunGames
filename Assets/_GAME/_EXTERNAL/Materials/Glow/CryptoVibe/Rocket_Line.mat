@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Rocket_Line
-  m_Shader: {fileID: 4800000, guid: 582fb64dac282e148af60559a65d52d0, type: 3}
+  m_Shader: {fileID: 4800000, guid: 638c2b747380b124881a1272da96ddc7, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -41,11 +41,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _EdgeSoftness: 1
     - _EnableExternalAlpha: 0
     - _GlowIntensity: 0.25
     - _LineWidth: 0.5
+    - _PulseFrequency: 5
+    - _PulseSharpness: 3.36
+    - _PulseSpeed: 2
     - _ZWrite: 0
     m_Colors:
+    - _BaseColor: {r: 1, g: 0.28357825, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _CoreColor: {r: 0.5, g: 0.18167841, b: 0, a: 1}
     - _GlowColor: {r: 0.5, g: 0.1085475, b: 0.007843137, a: 1}

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: UI_Vault_Score_Plate_Glass
-  m_Shader: {fileID: 4800000, guid: 6ccf0edaac4b5934280d469038108e91, type: 3}
+  m_Shader: {fileID: 4800000, guid: 9f8f0d55041030f4282796b2090341ac, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
@@ -46,33 +46,38 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BlurSize: 8
+    - _BevelStrength: 0.75
+    - _BevelWidth: 0.05
+    - _BlurSize: 0.005
     - _BorderWidth: 0.015
+    - _ChromAberration: 0.0015
     - _ColorMask: 15
     - _Distortion: 0.015
-    - _EdgeLensWidth: 0.02
-    - _EdgeRefraction: 0.015
+    - _EdgeLensWidth: 0.155
+    - _EdgeRefraction: 0.0115
     - _EnableExternalAlpha: 0
     - _FlipBgY: 0
     - _FlowSpeed: 0
-    - _GradientStrength: 0.25
+    - _GradientStrength: 0.3
     - _HighlightIntensity: 2
     - _HighlightWidth: 0.25
     - _NoiseScale: 1
     - _NoiseStrength: 0
     - _Opacity: 1
+    - _SpecularIntensity: 0.8
+    - _SpecularPower: 32
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
-    - _TintAmount: 0.25
+    - _TintAmount: 1
     - _UseBlur: 1
     - _ZWrite: 0
     m_Colors:
     - _BgTransform: {r: 1, g: 1, b: 0, a: 0}
     - _BorderColor: {r: 0.8862746, g: 0.34117645, b: 0, a: 0.5019608}
-    - _Color: {r: 0.45400003, g: 0.21859261, b: 0, a: 1}
+    - _Color: {r: 0.98823535, g: 0.9725491, b: 0.75294125, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

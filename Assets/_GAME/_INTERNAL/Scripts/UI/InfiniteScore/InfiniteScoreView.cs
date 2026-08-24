@@ -41,9 +41,6 @@ namespace UI.InfiniteScore
         [Space(5), Header("Other")]
         [SerializeField] private float _showResultsDelay = 1.5f;
 
-        private Material _redTeamGlowMaterial;
-        private Material _orangeTeamGlowMaterial;
-
         public event Action OnOrangeBetClicked;
         public event Action OnRedBetClicked;
         public event Action OnRestartGameClicked;
@@ -82,21 +79,12 @@ namespace UI.InfiniteScore
                 _resultPanelView.OnPanelOpened -= HandleOpenedResultsPanel;
             }
 
-            _redTeamGlowMaterial.DOKill();
-            _orangeTeamGlowMaterial.DOKill();
-
-            Destroy(_redTeamGlowMaterial);
-            Destroy(_orangeTeamGlowMaterial);
+            _orangeTeamGlow.transform.DOKill();
+            _redTeamGlow.transform.DOKill();
         }
 
         public void Init()
         {
-            _redTeamGlowMaterial = new(_redTeamGlow.material);
-            _orangeTeamGlowMaterial = new(_orangeTeamGlow.material);
-
-            _redTeamGlow.material = _redTeamGlowMaterial;
-            _orangeTeamGlow.material = _orangeTeamGlowMaterial;
-
             ClearZone(_orangeTeamZone);
             ClearZone(_redTeamZone);
 
@@ -106,8 +94,8 @@ namespace UI.InfiniteScore
 
         public async UniTask DealCardsAsync(List<CardData> orangeCards, List<CardData> redCards)
         {
-            _orangeTeamGlowMaterial.DORewind();
-            _redTeamGlowMaterial.DORewind();
+            _orangeTeamGlow.transform.DORewind();
+            _redTeamGlow.transform.DORewind();
 
             ClearZone(_orangeTeamZone);
             ClearZone(_redTeamZone);
@@ -172,17 +160,24 @@ namespace UI.InfiniteScore
         public void ShowWinner(int winningTeam) // 0 - Orange, 1 - Red, -1 - Tie
         {
             if (winningTeam == 0 && _orangeTeamGlow != null)
-                PulseGlow(_orangeTeamGlowMaterial);
+                PulseGlow(_orangeTeamGlow.gameObject);
             else if (winningTeam == 1 && _redTeamGlow != null)
-                PulseGlow(_redTeamGlowMaterial);
+                PulseGlow(_redTeamGlow.gameObject);
         }
 
-        private void PulseGlow(Material glow)
+        private void PulseGlow(GameObject glow)
         {
-            glow.DOKill();
-            glow.DOFloat(0.85f, "_BoxSize", 0.75f)
-                .SetEase(Ease.InOutSine)
-                .SetLoops(-1, LoopType.Yoyo);
+            glow.transform.DOKill();
+            glow.transform.localScale = new(0.95f, 0.95f);
+            glow.SetActive(true);
+            glow.transform
+                .DOScale(Vector3.one, 1f)
+                .SetLoops(4, LoopType.Yoyo)
+                .OnComplete(() =>
+                {
+                    glow.SetActive(false);
+                    glow.transform.localScale = new(0.95f, 0.95f);
+                });
         }
 
         private void ClearZone(RectTransform zone)

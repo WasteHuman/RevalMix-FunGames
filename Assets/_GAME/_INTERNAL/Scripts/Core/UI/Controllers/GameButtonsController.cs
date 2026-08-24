@@ -6,6 +6,7 @@ namespace Core.UI.Controllers
 {
     public class GameButtonsController : MonoBehaviour
     {
+        [SerializeField] private ActionButton _achievementsButton;
         [SerializeField] private ActionButton _reelsButton;
         [SerializeField] private ActionButton _vaultButton;
         [SerializeField] private ActionButton _wheelOfRevolutButton;
@@ -19,6 +20,7 @@ namespace Core.UI.Controllers
 
         private void Awake()
         {
+            _achievementsButton.OnButtonClick += HandleAchievementsButtonCLick;
             _reelsButton.OnButtonClick += HandleReelsButtonClick;
             _vaultButton.OnButtonClick += HandleVaultButtonClick;
             _wheelOfRevolutButton.OnButtonClick += HandleWheelOfRevolutButtonClick;
@@ -31,10 +33,9 @@ namespace Core.UI.Controllers
             _plinkoVibeButton.OnButtonClick += HandlePlinkoVibeButtonClick;
         }
 
-        
-
         private void OnDestroy()
         {
+            _achievementsButton.OnButtonClick -= HandleAchievementsButtonCLick;
             _reelsButton.OnButtonClick -= HandleReelsButtonClick;
             _vaultButton.OnButtonClick -= HandleVaultButtonClick;
             _wheelOfRevolutButton.OnButtonClick -= HandleWheelOfRevolutButtonClick;
@@ -47,6 +48,7 @@ namespace Core.UI.Controllers
             _plinkoVibeButton.OnButtonClick -= HandlePlinkoVibeButtonClick;
         }
 
+        private void HandleAchievementsButtonCLick() => SceneManager.LoadSceneAsync(GameConstants.ACHIEVEMENTS);
         private void HandleReelsButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_REELS);
         private void HandleWheelOfRevolutButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_WHEEL_OF_REVOLUT);
         private void HandleVaultButtonClick() => SceneManager.LoadSceneAsync(GameConstants.GAME_VAULT);

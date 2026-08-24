@@ -7,6 +7,7 @@ using Core.Services.Audio;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
@@ -156,11 +157,7 @@ namespace Core.Gameplay.GameControllers
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.R))
-            {
-                _isTurboMode = !_isTurboMode;
-                _spinDuration = _isTurboMode ? _baseSpinDuration / 2f : _baseSpinDuration;
-                Debug.Log($"[Reels] Turbo mode: {_isTurboMode}, duration: {_spinDuration}");
-            }
+                SetTurboMode(!_isTurboMode);
         }
 
         private void UpdateUI()
@@ -235,12 +232,14 @@ namespace Core.Gameplay.GameControllers
             for (int i = 0; i < reelCount; i++)
             {
                 float delay = i * _reelDelay;
-                float duration = _spinDuration + (i * 0.2f);
 
                 if (delay > 0)
                     await UniTask.Delay(TimeSpan.FromSeconds(delay));
 
-                spinTasks.Add(_reels[i].SpinAsync(duration, results[i], _isTurboMode, cts.Token));
+                bool turbo = _isTurboMode;
+                float duration = _spinDuration + (i * 0.2f);
+
+                spinTasks.Add(_reels[i].SpinAsync(duration, results[i], turbo, cts.Token));
             }
 
             await UniTask.WhenAll(spinTasks);
@@ -353,18 +352,13 @@ namespace Core.Gameplay.GameControllers
 
                 AnimateWinningSymbols(winningLines[0]);
 
-                _winGlowImage.gameObject.SetActive(true);
-                _winGlowMaterial.DOKill();
-                _winGlowMaterial.DOFloat(0.95f, "_BoxSize", 0.45f)
-                    .SetEase(Ease.InOutSine)
-                    .SetLoops(8, LoopType.Yoyo)
-                    .OnComplete(() =>
-                    {
-                        _winGlowMaterial.SetFloat("_BoxSize", 0.925f);
-                        _winGlowImage.gameObject.SetActive(false);
-                    });
-
                 int totalWin = CalculateWin(symbolIndices[0], matchCount);
+
+                _winGlowImage.gameObject.SetActive(true);
+                StartCoroutine(GlowAnimationRoutine(() =>
+                {
+                    StopCoroutine(GlowAnimationRoutine());
+                }));
 
                 ShowResult(true, totalWin, symbolIndices);
 
@@ -543,6 +537,14 @@ namespace Core.Gameplay.GameControllers
             _currentBetLabel.text = _currentBet.ToString("N0");
         }
 
+        private IEnumerator GlowAnimationRoutine(Action onComplete = null)
+        {
+            yield return new WaitForSeconds(2.5f);
+
+            _winGlowImage.gameObject.SetActive(false);
+            onComplete?.Invoke();
+        }
+
         /// <summary>
         /// Плавно увеличивает и пульсирует выигрышные символы.
         /// </summary>
@@ -573,11 +575,40 @@ namespace Core.Gameplay.GameControllers
                 pulseSequence.Append(symbolTransform.DOScale(1.25f, 0.3f).SetEase(Ease.OutBack));
 
                 // 2. Пульсация (3 цикла туда-обратно)
-                pulseSequence.Append(symbolTransform.DOScale(1.1f, 0.3f).SetEase(Ease.InOutSine).SetLoops(3, LoopType.Yoyo));
+                pulseSequence.Append(symbolTransform.DOScale(1.1f, 0.55f).SetEase(Ease.InOutSine).SetLoops(4, LoopType.Yoyo));
 
                 // 3. Плавный возврат к исходному размеру
                 pulseSequence.Append(symbolTransform.DOScale(1f, 0.2f).SetEase(Ease.OutSine));
             }
+        }
+
+        private void SetTurboMode(bool enabled)
+        {
+            _isTurboMode = enabled;
+            _spinDuration = _isTurboMode ? _baseSpinDuration / 2f : _baseSpinDuration;
+
+            UpdateTurboButtonVisual();
+
+            // Ключевой момент: применяем к барабанам прямо сейчас,
+            // даже если они в середине спина — это и есть цель турбо.
+            foreach (var reel in _reels)
+                reel.ApplyTurbo(_isTurboMode);
+
+            Debug.Log($"[Reels] Turbo mode: {_isTurboMode}, duration: {_spinDuration}");
+        }
+
+        private void UpdateTurboButtonVisual()
+        {
+            if (_turboButton == null)
+                return;
+
+            if (_isTurboMode)
+                _turboButton.Animations.PulseAnimation();
+            else
+                _turboButton.Animations.StopPulseAnimation();
+
+            if (_turboButton.TryGetComponent<Image>(out var turboImage))
+                turboImage.color = _isTurboMode ? Color.green : Color.white;
         }
 
         private void HandleSpinButtonClick()
@@ -597,9 +628,7 @@ namespace Core.Gameplay.GameControllers
                 reel.transform.localScale = Vector3.one;
             }
 
-            _winGlowMaterial.DOKill();
             _winGlowImage.gameObject.SetActive(false);
-            _winGlowMaterial.SetFloat("_BoxSize", 0.925f);
 
             if (_lineDisplayController != null)
                 _lineDisplayController.ClearLines();
@@ -633,10 +662,8 @@ namespace Core.Gameplay.GameControllers
 
         private void HandleTurboModeButtonClick()
         {
-            _isTurboMode = !_isTurboMode;
-            _spinDuration = _isTurboMode ? _baseSpinDuration / 2f : _baseSpinDuration;
+            SetTurboMode(!_isTurboMode);
             GameServices.Quests.ProgressQuest(GameConstants.TAG_TRIGGER_TURBO_BOOST);
-            Debug.Log($"[Reels] Turbo mode: {_isTurboMode}, duration: {_spinDuration}");
         }
 
         private void HandleBetChanged(string raw)

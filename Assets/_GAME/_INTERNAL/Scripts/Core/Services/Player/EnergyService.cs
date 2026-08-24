@@ -133,6 +133,30 @@ namespace Core.Services.Player
         }
 
         /// <summary>
+        /// Запросить текущее состояние бесплатной энергии (доступна ли она)
+        /// </summary>
+        public bool GetFreeEnergyStatus()
+        {
+            if (_playerData.Energy >= MaxEnergy)
+                return false;
+
+            var now = DateTime.Now;
+
+            if (LastFreeEnergyTime.HasValue)
+            {
+                var timeSinceFree = now - LastFreeEnergyTime.Value;
+                if (timeSinceFree.TotalHours < 1f)
+                {
+                    double minutesLeft = 60 - timeSinceFree.TotalMinutes;
+                    Debug.LogWarning($"[Energy] Free energy on cooldown. Wait {Mathf.CeilToInt((float)minutesLeft)} minutes.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Получить время до следующей бесплатной энергии
         /// </summary>
         public TimeSpan GetTimeUntilFreeEnergy()

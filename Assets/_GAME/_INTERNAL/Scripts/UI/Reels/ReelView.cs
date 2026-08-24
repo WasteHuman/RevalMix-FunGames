@@ -25,6 +25,8 @@ namespace UI.Reels
         [SerializeField] private Image _blurReelImage;
 
         private bool _isSpinning = false;
+        private bool _isTurbo = false;
+        private float _spinEndTime;
         private bool _shouldStop = false;
         private int[] _targetSymbols = new int[3];
         private float _calculatedRowHeight = 150f;
@@ -102,16 +104,41 @@ namespace UI.Reels
                 SetRandomSprite(_symbolImages[r]);
         }
 
+        public void ApplyTurbo(bool enabled)
+        {
+            _isTurbo = enabled;
+
+            // Если турбо включился прямо во время вращения
+            if (_isSpinning && enabled)
+            {
+                // Вычисляем, сколько времени осталось крутиться
+                float remainingTime = Mathf.Max(0f, _spinEndTime - Time.time);
+
+                // Сокращаем оставшееся время (можно использовать множитель 0.5 или 0.1 для мгновенного стопа)
+                _spinEndTime = Time.time + (remainingTime * 0.5f);
+
+                if (_blurReelImage != null && _blurReelImage.enabled && _blurMaterial != null)
+                    _blurMaterial.SetFloat("_ScrollY", _turboSpinSpeed / 1000f);
+            }
+            else if (_isSpinning && !enabled)
+                if (_blurReelImage != null && _blurReelImage.enabled && _blurMaterial != null)
+                    _blurMaterial.SetFloat("_ScrollY", _spinSpeed / 1000f);
+        }
+
         public async UniTask SpinAsync(float duration, int[] targetSymbols, bool isTurbo, CancellationToken cts)
         {
-            if (_isSpinning) 
+            if (_isSpinning)
                 return;
 
             _targetSymbols = targetSymbols;
             StartSpinning(isTurbo);
 
-            // Крутимся минимум duration секунд (с учетом задержки контроллера)
-            await UniTask.Delay(System.TimeSpan.FromSeconds(duration), cancellationToken: cts);
+            // Запоминаем расчетное время окончания спина
+            _spinEndTime = Time.time + duration;
+
+            // Заменяем фиксированный UniTask.Delay на цикл, который реагирует на изменение _spinEndTime
+            while (Time.time < _spinEndTime)
+                await UniTask.Yield(cts);
 
             StopSpinning();
 
@@ -159,18 +186,18 @@ namespace UI.Reels
 
         private IEnumerator SpinRoutine(bool isTurbo)
         {
-            if (_blurReelImage != null) 
+            if (_blurReelImage != null)
                 _blurReelImage.enabled = true;
             SetSlotsVisibility(false);
 
             if (_blurMaterial != null)
             {
-                float speed = isTurbo ? _turboSpinSpeed : _spinSpeed;
-                // Деление на 1000 преобразует большую скорость в адекватный шаг UV координат для шейдера
+                // Берем актуальную скорость (на случай если турбо успели включить до старта корутины)
+                float speed = _isTurbo ? _turboSpinSpeed : _spinSpeed;
                 _blurMaterial.SetFloat("_ScrollY", speed / 1000f);
             }
 
-            // Шейдер сам крутит текстуру через встроенную переменную времени Unity (_Time)
+            // Ждем пока контроллер не скажет остановиться (когда выйдет время)
             while (!_shouldStop)
                 yield return null;
 
@@ -178,7 +205,7 @@ namespace UI.Reels
             if (_blurMaterial != null)
                 _blurMaterial.SetFloat("_ScrollY", 0f);
 
-            if (_blurReelImage != null) 
+            if (_blurReelImage != null)
                 _blurReelImage.enabled = false;
             SetSlotsVisibility(true);
 

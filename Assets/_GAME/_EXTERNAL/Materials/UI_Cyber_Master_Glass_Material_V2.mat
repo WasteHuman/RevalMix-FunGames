@@ -46,8 +46,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BevelStrength: 0.75
-    - _BevelWidth: 0.05
+    - _BevelStrength: 0.5
+    - _BevelWidth: 0.035
     - _BlurSize: 0.005
     - _BorderWidth: 0.03
     - _ChromAberration: 0.005

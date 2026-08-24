@@ -1,10 +1,16 @@
 ﻿using Core;
 using Core.Services;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using Newtonsoft.Json;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using TMPro;
 using UI.Other;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 namespace UI.Player
 {
@@ -25,12 +31,16 @@ namespace UI.Player
 
         [Space(5), Header("Energy View Setup")]
         [SerializeField] private ActionButton _getFreeEnergyButton;
+        [SerializeField] private GameObject _freeEnergyButtonGlow;
         [SerializeField] private TextMeshProUGUI _energyLabel;
         [SerializeField] private float _energyAnimationDuration = 1.5f;
 
         [Space(5), Header("Cheats Setup")]
         [SerializeField] private bool _isCheatActive = false;
 
+        private CancellationTokenSource _cts;
+
+        private float _displayedCoins;
         private int _displayedEnergy;
 
         private void Awake()
@@ -53,6 +63,8 @@ namespace UI.Player
 
         private void Start()
         {
+            _cts = new();
+
             if(_nameLabel != null)
             {
                 _nameLabel.enableAutoSizing = true;
@@ -66,6 +78,12 @@ namespace UI.Player
                 GameServices.PlayerService.RequestActualProgressState();
 
             GameServices.EconomyService.RequestCoinsBalance();
+
+            if(_freeEnergyButtonGlow != null && _getFreeEnergyButton != null)
+            {
+                UpdateFreeEnergyButtonState();
+                UpdateEnergyAvailable(_cts.Token).Forget();
+            }
 
             if (_avatarImage != null)
             {
@@ -107,6 +125,10 @@ namespace UI.Player
             GameServices.PlayerService.OnLevelChanged -= HandleChangedLevel;
             GameServices.AvatarService.OnAvatarSetted -= HandleSettetAvatar;
 
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
+
             if (_energyLabel != null)
                 GameServices.EnergyService.OnEnergyChanged -= HandleEnergyChanged;
         }
@@ -117,6 +139,44 @@ namespace UI.Player
                 _nameLabel.text = GameServices.PlayerService.PlayerName;
 
             _nameLabel.gameObject.SetActive(value);
+        }
+
+        private void UpdateFreeEnergyButtonState()
+        {
+            if (GameServices.EnergyService.GetFreeEnergyStatus())
+            {
+                _getFreeEnergyButton.Interactable = true;
+                _freeEnergyButtonGlow.SetActive(true);
+            }
+            else
+            {
+                _getFreeEnergyButton.Interactable = false;
+                _freeEnergyButtonGlow.SetActive(false);
+            }
+        }
+
+        private async UniTask UpdateEnergyAvailable(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                // Проверяем статус бесплатной энергии
+                if (!GameServices.EnergyService.GetFreeEnergyStatus())
+                {
+                    // Получаем время ожидания до следующей энергии
+                    var timeUntilFree = GameServices.EnergyService.GetTimeUntilFreeEnergy();
+
+                    if (timeUntilFree > TimeSpan.Zero)
+                    {
+                        // Ждём до истечения времени кулдауна
+                        await UniTask.Delay(timeUntilFree, cancellationToken: token);
+                    }
+                }
+
+                UpdateFreeEnergyButtonState();
+
+                // Проверяем статус каждую секунду
+                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: token);
+            }
         }
 
         private void HandleChangedXP(float xp, float requiredXP)
@@ -134,7 +194,13 @@ namespace UI.Player
             if (_currentCoinsLabel == null)
                 return;
 
-            _currentCoinsLabel.text = $"{amount:N0}";
+            float oldValue = _displayedCoins;
+            _displayedCoins = amount;
+
+            DOVirtual.Float(oldValue, _displayedCoins, _energyAnimationDuration, value =>
+            {
+                _currentCoinsLabel.text = $"{value:N0}";
+            }).SetEase(Ease.OutQuad);
         }
 
         private void HandleSettetAvatar(Texture2D avatar) => _avatarImage.texture = avatar;
@@ -148,14 +214,19 @@ namespace UI.Player
 
             DOVirtual.Int(oldValue, _displayedEnergy, _energyAnimationDuration, value =>
             {
-                _energyLabel.text = $"{_displayedEnergy}";
+                _energyLabel.text = $"{value}";
             }).SetEase(Ease.OutQuad);
         }
 
         private void HandleGetFreeEnergyButtonClick()
         {
             if (!GameServices.EnergyService.TryGetFreeEnergy())
+            {
+                UpdateFreeEnergyButtonState();
                 return;
+            }
+            else
+                UpdateFreeEnergyButtonState();
         }
     }
 }

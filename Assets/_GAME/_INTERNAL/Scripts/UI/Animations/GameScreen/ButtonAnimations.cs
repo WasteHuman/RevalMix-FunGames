@@ -80,15 +80,26 @@ namespace UI.Animations.GameScreen
             _clickSequence?.Kill();
 
             _clickSequence = DOTween.Sequence();
+            float randomRotation = UnityEngine.Random.Range(-3f, 3f);
 
             _clickSequence.Append(
                 _rectTransform
                 .DOScale(_clickedScale, _clickAnimationDuration)
                 .SetEase(Ease.OutSine));
 
+            _clickSequence
+                .Join(
+                _rectTransform
+                .DOLocalRotate(new(0f, 0f, randomRotation), 0.05f)
+                .SetEase(Ease.InOutSine));
+
             _clickSequence.Append(_rectTransform
                 .DOScale(Vector2.one, _clickAnimationDuration)
-                .SetEase(Ease.InSine));
+                .SetEase(Ease.OutBack));
+
+            _clickSequence.Join(_rectTransform
+                .DOLocalRotate(Vector3.zero, 0.12f)
+                .SetEase(Ease.OutBack));
 
             _clickSequence.OnComplete(() => onComplete?.Invoke());
         }
