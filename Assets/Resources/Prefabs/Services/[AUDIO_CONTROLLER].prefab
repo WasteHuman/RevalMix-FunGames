@@ -46,6 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Core.Services.Audio.AudioController
   _music: {fileID: 8300000, guid: c9b112b2658fb0c42879d0eac68b2132, type: 3}
   _sounds:
-  - {fileID: 8300000, guid: ea76667f78390ca4486b9b3a39d00469, type: 3}
+  - Type: 0
+    Clip: {fileID: 8300000, guid: ea76667f78390ca4486b9b3a39d00469, type: 3}
+  - Type: 1
+    Clip: {fileID: 8300000, guid: 3df51f113f7f33a47a275058339ad874, type: 3}
   _musicSource: {fileID: 0}
   _sfxSource: {fileID: 0}

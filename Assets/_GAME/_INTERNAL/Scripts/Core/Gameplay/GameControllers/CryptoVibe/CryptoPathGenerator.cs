@@ -116,8 +116,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float baseX = Mathf.Lerp(startPoint.x, targetX, t);
                 float baseY = Mathf.Lerp(startPoint.y, targetY, t);
 
-                // Уменьшаем отклонения для более плавного пути (коэффициент 0.6)
-                float deviationFactor = 0.6f;
+                // Уменьшаем отклонения для более плавного пути (коэффициент 0.15)
+                float deviationFactor = 0.15f;
                 float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation * deviationFactor;
                 float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedAscentDeviation * deviationFactor;
 
@@ -161,7 +161,7 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 float baseY = Mathf.Lerp(startPoint.y, endPoint.y, t);
 
                 // Добавляем отклонения (уменьшаются по мере приближения к цели)
-                float deviationFactor = 1f - t; // Отклонения уменьшаются к концу
+                float deviationFactor = (1f - t) * 0.4f; // Отклонения уменьшаются к концу
                 float deviationX = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
                 float deviationY = ((float)_rng.NextDouble() - 0.5f) * 2f * adjustedDescentDeviation * deviationFactor;
 

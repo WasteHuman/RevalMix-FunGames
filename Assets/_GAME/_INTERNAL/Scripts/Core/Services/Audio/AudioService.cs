@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Core.Services.Audio
@@ -8,7 +9,7 @@ namespace Core.Services.Audio
         public static AudioService Instance { get; private set; }
 
         [SerializeField] private AudioClip _music;
-        [SerializeField] private List<AudioClip> _sounds;
+        [SerializeField] private List<SoundEntry> _sounds;
 
         [SerializeField] private AudioSource _musicSource;
         [SerializeField] private AudioSource _sfxSource;
@@ -67,13 +68,10 @@ namespace Core.Services.Audio
         /// <summary>Получить уровень громкости эффектов</summary>
         public float GetSfxVolume() => _sfxVolume;
 
-        /// <summary>Воспроизвести эффект</summary>
-        public void PlaySfx(int clipIndex)
+        /// <summary>Воспроизвести эффект (by type)</summary>
+        public void PlaySfx(SoundType type)
         {
-            if (clipIndex > _sounds.Count)
-                return;
-
-            var clip = _sounds[clipIndex];
+            var clip = _sounds.FirstOrDefault(sound => sound.Type == type);
 
             if (clip == null)
             {
@@ -81,7 +79,9 @@ namespace Core.Services.Audio
                 return;
             }
 
-            _sfxSource.PlayOneShot(clip);
+            float volumeScale = type == SoundType.Coins_Changed ? 3f : 1f;
+
+            _sfxSource.PlayOneShot(clip.Clip, volumeScale);
         }
 
         /// <summary>Воспроизвести музыку</summary>

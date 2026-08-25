@@ -26,7 +26,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
         private LineRenderer _activeLine;
         private bool _isWorldSpaceCanvas;
 
-        // Для постепенной отрисовки
         private List<Vector3> _allPathPositions = new();
         private int _currentDrawIndex;
         private bool _isDrawing;
@@ -36,15 +35,13 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
         private void Awake()
         {
-            // Проверяем тип Canvas для корректной работы с координатами
             Canvas canvas = GetComponentInParent<Canvas>();
             if (canvas != null)
             {
                 _isWorldSpaceCanvas = canvas.renderMode == RenderMode.WorldSpace ||
-                                      canvas.renderMode == RenderMode.ScreenSpaceCamera;
+                                    canvas.renderMode == RenderMode.ScreenSpaceCamera;
             }
 
-            // Инициализируем градиент по умолчанию, если не задан
             if (_pathGradient.colorKeys.Length == 0)
             {
                 SetupDefaultGradient();
@@ -69,9 +66,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _pathGradient.SetKeys(colorKeys, alphaKeys);
         }
 
-        /// <summary>
-        /// Инициализирует отрисовку пути ракеты. Вызывать при старте полёта.
-        /// </summary>
         public void InitPath(CryptoPath path, RectTransform graphContainer)
         {
             ClearLine();
@@ -89,33 +83,28 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 worldOffsetToCenter = centerWorld - _rocketTransform.position;
             }
 
-            // Добавляем точки взлёта
             foreach (Vector3 point in path.AscentPoints)
             {
                 Vector3 adjustedPoint = ConvertPositionForCanvas(point, graphContainer);
                 adjustedPoint.z += _zOffset;
 
                 if (_rocketTransform != null)
-                {
                     adjustedPoint += worldOffsetToCenter;
-                }
 
                 _allPathPositions.Add(adjustedPoint);
             }
 
-            // Добавляем точки падения (для визуализации полного пути)
-            if (path.DescentPoints != null && path.DescentPoints.Length > 0)
+            // ИСПРАВЛЕНИЕ: Пропускаем первую точку падения, так как она дублирует точку краша
+            // Это убирает рассинхронизацию индексов между линией и движением ракеты
+            if (path.DescentPoints != null && path.DescentPoints.Length > 1)
             {
-                foreach (Vector3 point in path.DescentPoints)
+                for (int i = 1; i < path.DescentPoints.Length; i++)
                 {
-                    Vector3 adjustedPoint = ConvertPositionForCanvas(point, graphContainer);
+                    Vector3 adjustedPoint = ConvertPositionForCanvas(path.DescentPoints[i], graphContainer);
                     adjustedPoint.z += _zOffset;
 
-                    // И для спада тоже применяем смещение
                     if (_rocketTransform != null)
-                    {
                         adjustedPoint += worldOffsetToCenter;
-                    }
 
                     _allPathPositions.Add(adjustedPoint);
                 }
@@ -124,64 +113,48 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             if (_allPathPositions.Count < 2)
                 return;
 
-            // Сглаживаем линию
             List<Vector3> subDividedPositions = SubdivideLine(_allPathPositions, _segmentsPerConnection);
             _allPathPositions = subDividedPositions;
 
-            // Создаём LineRenderer с нулевым количеством точек
             _activeLine = Instantiate(_lineRendererPrefab, transform);
             _activeLine.useWorldSpace = true;
             _activeLine.positionCount = 0;
             _activeLine.startWidth = _lineWidth;
             _activeLine.endWidth = _lineWidth;
+            
+            // ИСПРАВЛЕНИЕ: Задаём градиент один раз при инициализации, а не каждый кадр
+            _activeLine.colorGradient = _pathGradient;
 
             _currentDrawIndex = 0;
             _isDrawing = true;
         }
 
-        /// <summary>
-        /// Обновляет отрисовку линии. Вызывать каждый кадр во время полёта ракеты.
-        /// Передаётся текущий индекс прогресса (сколько точек уже должно быть видно).
-        /// </summary>
-        /// <param name="progressIndex">Текущий индекс точки пути (от 0 до Count-1)</param>
         public void UpdateLine(int progressIndex)
         {
             if (!_isDrawing || _activeLine == null || _allPathPositions.Count == 0)
                 return;
 
-            // Ограничиваем индекс максимумом
             int targetIndex = Mathf.Min(progressIndex, _allPathPositions.Count - 1);
 
-            // Если достигли конца пути
             if (targetIndex >= _allPathPositions.Count - 1)
             {
                 _isDrawing = false;
                 targetIndex = _allPathPositions.Count - 1;
             }
 
-            // Увеличиваем количество видимых точек
             if (targetIndex + 1 > _currentDrawIndex)
             {
                 _currentDrawIndex = targetIndex + 1;
                 _activeLine.positionCount = _currentDrawIndex;
 
-                // Устанавливаем позиции для всех видимых точек
-                Vector3[] visiblePositions = new Vector3[_currentDrawIndex];
+                // ИСПРАВЛЕНИЕ: Избегаем выделения памяти (new Vector3[]) каждый кадр
                 for (int i = 0; i < _currentDrawIndex; i++)
                 {
-                    visiblePositions[i] = _allPathPositions[i];
+                    _activeLine.SetPosition(i, _allPathPositions[i]);
                 }
-
-                _activeLine.SetPositions(visiblePositions);
-
-                // Применяем градиент к видимой части
-                ApplyGradientToLine(_activeLine, _currentDrawIndex, _allPathPositions.Count);
             }
         }
 
-        /// <summary>
-        /// Отрисовывает весь путь сразу (для отладки или превью).
-        /// </summary>
         public void DrawFullpath(CryptoPath path, RectTransform graphContainer)
         {
             InitPath(path, graphContainer);
@@ -189,56 +162,19 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _isDrawing = false;
         }
 
-        /// <summary>
-        /// Преобразует позицию в зависимости от типа Canvas.
-        /// Для ScreenSpaceCamera конвертирует из локальных координат сетки в мировые.
-        /// </summary>
         private Vector3 ConvertPositionForCanvas(Vector3 localPosition, RectTransform graphContainer)
         {
             if (graphContainer == null)
                 return localPosition;
 
-            // Если Canvas в режиме WorldSpace или ScreenSpaceCamera, используем мировые координаты
             if (_isWorldSpaceCanvas && _canvasRectTransform != null)
             {
-                // TransformPoint учитывает масштаб, поворот и позицию родителя
                 return graphContainer.TransformPoint(localPosition);
             }
 
-            // Для Overlay используем экранные координаты
             return localPosition;
         }
 
-        /// <summary>
-        /// Применяет градиент к линии на основе прогресса до краша.
-        /// </summary>
-        private void ApplyGradientToLine(LineRenderer line, int visibleCount, int totalCount)
-        {
-            if (line == null || visibleCount < 2)
-                return;
-
-            Gradient gradient = new Gradient();
-            gradient.SetKeys(
-                _pathGradient.colorKeys,
-                _pathGradient.alphaKeys
-            );
-
-            // Устанавливаем цвета для каждой видимой позиции вдоль линии
-            Color[] colors = new Color[visibleCount];
-
-            for (int i = 0; i < visibleCount; i++)
-            {
-                float t = (float)i / Mathf.Max(1, visibleCount - 1);
-                colors[i] = gradient.Evaluate(t);
-            }
-
-            line.startColor = colors[0];
-            line.endColor = colors[^1];
-        }
-
-        /// <summary>
-        /// Разбивает линию на сегменты для сглаживания.
-        /// </summary>
         private List<Vector3> SubdivideLine(List<Vector3> originalPoints, int subDivisions)
         {
             List<Vector3> newPoints = new List<Vector3>();
@@ -262,9 +198,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             return newPoints;
         }
 
-        /// <summary>
-        /// Очищает отрисованную линию.
-        /// </summary>
         public void ClearLine()
         {
             if (_activeLine != null)
@@ -274,17 +207,11 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             }
         }
 
-        /// <summary>
-        /// Устанавливает префаб LineRenderer.
-        /// </summary>
         public void SetLineRendererPrefab(LineRenderer prefab)
         {
             _lineRendererPrefab = prefab;
         }
 
-        /// <summary>
-        /// Устанавливает ширину линии.
-        /// </summary>
         public void SetLineWidth(float width)
         {
             _lineWidth = width;

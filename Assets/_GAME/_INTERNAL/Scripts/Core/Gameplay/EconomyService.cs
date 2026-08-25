@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Services.Audio;
 using UnityEngine;
 
 namespace Core.Gameplay
@@ -9,6 +10,20 @@ namespace Core.Gameplay
         private bool _isDailyFreeBonusAvailable;
 
         private DateTime _dailyFreeBonusNextRefreshTimeUtc;
+
+        public float CurrentCoinsBalance
+        {
+            get => _currentCoinsBalance;
+            private set
+            {
+                if(value < 0f)
+                    throw new System.ArgumentOutOfRangeException(nameof(value), "Coins Value cannot be a negative!");
+
+                _currentCoinsBalance = value;
+                AudioService.Instance.PlaySfx(SoundType.Coins_Changed);
+                OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
+            }
+        }
 
         public event Action<float> OnCoinsBalanceChanged;
 
@@ -23,7 +38,7 @@ namespace Core.Gameplay
         /// <summary>
         /// Получить текущий баланс Coins
         /// </summary>
-        public float GetCoinsBalance() => _currentCoinsBalance;
+        public float GetCoinsBalance() => CurrentCoinsBalance;
 
         /// <summary>
         /// Запросить текущий баланс Coins (invoke события)
@@ -48,10 +63,9 @@ namespace Core.Gameplay
                 return;
             }
 
-            _currentCoinsBalance += amount;
-            OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
+            CurrentCoinsBalance += amount;
 
-            Debug.Log($"[Economy] Added coins: +{amount}. New balance: {_currentCoinsBalance}");
+            Debug.Log($"[Economy] Added coins: +{amount}. New balance: {CurrentCoinsBalance}");
         }
 
         /// <summary>
@@ -67,30 +81,25 @@ namespace Core.Gameplay
 
             if (!HasEnoughBalance(amount))
             {
-                Debug.LogWarning($"Not enough coins! Balance: {_currentCoinsBalance}, needed: {amount}");
+                Debug.LogWarning($"Not enough coins! Balance: {CurrentCoinsBalance}, needed: {amount}");
                 return false;
             }
 
-            _currentCoinsBalance -= amount;
-            OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
+            CurrentCoinsBalance -= amount;
 
-            Debug.Log($"[Economy] Debited: -{amount}. New balance: {_currentCoinsBalance}");
+            Debug.Log($"[Economy] Debited: -{amount}. New balance: {CurrentCoinsBalance}");
             return true;
         }
 
         /// <summary>
         /// Проверить, достаточно ли средств
         /// </summary>
-        public bool HasEnoughBalance(float amount) => _currentCoinsBalance >= amount;
+        public bool HasEnoughBalance(float amount) => CurrentCoinsBalance >= amount;
 
         /// <summary>
         /// Установить баланс (для тестирования или загрузки из сохранений)
         /// </summary>
-        public void SetBalance(float amount)
-        {
-            _currentCoinsBalance = Mathf.Max(0, amount);
-            OnCoinsBalanceChanged?.Invoke(_currentCoinsBalance);
-        }
+        public void SetBalance(float amount) => CurrentCoinsBalance = Mathf.Max(0, amount);
 
         private void CheckDailyFreeBonus()
         {

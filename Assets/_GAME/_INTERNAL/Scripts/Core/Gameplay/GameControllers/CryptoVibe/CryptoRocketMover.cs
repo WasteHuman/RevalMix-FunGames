@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace Core.Gameplay.GameControllers.CryptoVibe
 {
-    public class CryptoRocketMover : MonoBehaviour
+     public class CryptoRocketMover : MonoBehaviour
     {
         [Header("Movement Settings")]
-        [SerializeField] private float _movementSpeed = 1f; // Юнитов в секунду
-        [SerializeField] private float _rotationAngleOffset = 0f; // Дополнительный угол поворота (спрайт уже наклонён)
+        [SerializeField] private float _movementSpeed = 1f;
+        [SerializeField] private float _rotationAngleOffset = 0f; 
         [SerializeField] private float _descentSpeedMultiplier = 3f;
 
         [Header("Effects")]
@@ -41,9 +41,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             CurrentProgressIndex = 0;
         }
 
-        /// <summary>
-        /// Инициализация компонента.
-        /// </summary>
         public void Initialize(Transform rocketTransform, int segmentsPerConnection)
         {
             _rocketTransform = rocketTransform;
@@ -53,9 +50,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 _currentAngle = _rocketTransform.rotation.eulerAngles.z;
         }
 
-        /// <summary>
-        /// Запускает движение ракеты по заданному пути.
-        /// </summary>
         public void StartMove(CryptoPath path, float flightTime)
         {
             if (_rocketTransform == null)
@@ -65,7 +59,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             }
 
             CurrentProgressIndex = 0;
-
             _currentPath = path;
             _isMoving = true;
 
@@ -84,9 +77,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _moveCoroutine = StartCoroutine(MoveAlongPath());
         }
 
-        /// <summary>
-        /// Останавливает текущее движение.
-        /// </summary>
         public void StopMove()
         {
             if (_moveCoroutine != null)
@@ -100,9 +90,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _isMoving = false;
         }
 
-        /// <summary>
-        /// Запускает фазу падения (после краша).
-        /// </summary>
         public void StartDescent(Action onComplete = null)
         {
             if (_currentPath == null || _currentPath.DescentPoints == null || _currentPath.DescentPoints.Length == 0)
@@ -118,8 +105,8 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _rotationTween?.Kill();
             _rotationTween = null;
 
-            _rocketTransform.rotation = Quaternion.identity;
-            _currentAngle = 0f;
+            // УБРАНО: _rocketTransform.rotation = Quaternion.identity; 
+            // УБРАНО: _currentAngle = 0f;
 
             _moveCoroutine = StartCoroutine(PlayDescentAnimation(onComplete));
         }
@@ -158,128 +145,148 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
 
         private IEnumerator MoveAlongPath()
         {
-            if (_currentPath == null || _currentPath.AscentPoints == null || _currentPath.AscentPoints.Length == 0)
-                yield break;
-
             Vector3[] points = _currentPath.AscentPoints;
-
-            _rocketTransform.position = points[0];
-            _currentAngle = _rocketTransform.rotation.eulerAngles.z;
-
-            for (int i = 0; i < points.Length - 1; i++)
+            if (points == null || points.Length < 2)
             {
-                if (!_isMoving)
-                    yield break;
-
-                Vector3 startPoint = points[i];
-                Vector3 endPoint = points[i + 1];
-
-                float distance = Vector3.Distance(startPoint, endPoint);
-                float duration = distance / _movementSpeed;
-
-                Vector3 segmentDirection = endPoint - startPoint;
-                float targetSegmentAngle = Mathf.Atan2(segmentDirection.y, segmentDirection.x) * Mathf.Rad2Deg;
-                targetSegmentAngle += _rotationAngleOffset;
-
-                float elapsed = 0f;
-                while (elapsed < duration)
-                {
-                    elapsed += Time.deltaTime;
-                    float t = Mathf.Clamp01(elapsed / duration);
-
-                    _rocketTransform.position = Vector3.Lerp(startPoint, endPoint, t);
-
-                    // Плавно поворачиваем к целевому углу сегмента в течение всего движения
-                    float rotationSpeed = 15f; // градусов в секунду - регулирует плавность поворота
-                    float delta = Mathf.DeltaAngle(_currentAngle, targetSegmentAngle);
-
-                    if (Mathf.Abs(delta) > 0.1f)
-                    {
-                        float maxRotation = rotationSpeed * Time.deltaTime;
-                        float rotationStep = Mathf.Clamp(delta, -maxRotation, maxRotation);
-                        _currentAngle += rotationStep;
-                    }
-
-                    if (_rocketTransform != null)
-                        _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
-
-                    CurrentProgressIndex = Mathf.FloorToInt((i + t) * SegmentsPerConnection);
-
-                    yield return null;
-                }
-
-                _rocketTransform.position = endPoint;
-
-                // Финальный поворот точно в цель сегмента
-                _currentAngle = targetSegmentAngle;
-                _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
-
-                CurrentProgressIndex = (i + 1) * SegmentsPerConnection;
+                _rocketTransform.position = points[0];
+                CurrentProgressIndex = _totalAscentSegments;
+                yield break;
             }
 
+            float totalDistance = 0f;
+            float[] segmentLengths = new float[points.Length - 1];
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                segmentLengths[i] = Vector3.Distance(points[i], points[i + 1]);
+                totalDistance += segmentLengths[i];
+            }
+
+            _rocketTransform.position = points[0];
+            float elapsed = 0f;
+            float duration = totalDistance / Mathf.Max(0.1f, _movementSpeed);
+
+            while (elapsed < duration && _isMoving)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+
+                // Без аллокаций вычисляем позицию
+                float targetDistance = t * totalDistance;
+                float accumulated = 0f;
+                Vector3 pos = points[^1];
+                for (int i = 0; i < segmentLengths.Length; i++)
+                {
+                    if (accumulated + segmentLengths[i] >= targetDistance)
+                    {
+                        float localT = (targetDistance - accumulated) / segmentLengths[i];
+                        pos = Vector3.Lerp(points[i], points[i + 1], localT);
+                        break;
+                    }
+                    accumulated += segmentLengths[i];
+                }
+
+                _rocketTransform.position = pos;
+
+                // Направление и поворот
+                float nextT = Mathf.Min(1f, t + 0.01f);
+                float nextTargetDistance = nextT * totalDistance;
+                accumulated = 0f;
+                Vector3 nextPos = points[^1];
+                for (int i = 0; i < segmentLengths.Length; i++)
+                {
+                    if (accumulated + segmentLengths[i] >= nextTargetDistance)
+                    {
+                        float localT = (nextTargetDistance - accumulated) / segmentLengths[i];
+                        nextPos = Vector3.Lerp(points[i], points[i + 1], localT);
+                        break;
+                    }
+                    accumulated += segmentLengths[i];
+                }
+
+                Vector3 dir = nextPos - pos;
+                if (dir.sqrMagnitude > 0.0001f)
+                {
+                    float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg + _rotationAngleOffset;
+                    _currentAngle = Mathf.MoveTowardsAngle(_currentAngle, targetAngle, 90f * Time.deltaTime);
+                    _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
+                }
+
+                CurrentProgressIndex = Mathf.FloorToInt(t * _totalAscentSegments);
+                yield return null;
+            }
+
+            _rocketTransform.position = points[^1];
+            CurrentProgressIndex = _totalAscentSegments;
             _isMoving = false;
         }
 
         private IEnumerator PlayDescentAnimation(Action onComplete)
         {
-            if (_currentPath == null || _currentPath.DescentPoints == null || _currentPath.DescentPoints.Length == 0)
+            Vector3[] points = _currentPath.DescentPoints;
+            if (points == null || points.Length == 0)
             {
                 onComplete?.Invoke();
                 yield break;
             }
 
-            Vector3[] points = _currentPath.DescentPoints;
-            float descentSpeed = _movementSpeed * _descentSpeedMultiplier;
-
-            // Вычисляем общую длину пути
             float totalDistance = 0f;
+            float[] segmentLengths = new float[points.Length - 1];
             for (int i = 0; i < points.Length - 1; i++)
-                totalDistance += Vector3.Distance(points[i], points[i + 1]);
+            {
+                segmentLengths[i] = Vector3.Distance(points[i], points[i + 1]);
+                totalDistance += segmentLengths[i];
+            }
+
+            float descentSpeed = _movementSpeed * _descentSpeedMultiplier;
+            float totalDuration = totalDistance / Mathf.Max(0.1f, descentSpeed);
 
             PlayExplosionEffect();
 
-            float totalDuration = totalDistance / descentSpeed;
             int ascentMaxIndex = CurrentProgressIndex;
-
             _totalDescentSegments = (points.Length - 1) * SegmentsPerConnection;
 
             float elapsed = 0f;
-            float rotationSpeed = 12f;
             while (elapsed < totalDuration)
             {
                 elapsed += Time.deltaTime;
                 float t = Mathf.Clamp01(elapsed / totalDuration);
-
                 float easedT = t * t;
 
-                Vector3 pos = GetPointOnPathByProgress(points, easedT);
-
-                // Вычисляем направление движения для поворота
-                float nextT = Mathf.Clamp01(easedT + 0.02f); // Небольшой шаг вперёд для вычисления касательной
-                Vector3 nextPos = GetPointOnPathByProgress(points, nextT);
-                Vector3 direction = nextPos - pos;
-
-                if (direction.sqrMagnitude > 0.0001f)
+                float targetDistance = easedT * totalDistance;
+                float accumulated = 0f;
+                Vector3 pos = points[^1];
+                for (int i = 0; i < segmentLengths.Length; i++)
                 {
-                    float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    targetAngle += _rotationAngleOffset;
-
-                    // Плавно поворачиваем к целевому углу
-                    float delta = Mathf.DeltaAngle(_currentAngle, targetAngle);
-
-                    if (Mathf.Abs(delta) > 0.1f)
+                    if (accumulated + segmentLengths[i] >= targetDistance)
                     {
-                        float maxRotation = rotationSpeed * Time.deltaTime;
-                        float rotationStep = Mathf.Clamp(delta, -maxRotation, maxRotation);
-                        _currentAngle += rotationStep;
+                        float localT = (targetDistance - accumulated) / segmentLengths[i];
+                        pos = Vector3.Lerp(points[i], points[i + 1], localT);
+                        break;
                     }
-                    else
-                    {
-                        _currentAngle = targetAngle;
-                    }
+                    accumulated += segmentLengths[i];
+                }
 
-                    if (_rocketTransform != null)
-                        _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
+                float nextT = Mathf.Min(1f, easedT + 0.05f);
+                float nextTargetDistance = nextT * totalDistance;
+                accumulated = 0f;
+                Vector3 nextPos = points[^1];
+                for (int i = 0; i < segmentLengths.Length; i++)
+                {
+                    if (accumulated + segmentLengths[i] >= nextTargetDistance)
+                    {
+                        float localT = (nextTargetDistance - accumulated) / segmentLengths[i];
+                        nextPos = Vector3.Lerp(points[i], points[i + 1], localT);
+                        break;
+                    }
+                    accumulated += segmentLengths[i];
+                }
+
+                Vector3 dir = nextPos - pos;
+                if (dir.sqrMagnitude > 0.0001f)
+                {
+                    float targetAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+                    _currentAngle = Mathf.MoveTowardsAngle(_currentAngle, targetAngle, 180f * Time.deltaTime);
+                    _rocketTransform.rotation = Quaternion.Euler(0f, 0f, _currentAngle);
                 }
 
                 _rocketTransform.position = pos;
@@ -296,56 +303,11 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             onComplete?.Invoke();
         }
 
-        /// <summary>
-        /// Поворачивает ракету в направлении движения.
-        /// </summary>
-        private void RotateSmooth(Vector3 direction, float segmentDuration, bool isFalling = false)
-        {
-            if (direction.sqrMagnitude < 0.0001f)
-                return;
-
-            // Целевой угол
-            float targetAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            targetAngle += _rotationAngleOffset;
-
-            // Кратчайший путь от текущего угла к целевому (через DeltaAngle)
-            float delta = Mathf.DeltaAngle(_currentAngle, targetAngle);
-            float endAngle = _currentAngle + delta;
-
-            // Убиваем предыдущий твин поворота
-            _rotationTween?.Kill();
-
-            // Длительность поворота: для взлёта плавнее, для падения резче
-            float tweenDuration = isFalling
-                ? Mathf.Clamp(segmentDuration * 0.5f, 0.1f, 0.25f)
-                : Mathf.Clamp(segmentDuration * 0.8f, 0.15f, 0.4f);
-
-            // Для взлёта мягкий Ease, для падения резкий
-            Ease ease = isFalling ? Ease.OutExpo : Ease.OutSine;
-
-            _rotationTween = DOTween.To(
-                    () => _currentAngle,
-                    x =>
-                    {
-                        _currentAngle = x;
-                        if (_rocketTransform != null)
-                            _rocketTransform.rotation = Quaternion.Euler(0f, 0f, x);
-                    },
-                    endAngle,
-                    tweenDuration)
-                .SetEase(ease)
-                .SetTarget(this);
-        }
-
-        /// <summary>
-        /// Воспроизводит эффект взрыва.
-        /// </summary>
         private void PlayExplosionEffect()
         {
             if (_explosionVFXPrefab != null)
             {
                 var vfx = Instantiate(_explosionVFXPrefab, _rocketTransform.position, Quaternion.identity);
-
                 var ps = vfx.GetComponent<ParticleSystem>();
                 if (ps != null)
                 {
@@ -363,9 +325,6 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
                 _audioSource.PlayOneShot(_explosionSound);
         }
 
-        /// <summary>
-        /// Устанавливает эффекты (вызывается из контроллера).
-        /// </summary>
         public void SetEffects(ParticleSystem explosionVFX, AudioClip explosionSound, AudioSource audioSource)
         {
             _explosionVFXPrefab = explosionVFX;
@@ -373,17 +332,11 @@ namespace Core.Gameplay.GameControllers.CryptoVibe
             _audioSource = audioSource;
         }
 
-        /// <summary>
-        /// Устанавливает скорость движения.
-        /// </summary>
         public void SetMovementSpeed(float speed)
         {
             _movementSpeed = speed;
         }
 
-        /// <summary>
-        /// Устанавливает угол поворота ракеты (смещение).
-        /// </summary>
         public void SetRotationAngleOffset(float angleOffset)
         {
             _rotationAngleOffset = angleOffset;

@@ -131,7 +131,7 @@ namespace UI.Other
             if (PlayerPrefs.GetInt(GameConstants.KEY_VIBRATIONS) == 1)
                 MOST_HapticFeedback.Generate(_onClick);
 
-            AudioService.Instance.PlaySfx(0);
+            AudioService.Instance.PlaySfx(SoundType.Click);
 
             _animations.ButtonClickAnimation(() =>
             {
